@@ -51,7 +51,7 @@
         },{
             name: 'vertcoin',
             symbol: 'vtc',
-            addressTypes: {prod: ['71', '05'], testnet: ['6f', 'c4']}
+            addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']}
         }];
 
 
