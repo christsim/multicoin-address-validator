@@ -48,6 +48,10 @@
             name: 'biocoin',
             symbol: 'bio',
             addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']}
+        },{
+            name: 'vertcoin',
+            symbol: 'vtc',
+            addressTypes: {prod: ['71', '05'], testnet: ['6f', 'c4']}
         }];
 
 
