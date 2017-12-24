@@ -48,6 +48,10 @@
             name: 'biocoin',
             symbol: 'bio',
             addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']}
+        },{
+            name: 'bitcoinGold',
+            symbol: 'btg',
+            addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']}
         }];
 
 
