@@ -7,7 +7,7 @@
         },{
             name: 'litecoin',
             symbol: 'ltc',
-            addressTypes: {prod: ['30', '05'], testnet: ['6f', 'c4']}
+            addressTypes: {prod: ['30', '05', '32'], testnet: ['6f', 'c4']}
         },{
             name: 'peercoin',
             symbol: 'ppc',
