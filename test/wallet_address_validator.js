@@ -163,6 +163,14 @@ describe('WAValidator.validate()', function () {
             valid('muH8LL42DiMs8GEQ6Grfi8KUw2uFvuKr1J', 'BIO', 'testnet');
             valid('B8zjmYFGhWmiaQSJshfrnefE72xCapCkvo', 'BIO');
         });
+
+        it('should return true for correct Garlicoin addresses', function () {
+            valid('GU2NtcNotWFiZjTp2Vdgf5CjeMfgsWYCua', 'garlicoin');
+            valid('GNWeWaoQ6rv21ZFjJWT9vb91hXUzFTLkru', 'garlicoin');
+            valid('mjKbQTkgwzmsL3J86tdVzhyW9pc4NePqTb', 'garlicoin', 'testnet');
+            valid('mnYp36NuyRavMKQ9Q9Q6oGqoorAs9p3zYn', 'GRLC', 'testnet');
+            valid('GU2NtcNotWFiZjTp2Vdgf5CjeMfgsWYCua', 'GRLC');
+        });
     });
 
     describe('invalid results', function () {
@@ -224,6 +232,10 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect biocoin addresses', function () {
             commonTests('biocoin');
+        });
+
+        it('should return false for incorrect garlicoin addresses', function () {
+            commonTests('garlicoin');
         });
 
     });

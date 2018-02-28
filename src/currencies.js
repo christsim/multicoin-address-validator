@@ -48,6 +48,10 @@
             name: 'biocoin',
             symbol: 'bio',
             addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']}
+        },{
+            name: 'garlicoin',
+            symbol: 'grlc',
+            addressTypes: {prod: ['26', '05'], testnet: ['6f', 'c4']}
         }];
 
 
