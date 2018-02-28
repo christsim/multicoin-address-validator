@@ -26,7 +26,7 @@
     "node": "*"
   },
   "dependencies": {
-    "jssha": "1.6.0"
+    "jssha": "2.3.1"
   },
   "devDependencies": {
     "chai": "latest",

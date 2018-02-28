@@ -18,6 +18,6 @@
   "homepage": "https://github.com/ognus/wallet-address-validator",
   "main": "dist/wallet-address-validator.min.js",
   "devDependencies": {
-    "jssha": "1.6.0"
+    "jssha": "2.3.1"
   }
 }
