@@ -2,6 +2,7 @@
   "name": "wallet-address-validator",
   "description": "Wallet address validator for Bitcoin and other Altcoins.",
   "keywords": [
+    "btc",
     "bitcoin",
     "litecoin",
     "dogecoin",

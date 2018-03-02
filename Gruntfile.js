@@ -8,7 +8,7 @@ module.exports = function(grunt) {
             dist: {
                 files: {
                     'dist/wallet-address-validator.min.js': [
-                        'bower_components/jssha/src/sha256.js',
+                        'node_modules/jssha/src/sha256.js',
                         'src/base58.js',
                         'src/crypto_utils.js',
                         'src/currencies.js',
