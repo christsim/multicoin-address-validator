@@ -7,7 +7,7 @@ I forked it to remove all Node.js dependencies (crypro, Buffer etc.) to make it 
 
 ## Installation
 
-### Node
+### NPM
 ```
 npm install wallet-address-validator
 ```
@@ -16,12 +16,6 @@ npm install wallet-address-validator
 ```html
 <script src="wallet-address-validator.min.js"></script>
 ```
-
-#### Using bower
-```
-bower install wallet-address-validator
-```
-
 
 ## API
 
@@ -55,6 +49,7 @@ bower install wallet-address-validator
 * Auroracoin/AUR, `'auroracoin'` or `'AUR'`
 * Namecoin/NMC, `'namecoin'` or `'NMC'`
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
+* Garlicoin/GRLC, `'garlicoin'` or `'grlc'`
 
 ### Usage example
 
