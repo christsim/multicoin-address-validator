@@ -49,7 +49,8 @@ npm install wallet-address-validator
 * Auroracoin/AUR, `'auroracoin'` or `'AUR'`
 * Namecoin/NMC, `'namecoin'` or `'NMC'`
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
-* Garlicoin/GRLC, `'garlicoin'` or `'grlc'`
+* Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
+* Vertcoin/VTC, `'vertcoin'` or `'VTC'`
 
 ### Usage example
 

@@ -52,6 +52,10 @@
             name: 'garlicoin',
             symbol: 'grlc',
             addressTypes: {prod: ['26', '05'], testnet: ['6f', 'c4']}
+        },{
+            name: 'vertcoin',
+            symbol: 'vtc',
+            addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']}
         }];
 
 

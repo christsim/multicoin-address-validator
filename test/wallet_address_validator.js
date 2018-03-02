@@ -171,6 +171,14 @@ describe('WAValidator.validate()', function () {
             valid('mnYp36NuyRavMKQ9Q9Q6oGqoorAs9p3zYn', 'GRLC', 'testnet');
             valid('GU2NtcNotWFiZjTp2Vdgf5CjeMfgsWYCua', 'GRLC');
         });
+
+        it('should return true for correct Vertcoin addresses', function () {
+            valid('VmoMjGf3zgZLy8sk3PMKd3xikZHXWvnYi7', 'vertcoin');
+            valid('VmhHwXr3J8xMZpy62WuBGpu3xVvThWzcTQ', 'vertcoin');
+            valid('mvww6DEJ18dbyQUukpVQXvLgrNDJazZn1Y', 'vertcoin', 'testnet');
+            valid('mn3mdEE6cf1snxVsknNz4GRTdSrWXqYp7c', 'VTC', 'testnet');
+            valid('Vri6Q4GgNFfdtcpxD961TotJwaSaYQCaL5', 'VTC');
+        });
     });
 
     describe('invalid results', function () {
@@ -238,5 +246,8 @@ describe('WAValidator.validate()', function () {
             commonTests('garlicoin');
         });
 
+        it('should return false for incorrect vertcoin addresses', function () {
+            commonTests('vertcoin');
+        });
     });
 });
