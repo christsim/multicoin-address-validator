@@ -51,6 +51,7 @@ npm install wallet-address-validator
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
 * Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
 * Vertcoin/VTC, `'vertcoin'` or `'VTC'`
+* BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
 
 ### Usage example
 
