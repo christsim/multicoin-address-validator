@@ -56,6 +56,10 @@
             name: 'vertcoin',
             symbol: 'vtc',
             addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']}
+        },{
+            name: 'bitcoingold',
+            symbol: 'btg',
+            addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']}
         }];
 
 
