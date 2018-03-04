@@ -33,6 +33,7 @@
   "devDependencies": {
     "chai": "latest",
     "grunt": "latest",
+    "grunt-browserify": "^5.2.0",
     "grunt-contrib-uglify": "latest",
     "grunt-mocha": "latest",
     "grunt-simple-mocha": "latest",
