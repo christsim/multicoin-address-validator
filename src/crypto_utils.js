@@ -1,5 +1,6 @@
 (function (isNode) {
     var jsSHA = isNode ? require('jssha') : window.jsSHA;
+    var blakeHash = require('blake-hash');
 
     function numberToHex (number) {
         var hex = Math.round(number).toString(16);
@@ -21,6 +22,15 @@
             var sha = new jsSHA('SHA-256', 'HEX');
             sha.update(hexString)
             return sha.getHash('HEX');
+        },
+        sha256Checksum: function (payload) {
+            return this.sha256(this.sha256(payload)).substr(0, 8);
+        },
+        blake256: function (hexString) {
+            return blakeHash('blake256').update(hexString, 'hex').digest('hex');
+        },
+        blake256Checksum: function (payload) {
+            return this.blake256(this.blake256(payload)).substr(0, 8);
         }
     };
 

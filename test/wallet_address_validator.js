@@ -187,6 +187,14 @@ describe('WAValidator.validate()', function () {
             valid('mn3mdEE6cf1snxVsknNz4GRTdSrWXqYp7c', 'BTG', 'testnet');
             valid('GSNFPRsdaM3MXrU5HW1AxgFwmUQC8HXK9F', 'BTG');
         });
+
+        it('should return true for correct Decred addresses', function () {
+            valid('Dsesax2GJnMN4wwmWo5rJGq73dDK217Rh85', 'dcr');
+            valid('DsYuxtvGRfN8rncXAndtLUpJm55F77K17RA', 'decred');
+            valid('DsaXDG2NrJW8g4tFAb8n9MNx81Sn3Qc8AEV', 'decred');
+            valid('TsijUgejaRnLKF5WAbpUxNtwKGUiKVeXLr7', 'decred', 'testnet');
+            valid('TsZ9QmAoadF12hGvyALp6qvaF4be3BmLqG9', 'dcr', 'testnet');
+        });
     });
 
     describe('invalid results', function () {
@@ -260,6 +268,10 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect bitcoingold addresses', function () {
             commonTests('bitcoingold');
+        });
+
+        it('should return false for incorrect decred addresses', function () {
+            commonTests('decred');
         });
     });
 });

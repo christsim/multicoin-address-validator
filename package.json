@@ -27,6 +27,7 @@
     "node": "*"
   },
   "dependencies": {
+    "blake-hash": "^1.1.0",
     "jssha": "2.3.1"
   },
   "devDependencies": {
@@ -38,4 +39,3 @@
     "mocha": "latest"
   }
 }
-

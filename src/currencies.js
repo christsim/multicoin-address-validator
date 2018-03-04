@@ -60,6 +60,12 @@
             name: 'bitcoingold',
             symbol: 'btg',
             addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']}
+        },{
+            name: 'decred',
+            symbol: 'dcr',
+            addressTypes: {prod: ['073f', '071a'], testnet: ['0f21', '0efc']},
+            hashFunction: 'blake256',
+            expectedLength: 26
         }];
 
 
