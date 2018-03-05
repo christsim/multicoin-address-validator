@@ -27,15 +27,16 @@
     "node": "*"
   },
   "dependencies": {
+    "blake-hash": "^1.1.0",
     "jssha": "2.3.1"
   },
   "devDependencies": {
     "chai": "latest",
     "grunt": "latest",
+    "grunt-browserify": "^5.2.0",
     "grunt-contrib-uglify": "latest",
     "grunt-mocha": "latest",
     "grunt-simple-mocha": "latest",
     "mocha": "latest"
   }
 }
-

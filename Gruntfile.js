@@ -1,9 +1,23 @@
 module.exports = function(grunt) {
+    grunt.loadNpmTasks('grunt-browserify');
     grunt.loadNpmTasks('grunt-simple-mocha');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-mocha');
 
     grunt.initConfig({
+        browserify: {
+            dist: {
+                files: {
+                    'dist/address-validator.min.js': [
+                        'node_modules/jssha/src/sha256.js',
+                        'src/base58.js',
+                        'src/crypto_utils.js',
+                        'src/currencies.js',
+                        'src/wallet_address_validator.js'
+                    ]
+                }
+            }
+        },
         uglify: {
             dist: {
                 files: {
