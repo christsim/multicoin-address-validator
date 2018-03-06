@@ -65,6 +65,27 @@ var CURRENCIES = [{
     addressTypes: {prod: ['073f', '071a'], testnet: ['0f21', '0efc']},
     hashFunction: 'blake256',
     expectedLength: 26
+},{
+    name: 'digibyte',
+    symbol: 'dgb',
+    addressTypes: {prod: ['1e'], testnet: []},
+    eip55: false
+},{
+    name: 'ethereum',
+    symbol: 'eth',
+    eip55: true
+},{
+    name: 'etherzero',
+    symbol: 'etz',
+    eip55: true
+},{
+    name: 'ethereumclassic',
+    symbol: 'etc',
+    eip55: true
+},{
+    name: 'callisto',
+    symbol: 'clo',
+    eip55: true
 }];
 
 

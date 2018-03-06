@@ -3,7 +3,7 @@ Simple wallet address validator for validating Bitcoin and other altcoins addres
 
 Forked from [ryanralph/altcoin-address](https://github.com/ryanralph/altcoin-address).
 
-**File size is ~15 kB (minifed and gzipped)**.
+**File size is ~17 kB (minifed and gzipped)**.
 
 ## Installation
 
@@ -53,6 +53,14 @@ npm install wallet-address-validator
 * Vertcoin/VTC, `'vertcoin'` or `'VTC'`
 * BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
 * Decred/DCR, `'decred'` or `'DCR'`
+* Digibyte/DGB, `'digibyte'` or `'DGB'`
+
+
+* Ethereum/ETH, `'ethereum'` or `'ETH'`
+* EthereumClassic/ETH, `'ethereumclassic'` or `'ETC'`
+* EthereumZero/ETZ, `'etherzero'` or `'ETZ'`
+* Callisto/CLO, `'callisto'` or `'CLO'`
+
 
 ### Usage example
 
