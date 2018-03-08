@@ -26,17 +26,25 @@
   "engines": {
     "node": "*"
   },
+  "scripts": {
+    "bundle": "browserify src/wallet_address_validator.js --standalone WAValidator --outfile dist/wallet-address-validator.js",
+    "minify": "uglifyjs -c -m -o dist/wallet-address-validator.min.js -- dist/wallet-address-validator.js",
+    "test:node": "mocha test",
+    "test:browser": "karma start",
+    "test": "npm run test:node && npm run test:browser",
+    "start": "npm run bundle && npm run minify && npm test"
+  },
   "dependencies": {
-    "blake-hash": "^1.1.0",
     "jssha": "2.3.1"
   },
   "devDependencies": {
-    "chai": "latest",
-    "grunt": "latest",
-    "grunt-browserify": "^5.2.0",
-    "grunt-contrib-uglify": "latest",
-    "grunt-mocha": "latest",
-    "grunt-simple-mocha": "latest",
-    "mocha": "latest"
+    "browserify": "^15.1.0",
+    "chai": "^4.1.2",
+    "karma": "^2.0.0",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-mocha": "^1.3.0",
+    "mocha": "^5.0.2",
+    "uglify-js": "^3.3.13"
   }
 }
