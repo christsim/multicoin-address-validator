@@ -1,4 +1,4 @@
-var isNode = typeof module !== 'undefined' && typeof module.exports !== 'undefined'
+var isNode = typeof module !== 'undefined' && typeof module.exports !== 'undefined';
 
 var chai = isNode ? require('chai') : window.chai,
     expect = chai.expect;
@@ -189,7 +189,7 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct Decred addresses', function () {
-            valid('Dsesax2GJnMN4wwmWo5rJGq73dDK217Rh85', 'dcr');
+            valid('Dsesax2GJnMN4wwmWo5rJGq73dDK217Rh85', 'DCR');
             valid('DsYuxtvGRfN8rncXAndtLUpJm55F77K17RA', 'decred');
             valid('DsaXDG2NrJW8g4tFAb8n9MNx81Sn3Qc8AEV', 'decred');
             valid('TsijUgejaRnLKF5WAbpUxNtwKGUiKVeXLr7', 'decred', 'testnet');

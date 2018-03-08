@@ -3,7 +3,7 @@ Simple wallet address validator for validating Bitcoin and other altcoins addres
 
 Forked from [ryanralph/altcoin-address](https://github.com/ryanralph/altcoin-address).
 
-I forked it to remove all Node.js dependencies (crypro, Buffer etc.) to make it usable in the browser as well. I didn't use browserify to achieve smaller footprint, **file size is 4.0 kB (minifed and gzipped)**.
+**File size is ~15 kB (minifed and gzipped)**.
 
 ## Installation
 
@@ -52,6 +52,7 @@ npm install wallet-address-validator
 * Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
 * Vertcoin/VTC, `'vertcoin'` or `'VTC'`
 * BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
+* Decred/DCR, `'decred'` or `'DCR'`
 
 ### Usage example
 
