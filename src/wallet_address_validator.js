@@ -1,36 +1,43 @@
-var base58 = require('./base58');
-var cryptoUtils = require('./crypto_utils');
+var base58 = require('./crypto/base58');
+var cryptoUtils = require('./crypto/utils');
 var currencies = require('./currencies');
+var ETHValidator = require('./ethereum_validator');
 
-var DEFAULT_CURRENCY_NAME = 'bitcoin',
-    DEFAULT_NETWORK_TYPE = 'prod';
+var DEFAULT_CURRENCY_NAME = 'bitcoin';
+var DEFAULT_NETWORK_TYPE = 'prod';
 
-var WAValidator = {
+function getDecoded(address) {
+    try {
+        return base58.decode(address);
+    } catch (e) {
+        // if decoding fails, assume invalid address
+        return null;
+    }
+}
+
+module.exports = {
     getAddressType: function (address, currency) {
         currency = currency || {};
         // should be 25 bytes per btc address spec and 26 decred
         var expectedLength = currency.expectedLength || 25;
         var hashFunction = currency.hashFunction || 'sha256';
-        var decoded;
+        var decoded = getDecoded(address);
 
-        try {
-            decoded = base58.decode(address);
-        } catch (e) {
-            // if decoding fails, assume invalid address
-            return null;
+        if (decoded) {
+            var length = decoded.length;
+
+            if (length !== expectedLength) {
+                return null;
+            }
+
+            var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
+                body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
+                goodChecksum = this.checksum(hashFunction, body);
+
+            return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
         }
-
-        var length = decoded.length;
-
-        if (length !== expectedLength) {
-            return null;
-        }
-
-        var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
-            body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
-            goodChecksum = this.checksum(hashFunction, body);
-
-        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+        
+        return null;
     },
 
     // Each currency may implement different hashing algorithm
@@ -49,11 +56,16 @@ var WAValidator = {
         currencyNameOrSymbol = currencyNameOrSymbol || DEFAULT_CURRENCY_NAME;
         networkType = networkType || DEFAULT_NETWORK_TYPE;
 
-        var correctAddressTypes,
-            currency = currencies.getByNameOrSymbol(currencyNameOrSymbol),
-            addressType = this.getAddressType(address, currency);
+        var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol);
 
-        if(networkType === 'prod' || networkType === 'testnet'){
+        if (currency.eip55) {
+            return ETHValidator.isAddress(address);
+        }
+        
+        var correctAddressTypes;
+        var addressType = this.getAddressType(address, currency);
+
+        if (networkType === 'prod' || networkType === 'testnet'){
             correctAddressTypes = currency.addressTypes[networkType]
         } else {
             correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
@@ -62,5 +74,3 @@ var WAValidator = {
         return correctAddressTypes.indexOf(addressType) >= 0;
     }
 };
-
-module.exports = WAValidator;
