@@ -38,6 +38,7 @@
     "start": "npm run bundle && npm run minify && npm test"
   },
   "dependencies": {
+    "base-x": "^3.0.4",
     "jssha": "2.3.1"
   },
   "devDependencies": {

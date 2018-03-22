@@ -58,6 +58,10 @@ module.exports = {
 
         var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol);
 
+        if (currency.validator) {
+            return currency.validator.isValidAddress(address);
+        }
+
         if (currency.eip55) {
             return ETHValidator.isAddress(address);
         }

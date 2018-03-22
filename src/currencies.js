@@ -1,3 +1,5 @@
+var XRPValidator = require('./ripple_validator');
+
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
     name: 'bitcoin',
@@ -86,6 +88,11 @@ var CURRENCIES = [{
     name: 'callisto',
     symbol: 'clo',
     eip55: true
+},{
+    name: 'ripple',
+    symbol: 'xrp',
+    validator: XRPValidator,
+    eip55: false
 }];
 
 
