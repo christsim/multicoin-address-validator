@@ -61,6 +61,8 @@ npm install wallet-address-validator
 * EthereumZero/ETZ, `'etherzero'` or `'ETZ'`
 * Callisto/CLO, `'callisto'` or `'CLO'`
 
+* Ripple/XRP, `'ripple'` or `'XRP'`
+
 
 ### Usage example
 

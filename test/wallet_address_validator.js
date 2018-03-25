@@ -225,6 +225,14 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'callisto');
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'CLO');
         });
+
+        it('should return true for correct Ripple addresses', function () {
+            valid('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', 'ripple');
+            valid('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCn', 'XRP');
+            valid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'XRP');
+            valid('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', 'XRP');
+            valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'XRP');
+        });
     });
 
     describe('invalid results', function () {
@@ -318,6 +326,13 @@ describe('WAValidator.validate()', function () {
             invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'ethereumclassic');
             invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'etherzero');
             invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'callisto');
+        });
+
+        it('should return false for incorrect ripple addresses', function () {
+            invalid('rG1QQv2nh2gr7RCZ1P8YYcBUKCCN633jCN', 'ripple');
+            invalid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhMN', 'XRP');
+            invalid('6xAff4d6793F584a473348EbA058deb8ca', 'ripple');
+            invalid('DJ53hTyLBdZp2wMi5BsCS3rtEL1ioYUkva', 'ripple');
         });
     });
 });
