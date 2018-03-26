@@ -37,31 +37,41 @@ npm install wallet-address-validator
 
 ### Supported crypto currencies
 
-* Bitcoin/BTC, `'bitcoin'` or `'BTC'`
-* Litecoin/LTC, `'litecoin'` or `'LTC'`
-* Peercoin/PPCoin/PPC, `'peercoin'` or `'PPC'`
-* Dogecoin/DOGE, `'dogecoin'` or `'DOGE'`
-* BeaverCoin/BVC, `'beavercoin'` or `'BVC'`
-* Freicoin/FRC, `'freicoin'` or `'FRC'`
-* Protoshares/PTS, `'protoshares'` or `'PTS'`
-* Megacoin/MEC, `'megacoin'` or `'MEC'`
-* Primecoin/XPM, `'primecoin'` or `'XPM'`
 * Auroracoin/AUR, `'auroracoin'` or `'AUR'`
-* Namecoin/NMC, `'namecoin'` or `'NMC'`
+
+* BeaverCoin/BVC, `'beavercoin'` or `'BVC'`
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
-* Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
-* Vertcoin/VTC, `'vertcoin'` or `'VTC'`
+* Bitcoin/BTC, `'bitcoin'` or `'BTC'`
 * BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
+
+* Callisto/CLO, `'callisto'` or `'CLO'`
+
+* Dash, `'dash'` or `'DASH'`
 * Decred/DCR, `'decred'` or `'DCR'`
 * Digibyte/DGB, `'digibyte'` or `'DGB'`
-
+* Dogecoin/DOGE, `'dogecoin'` or `'DOGE'`
 
 * Ethereum/ETH, `'ethereum'` or `'ETH'`
 * EthereumClassic/ETH, `'ethereumclassic'` or `'ETC'`
 * EthereumZero/ETZ, `'etherzero'` or `'ETZ'`
-* Callisto/CLO, `'callisto'` or `'CLO'`
+
+* Freicoin/FRC, `'freicoin'` or `'FRC'`
+
+* Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
+
+* Litecoin/LTC, `'litecoin'` or `'LTC'`
+
+* Megacoin/MEC, `'megacoin'` or `'MEC'`
+
+* Namecoin/NMC, `'namecoin'` or `'NMC'`
+
+* Peercoin/PPCoin/PPC, `'peercoin'` or `'PPC'`
+* Primecoin/XPM, `'primecoin'` or `'XPM'`
+* Protoshares/PTS, `'protoshares'` or `'PTS'`
 
 * Ripple/XRP, `'ripple'` or `'XRP'`
+
+* Vertcoin/VTC, `'vertcoin'` or `'VTC'`
 
 
 ### Usage example
