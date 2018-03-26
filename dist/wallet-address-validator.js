@@ -3336,6 +3336,10 @@ var CURRENCIES = [{
     name: 'ripple',
     symbol: 'xrp',
     validator: XRPValidator,
+},{
+    name: 'dash',
+    symbol: 'dash',
+    addressTypes: {prod: ['4c', '10'], testnet: ['8c', '13']}
 }];
 
 

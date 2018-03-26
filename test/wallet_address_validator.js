@@ -233,6 +233,13 @@ describe('WAValidator.validate()', function () {
             valid('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', 'XRP');
             valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'XRP');
         });
+
+        it('should return true for correct dash addresses', function () {
+            valid('Xx4dYKgz3Zcv6kheaqog3fynaKWjbahb6b', 'dash');
+            valid('XcY4WJ6Z2Q8w7vcYER1JypC8s2oa3SQ1b1', 'DASH');
+            valid('XqMkVUZnqe3w4xvgdZRtZoe7gMitDudGs4', 'dash');
+            valid('yPv7h2i8v3dJjfSH4L3x91JSJszjdbsJJA', 'dash', 'testnet');
+        });
     });
 
     describe('invalid results', function () {
@@ -333,6 +340,10 @@ describe('WAValidator.validate()', function () {
             invalid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhMN', 'XRP');
             invalid('6xAff4d6793F584a473348EbA058deb8ca', 'ripple');
             invalid('DJ53hTyLBdZp2wMi5BsCS3rtEL1ioYUkva', 'ripple');
+        });
+
+        it('should return false for incorrect dash addresses', function () {
+            commonTests('dash');
         });
     });
 });
