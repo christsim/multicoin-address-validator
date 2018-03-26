@@ -1,15 +1,21 @@
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
-var codec = baseX("rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz"); // for ripple
+
+var ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
+
+var codec = baseX(ALLOWED_CHARS);
+var regexp = new RegExp('^r[' + ALLOWED_CHARS + ']{27,35}$');
 
 module.exports = {
     /**
      * ripple address validation
      */
     isValidAddress: function (address) {
-        if (/^r[rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz]{27,35}$/.test(address) === false)
-            return false;
-        return this.verifyChecksum(address);
+        if (regexp.test(address)) {
+            return this.verifyChecksum(address);
+        }
+
+        return false;
     },
 
     verifyChecksum: function (address) {

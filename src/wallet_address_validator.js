@@ -1,7 +1,6 @@
 var base58 = require('./crypto/base58');
 var cryptoUtils = require('./crypto/utils');
 var currencies = require('./currencies');
-var ETHValidator = require('./ethereum_validator');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
 var DEFAULT_NETWORK_TYPE = 'prod';
@@ -36,7 +35,7 @@ module.exports = {
 
             return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
         }
-        
+
         return null;
     },
 
@@ -62,10 +61,6 @@ module.exports = {
             return currency.validator.isValidAddress(address);
         }
 
-        if (currency.eip55) {
-            return ETHValidator.isAddress(address);
-        }
-        
         var correctAddressTypes;
         var addressType = this.getAddressType(address, currency);
 

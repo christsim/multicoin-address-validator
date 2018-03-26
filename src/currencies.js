@@ -1,4 +1,5 @@
 var XRPValidator = require('./ripple_validator');
+var ETHValidator = require('./ethereum_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -71,28 +72,26 @@ var CURRENCIES = [{
     name: 'digibyte',
     symbol: 'dgb',
     addressTypes: {prod: ['1e'], testnet: []},
-    eip55: false
 },{
     name: 'ethereum',
     symbol: 'eth',
-    eip55: true
+    validator: ETHValidator,
 },{
     name: 'etherzero',
     symbol: 'etz',
-    eip55: true
+    validator: ETHValidator,
 },{
     name: 'ethereumclassic',
     symbol: 'etc',
-    eip55: true
+    validator: ETHValidator,
 },{
     name: 'callisto',
     symbol: 'clo',
-    eip55: true
+    validator: ETHValidator,
 },{
     name: 'ripple',
     symbol: 'xrp',
     validator: XRPValidator,
-    eip55: false
 }];
 
 
