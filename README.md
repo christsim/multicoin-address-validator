@@ -42,6 +42,7 @@ npm install wallet-address-validator
 * BeaverCoin/BVC, `'beavercoin'` or `'BVC'`
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
 * Bitcoin/BTC, `'bitcoin'` or `'BTC'`
+* BitcoinCash/BCH, `'bitcoincash'` or `'BCH'`
 * BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
 
 * Callisto/CLO, `'callisto'` or `'CLO'`
