@@ -257,6 +257,11 @@ describe('WAValidator.validate()', function () {
             valid('XqMkVUZnqe3w4xvgdZRtZoe7gMitDudGs4', 'dash');
             valid('yPv7h2i8v3dJjfSH4L3x91JSJszjdbsJJA', 'dash', 'testnet');
         });
+
+        it('should return true for correct neo addresses', function () {
+            valid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTT', 'neo');
+            valid('AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X', 'NEO');
+        });
     });
 
     describe('invalid results', function () {
@@ -365,6 +370,12 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect dash addresses', function () {
             commonTests('dash');
+        });
+
+        it('should return false for incorrect neo addresses', function () {
+            commonTests('neo');
+            invalid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTa', 'neo');
+            invalid('AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ10', 'NEO');
         });
     });
 });
