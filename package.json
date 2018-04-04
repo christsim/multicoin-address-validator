@@ -4,12 +4,14 @@
   "keywords": [
     "btc",
     "bitcoin",
+    "bitcoin cash",
     "litecoin",
     "decred",
     "dogecoin",
     "ethereum",
     "ripple",
     "dash",
+    "neo",
     "altcoin",
     "crypto",
     "address",
@@ -19,7 +21,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Tomek Kolasa <tomek@kolasa.me>",
   "homepage": "https://github.com/ognus/wallet-address-validator",
   "license": "MIT",
