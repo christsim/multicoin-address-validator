@@ -3344,6 +3344,10 @@ var CURRENCIES = [{
     name: 'dash',
     symbol: 'dash',
     addressTypes: {prod: ['4c', '10'], testnet: ['8c', '13']}
+},{
+    name: 'neo',
+    symbol: 'neo',
+    addressTypes: {prod: ['17'], testnet: []}
 }];
 
 
