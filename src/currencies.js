@@ -107,7 +107,7 @@ var CURRENCIES = [{
 }];
 
 
-var currencies = {
+module.exports = {
     getByNameOrSymbol: function (currencyNameOrSymbol) {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
         for (var i = 0; i < CURRENCIES.length; i++) {
@@ -119,5 +119,3 @@ var currencies = {
         return null;
     }
 };
-
-module.exports = currencies;

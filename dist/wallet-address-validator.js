@@ -2323,46 +2323,45 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 // Merged Buffer refactorings from base58-native by Stephen Pair
 // Copyright (c) 2013 BitPay Inc
 
-var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-var ALPHABET_MAP = {}
-for(var i = 0; i < ALPHABET.length; ++i) {
-    ALPHABET_MAP[ALPHABET.charAt(i)] = i
+var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';
+var ALPHABET_MAP = {};
+for (var i = 0; i < ALPHABET.length; ++i) {
+    ALPHABET_MAP[ALPHABET.charAt(i)] = i;
 }
-var BASE = ALPHABET.length
+var BASE = ALPHABET.length;
 
-var base58 = {
+module.exports = {
     decode: function(string) {
-        if (string.length === 0) return []
+        if (string.length === 0) return [];
 
-        var i, j, bytes = [0]
+        var i, j, bytes = [0];
         for (i = 0; i < string.length; ++i) {
-            var c = string[i]
-            if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character')
+            var c = string[i];
+            if (!(c in ALPHABET_MAP)) throw new Error('Non-base58 character');
 
             for (j = 0; j < bytes.length; ++j) bytes[j] *= BASE
-            bytes[0] += ALPHABET_MAP[c]
+            bytes[0] += ALPHABET_MAP[c];
 
-            var carry = 0
+            var carry = 0;
             for (j = 0; j < bytes.length; ++j) {
-                bytes[j] += carry
-                carry = bytes[j] >> 8
+                bytes[j] += carry;
+                carry = bytes[j] >> 8;
                 bytes[j] &= 0xff
             }
 
             while (carry) {
-                bytes.push(carry & 0xff)
-                carry >>= 8
+                bytes.push(carry & 0xff);
+                carry >>= 8;
             }
         }
         // deal with leading zeros
-        for (i = 0; string[i] === '1' && i < string.length - 1; ++i) bytes.push(0)
+        for (i = 0; string[i] === '1' && i < string.length - 1; ++i){
+            bytes.push(0);
+        }
 
-        return bytes.reverse()
+        return bytes.reverse();
     }
 };
-
-module.exports = base58;
-
 
 },{}],9:[function(require,module,exports){
 (function (Buffer){
@@ -3212,7 +3211,7 @@ function numberToHex (number) {
     return hex;
 }
 
-var cryptoUtils = {
+module.exports = {
     toHex: function (arrayOfBytes) {
         var hex = '';
         for(var i = 0; i < arrayOfBytes.length; i++) {
@@ -3238,8 +3237,6 @@ var cryptoUtils = {
         return keccak256(hexString);
     }
 };
-
-module.exports = cryptoUtils;
 
 },{"./blake256":9,"./sha3":10,"jssha/src/sha256":5}],12:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
@@ -3351,7 +3348,7 @@ var CURRENCIES = [{
 }];
 
 
-var currencies = {
+module.exports = {
     getByNameOrSymbol: function (currencyNameOrSymbol) {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
         for (var i = 0; i < CURRENCIES.length; i++) {
@@ -3363,8 +3360,6 @@ var currencies = {
         return null;
     }
 };
-
-module.exports = currencies;
 
 },{"./ethereum_validator":13,"./ripple_validator":14}],13:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
@@ -3449,64 +3444,68 @@ function getDecoded(address) {
     }
 }
 
-module.exports = {
-    getAddressType: function (address, currency) {
-        currency = currency || {};
-        // should be 25 bytes per btc address spec and 26 decred
-        var expectedLength = currency.expectedLength || 25;
-        var hashFunction = currency.hashFunction || 'sha256';
-        var decoded = getDecoded(address);
-
-        if (decoded) {
-            var length = decoded.length;
-
-            if (length !== expectedLength) {
-                return null;
-            }
-
-            var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
-                body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
-                goodChecksum = this.checksum(hashFunction, body);
-
-            return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
-        }
-
-        return null;
-    },
-
+function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
-    checksum: function (hashFunction, payload) {
-        switch (hashFunction) {
-            case 'blake256':
-                return cryptoUtils.blake256Checksum(payload);
-                break;
-            case 'sha256':
-            default:
-                return cryptoUtils.sha256Checksum(payload);
-        }
-    },
-
-    validate: function (address, currencyNameOrSymbol, networkType) {
-        currencyNameOrSymbol = currencyNameOrSymbol || DEFAULT_CURRENCY_NAME;
-        networkType = networkType || DEFAULT_NETWORK_TYPE;
-
-        var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol);
-
-        if (currency.validator) {
-            return currency.validator.isValidAddress(address);
-        }
-
-        var correctAddressTypes;
-        var addressType = this.getAddressType(address, currency);
-
-        if (networkType === 'prod' || networkType === 'testnet'){
-            correctAddressTypes = currency.addressTypes[networkType]
-        } else {
-            correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
-        }
-
-        return correctAddressTypes.indexOf(addressType) >= 0;
+    switch (hashFunction) {
+        case 'blake256':
+            return cryptoUtils.blake256Checksum(payload);
+            break;
+        case 'sha256':
+        default:
+            return cryptoUtils.sha256Checksum(payload);
     }
+}
+
+function getAddressType(address, currency) {
+    currency = currency || {};
+    // should be 25 bytes per btc address spec and 26 decred
+    var expectedLength = currency.expectedLength || 25;
+    var hashFunction = currency.hashFunction || 'sha256';
+    var decoded = getDecoded(address);
+
+    if (decoded) {
+        var length = decoded.length;
+
+        if (length !== expectedLength) {
+            return null;
+        }
+
+        var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
+            body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
+            goodChecksum = getChecksum(hashFunction, body);
+
+        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+    }
+
+    return null;
+}
+
+function validate(address, currencyNameOrSymbol, networkType) {
+    currencyNameOrSymbol = currencyNameOrSymbol || DEFAULT_CURRENCY_NAME;
+    networkType = networkType || DEFAULT_NETWORK_TYPE;
+
+    var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol);
+
+    if (currency.validator) {
+        return currency.validator.isValidAddress(address);
+    }
+
+    var correctAddressTypes;
+    var addressType = getAddressType(address, currency);
+
+    if (networkType === 'prod' || networkType === 'testnet'){
+        correctAddressTypes = currency.addressTypes[networkType]
+    } else {
+        correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+    }
+
+    return correctAddressTypes.indexOf(addressType) >= 0;
+}
+
+module.exports = {
+    getAddressType: getAddressType,
+    checksum: getChecksum,
+    validate: validate,
 };
 
 },{"./crypto/base58":8,"./crypto/utils":11,"./currencies":12}]},{},[15])(15)

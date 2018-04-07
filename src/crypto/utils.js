@@ -10,7 +10,7 @@ function numberToHex (number) {
     return hex;
 }
 
-var cryptoUtils = {
+module.exports = {
     toHex: function (arrayOfBytes) {
         var hex = '';
         for(var i = 0; i < arrayOfBytes.length; i++) {
@@ -36,5 +36,3 @@ var cryptoUtils = {
         return keccak256(hexString);
     }
 };
-
-module.exports = cryptoUtils;
