@@ -22,7 +22,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.1.5",
+  "version": "0.1.6",
   "author": "Tomek Kolasa <tomek@kolasa.me>",
   "homepage": "https://github.com/ognus/wallet-address-validator",
   "license": "MIT",
