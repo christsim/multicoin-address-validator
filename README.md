@@ -71,6 +71,8 @@ npm install wallet-address-validator
 * Primecoin/XPM, `'primecoin'` or `'XPM'`
 * Protoshares/PTS, `'protoshares'` or `'PTS'`
 
+* Qtum/QTUM, `'qtum'` or `'QTUM'`
+
 * Ripple/XRP, `'ripple'` or `'XRP'`
 
 * Vertcoin/VTC, `'vertcoin'` or `'VTC'`

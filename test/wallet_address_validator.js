@@ -262,6 +262,12 @@ describe('WAValidator.validate()', function () {
             valid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTT', 'neo');
             valid('AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X', 'NEO');
         });
+
+        it('should return true for correct qtum addresses', function () {
+            valid('QNjUiD3bVVZwYTc5AhpeQbS1mfb2guyWhe', 'qtum');
+            valid('QVZnSrMwKp6AL4FjUPPnfFgsma6j1DXQXu', 'QTUM');
+            valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'qtum', 'testnet');
+        });
     });
 
     describe('invalid results', function () {
@@ -376,6 +382,12 @@ describe('WAValidator.validate()', function () {
             commonTests('neo');
             invalid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTa', 'neo');
             invalid('AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ10', 'NEO');
+        });
+
+        it('should return false for incorrect qtum addresses', function () {
+            commonTests('qtum');
+            invalid('QNPhBbVhDghASxcUh2vHotQUgNeLRFTcfb', 'qtum');
+            invalid('QOPhBbVhDghASxcUh2vHotQUgNeLRFTcfa', 'QTUM');
         });
     });
 });
