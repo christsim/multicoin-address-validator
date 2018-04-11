@@ -67,6 +67,50 @@ var CURRENCIES = [{
     symbol: 'btg',
     addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']}
 },{
+    name: 'komodo',
+    symbol: 'kmd',
+    addressTypes: {prod: ['3c', '55'], testnet: ['0','5']}
+},{
+    name: 'bitcoinz',
+    symbol: 'btcz',
+    expectedLength: 26,
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+},{
+    name: 'bitcoinprivate',
+    symbol: 'btcp',
+    expectedLength: 26,
+    addressTypes: {prod: ['1325','13af'], testnet: ['1957', '19e0']}
+},{
+    name: 'hush',
+    symbol: 'hush',
+    expectedLength: 26,
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+},{
+    name: 'snowgem',
+    symbol: 'sng',
+    expectedLength: 26,
+    addressTypes: {prod: ['1c28','1c2d'], testnet: ['1d25', '1cba']}
+},{
+    name: 'zcash',
+    symbol: 'zec',
+    expectedLength: 26,
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+},{
+    name: 'zclassic',
+    symbol: 'zcl',
+    expectedLength: 26,
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+},{
+    name: 'zencash',
+    symbol: 'zen',
+    expectedLength: 26,
+    addressTypes: {prod: ['2089','2096'], testnet: ['2092','2098']}
+},{
+    name: 'votecoin',
+    symbol: 'vot',
+    expectedLength: 26,
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+},{
     name: 'decred',
     symbol: 'dcr',
     addressTypes: {prod: ['073f', '071a'], testnet: ['0f21', '0efc']},
