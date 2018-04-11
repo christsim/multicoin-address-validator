@@ -62,6 +62,9 @@ function validate(address, currencyNameOrSymbol, networkType) {
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
+    if (addressType == null) {
+        return false;
+    }
 
     if (networkType === 'prod' || networkType === 'testnet'){
         correctAddressTypes = currency.addressTypes[networkType]
