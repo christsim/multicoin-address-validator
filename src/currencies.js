@@ -149,6 +149,10 @@ var CURRENCIES = [{
     symbol: 'neo',
     addressTypes: {prod: ['17'], testnet: []}
 },{
+    name: 'neogas',
+    symbol: 'gas',
+    addressTypes: {prod: ['17'], testnet: []}
+},{
     name: 'qtum',
     symbol: 'qtum',
     addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']}
