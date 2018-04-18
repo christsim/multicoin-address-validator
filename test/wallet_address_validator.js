@@ -264,8 +264,7 @@ describe('WAValidator.validate()', function () {
         });
 
         it('should return true for correct neo gas addresses', function () {
-            valid('AXWGzmR7qkATA6ZNtDdViQRkotd6AmeZcD', 'neogas');
-
+            valid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTT', 'neogas');
         });
 
         it('should return true for correct qtum addresses', function () {
