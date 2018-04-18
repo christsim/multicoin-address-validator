@@ -12,6 +12,7 @@
     "ripple",
     "dash",
     "neo",
+    "gas",
     "qtum",
     "altcoin",
     "crypto",
@@ -37,7 +38,7 @@
   "scripts": {
     "bundle": "browserify src/wallet_address_validator.js --standalone WAValidator --outfile dist/wallet-address-validator.js",
     "minify": "uglifyjs -c -m -o dist/wallet-address-validator.min.js -- dist/wallet-address-validator.js",
-    "test:node": "mocha test",
+    " ": "mocha test",
     "test:browser": "karma start",
     "test": "npm run test:node && npm run test:browser",
     "start": "npm run bundle && npm run minify && npm test"
