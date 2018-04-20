@@ -44,6 +44,8 @@ npm install wallet-address-validator
 * Bitcoin/BTC, `'bitcoin'` or `'BTC'`
 * BitcoinCash/BCH, `'bitcoincash'` or `'BCH'`
 * BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
+* BitcoinPrivate/BTCP, `'bitcoinprivate'` or `'BTCP'`
+* BitcoinZ/BTCZ, `'bitcoinz'` or `'BTCZ'`
 
 * Callisto/CLO, `'callisto'` or `'CLO'`
 
@@ -60,12 +62,17 @@ npm install wallet-address-validator
 
 * Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
 
+* Hush/HUSH, `'hush'` or `'HUSH'`
+
+* Komodo/KMD, `'komodo'` or `'KMD'`
+
 * Litecoin/LTC, `'litecoin'` or `'LTC'`
 
 * Megacoin/MEC, `'megacoin'` or `'MEC'`
 
 * Namecoin/NMC, `'namecoin'` or `'NMC'`
 * NEO/NEO, `'NEO'` or `'NEO'`
+* NeoGas/GAS, `'neogas'` or `'GAS'`
 
 * Peercoin/PPCoin/PPC, `'peercoin'` or `'PPC'`
 * Primecoin/XPM, `'primecoin'` or `'XPM'`
@@ -75,7 +82,17 @@ npm install wallet-address-validator
 
 * Ripple/XRP, `'ripple'` or `'XRP'`
 
+* Snowgem/SNG, `'snowgem'` or `'SNG'`
+
 * Vertcoin/VTC, `'vertcoin'` or `'VTC'`
+
+* Votecoin/VTC, `'votecoin'` or `'VOT'`
+
+* Zcash/ZEC, `'zcash'` or `'ZEC'`
+    
+* Zclassic/ZCL, `'zclassic'` or `'ZCL'`
+
+* ZenCash/ZEN, `'zencash'` or `'ZEN'`
 
 
 ### Usage example
