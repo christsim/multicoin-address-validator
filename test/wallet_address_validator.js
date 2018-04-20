@@ -263,6 +263,10 @@ describe('WAValidator.validate()', function () {
             valid('AKDVzYGLczmykdtRaejgvWeZrvdkVEvQ1X', 'NEO');
         });
 
+        it('should return true for correct neo gas addresses', function () {
+            valid('AR4QmqYENiZAD6oXe7ftm6eDcwtHk7rVTT', 'neogas');
+        });
+
         it('should return true for correct qtum addresses', function () {
             valid('QNjUiD3bVVZwYTc5AhpeQbS1mfb2guyWhe', 'qtum');
             valid('QVZnSrMwKp6AL4FjUPPnfFgsma6j1DXQXu', 'QTUM');

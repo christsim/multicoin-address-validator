@@ -3390,6 +3390,10 @@ var CURRENCIES = [{
     symbol: 'neo',
     addressTypes: {prod: ['17'], testnet: []}
 },{
+    name: 'neogas',
+    symbol: 'gas',
+    addressTypes: {prod: ['17'], testnet: []}
+},{
     name: 'qtum',
     symbol: 'qtum',
     addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']}
@@ -3540,6 +3544,9 @@ function validate(address, currencyNameOrSymbol, networkType) {
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
+    if (addressType == null) {
+        return false;
+    }
 
     if (networkType === 'prod' || networkType === 'testnet'){
         correctAddressTypes = currency.addressTypes[networkType]
