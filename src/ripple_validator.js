@@ -1,7 +1,7 @@
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
-var ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
+var ALLOWED_CHARS = '[1-9A-HJ-NP-Za-km-z]';
 
 var codec = baseX(ALLOWED_CHARS);
 var regexp = new RegExp('^r[' + ALLOWED_CHARS + ']{27,35}$');
