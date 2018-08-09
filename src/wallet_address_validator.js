@@ -60,13 +60,17 @@ function validate(address, currencyNameOrSymbol, networkType) {
         return currency.validator.isValidAddress(address);
     }
 
+    if (currency.networkValidator) {
+        return currency.networkValidator.isValidNetworkAddress(address, networkType);
+    }
+
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
     if (addressType == null) {
         return false;
     }
 
-    if (networkType === 'prod' || networkType === 'testnet'){
+    if (networkType === 'prod' || networkType === 'testnet') {
         correctAddressTypes = currency.addressTypes[networkType]
     } else {
         correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
