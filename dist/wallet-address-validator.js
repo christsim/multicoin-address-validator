@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WAValidator = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WAValidator = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
 // Originally written by Mike Hearn for BitcoinJ
@@ -114,65 +114,97 @@ for (var i = 0, len = code.length; i < len; ++i) {
 revLookup['-'.charCodeAt(0)] = 62
 revLookup['_'.charCodeAt(0)] = 63
 
-function placeHoldersCount (b64) {
+function getLens (b64) {
   var len = b64.length
+
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  // the number of equal signs (place holders)
-  // if there are two placeholders, than the two characters before it
-  // represent one byte
-  // if there is only one, then the three characters before it represent 2 bytes
-  // this is just a cheap hack to not do indexOf twice
-  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
+  // Trim off extra bytes after placeholder bytes are found
+  // See: https://github.com/beatgammit/base64-js/issues/42
+  var validLen = b64.indexOf('=')
+  if (validLen === -1) validLen = len
+
+  var placeHoldersLen = validLen === len
+    ? 0
+    : 4 - (validLen % 4)
+
+  return [validLen, placeHoldersLen]
 }
 
+// base64 is 4/3 + up to two characters of the original data
 function byteLength (b64) {
-  // base64 is 4/3 + up to two characters of the original data
-  return (b64.length * 3 / 4) - placeHoldersCount(b64)
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+}
+
+function _byteLength (b64, validLen, placeHoldersLen) {
+  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
 }
 
 function toByteArray (b64) {
-  var i, l, tmp, placeHolders, arr
-  var len = b64.length
-  placeHolders = placeHoldersCount(b64)
+  var tmp
+  var lens = getLens(b64)
+  var validLen = lens[0]
+  var placeHoldersLen = lens[1]
 
-  arr = new Arr((len * 3 / 4) - placeHolders)
+  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
+
+  var curByte = 0
 
   // if there are placeholders, only get up to the last complete 4 chars
-  l = placeHolders > 0 ? len - 4 : len
+  var len = placeHoldersLen > 0
+    ? validLen - 4
+    : validLen
 
-  var L = 0
-
-  for (i = 0; i < l; i += 4) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
-    arr[L++] = (tmp >> 16) & 0xFF
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  for (var i = 0; i < len; i += 4) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 18) |
+      (revLookup[b64.charCodeAt(i + 1)] << 12) |
+      (revLookup[b64.charCodeAt(i + 2)] << 6) |
+      revLookup[b64.charCodeAt(i + 3)]
+    arr[curByte++] = (tmp >> 16) & 0xFF
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
-  if (placeHolders === 2) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[L++] = tmp & 0xFF
-  } else if (placeHolders === 1) {
-    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[L++] = (tmp >> 8) & 0xFF
-    arr[L++] = tmp & 0xFF
+  if (placeHoldersLen === 2) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 2) |
+      (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[curByte++] = tmp & 0xFF
+  }
+
+  if (placeHoldersLen === 1) {
+    tmp =
+      (revLookup[b64.charCodeAt(i)] << 10) |
+      (revLookup[b64.charCodeAt(i + 1)] << 4) |
+      (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[curByte++] = (tmp >> 8) & 0xFF
+    arr[curByte++] = tmp & 0xFF
   }
 
   return arr
 }
 
 function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
+  return lookup[num >> 18 & 0x3F] +
+    lookup[num >> 12 & 0x3F] +
+    lookup[num >> 6 & 0x3F] +
+    lookup[num & 0x3F]
 }
 
 function encodeChunk (uint8, start, end) {
   var tmp
   var output = []
   for (var i = start; i < end; i += 3) {
-    tmp = ((uint8[i] << 16) & 0xFF0000) + ((uint8[i + 1] << 8) & 0xFF00) + (uint8[i + 2] & 0xFF)
+    tmp =
+      ((uint8[i] << 16) & 0xFF0000) +
+      ((uint8[i + 1] << 8) & 0xFF00) +
+      (uint8[i + 2] & 0xFF)
     output.push(tripletToBase64(tmp))
   }
   return output.join('')
@@ -182,30 +214,33 @@ function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
-  var output = ''
   var parts = []
   var maxChunkLength = 16383 // must be multiple of 3
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
+    parts.push(encodeChunk(
+      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
+    ))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
   if (extraBytes === 1) {
     tmp = uint8[len - 1]
-    output += lookup[tmp >> 2]
-    output += lookup[(tmp << 4) & 0x3F]
-    output += '=='
+    parts.push(
+      lookup[tmp >> 2] +
+      lookup[(tmp << 4) & 0x3F] +
+      '=='
+    )
   } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
-    output += lookup[tmp >> 10]
-    output += lookup[(tmp >> 4) & 0x3F]
-    output += lookup[(tmp << 2) & 0x3F]
-    output += '='
+    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
+    parts.push(
+      lookup[tmp >> 10] +
+      lookup[(tmp >> 4) & 0x3F] +
+      lookup[(tmp << 2) & 0x3F] +
+      '='
+    )
   }
-
-  parts.push(output)
 
   return parts.join('')
 }
@@ -1951,7 +1986,7 @@ function numberIsNaN (obj) {
 },{"base64-js":2,"ieee754":4}],4:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var nBits = -7
@@ -1964,12 +1999,12 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   e = s & ((1 << (-nBits)) - 1)
   s >>= (-nBits)
   nBits += eLen
-  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   m = e & ((1 << (-nBits)) - 1)
   e >>= (-nBits)
   nBits += mLen
-  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
     e = 1 - eBias
@@ -1984,7 +2019,7 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c
-  var eLen = nBytes * 8 - mLen - 1
+  var eLen = (nBytes * 8) - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
@@ -2017,7 +2052,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       m = 0
       e = eMax
     } else if (e + eBias >= 1) {
-      m = (value * c - 1) * Math.pow(2, mLen)
+      m = ((value * c) - 1) * Math.pow(2, mLen)
       e = e + eBias
     } else {
       m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
@@ -2316,6 +2351,56 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 }
 
 },{"buffer":3}],8:[function(require,module,exports){
+var segwit_addr = require('./crypto/segwit_addr');
+var CURRENCY_NAME = 'bitcoin';
+
+function isValidNetworkAddress(address, networkType) {
+    return isValidP2PKHandP2SHAddress(address, networkType) || isValidSegwitAddress(address)
+}
+
+function isValidP2PKHandP2SHAddress(address, networkType) {
+    // These libs need to reqired in here.
+    var WAValidator = require('./wallet_address_validator.js');
+    var currencies = require('./currencies.js');
+
+    var currency = currencies.getByNameOrSymbol(CURRENCY_NAME);
+    
+    var correctAddressTypes;
+    var addressType = WAValidator.getAddressType(address, currency);
+    if (addressType == null) {
+        return false;
+    }
+
+    if (networkType === 'prod' || networkType === 'testnet'){
+        correctAddressTypes = currency.addressTypes[networkType]
+    } else {
+        correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+    }
+    
+    return correctAddressTypes.indexOf(addressType) >= 0;
+}
+
+function isValidSegwitAddress(address) {
+    var hrp = "bc";
+    var ret = segwit_addr.decode(hrp, address);
+    if (ret === null) {
+        hrp = "tb";
+        ret = segwit_addr.decode(hrp, address);
+    }
+    var ok = ret !== null;
+    if (ok) {
+        var recreate = segwit_addr.encode(hrp, ret.version, ret.program);
+        ok = (recreate === address.toLowerCase());
+    }
+
+    return !!ok;
+}
+
+module.exports = {
+    isValidNetworkAddress: isValidNetworkAddress
+};
+
+},{"./crypto/segwit_addr":12,"./currencies.js":15,"./wallet_address_validator.js":18}],9:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -2363,7 +2448,125 @@ module.exports = {
     }
 };
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
+// Copyright (c) 2017 Pieter Wuille
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+var CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
+var GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
+
+module.exports = {
+  decode: decode,
+  encode: encode,
+};
+
+
+function polymod (values) {
+  var chk = 1;
+  for (var p = 0; p < values.length; ++p) {
+    var top = chk >> 25;
+    chk = (chk & 0x1ffffff) << 5 ^ values[p];
+    for (var i = 0; i < 5; ++i) {
+      if ((top >> i) & 1) {
+        chk ^= GENERATOR[i];
+      }
+    }
+  }
+  return chk;
+}
+
+function hrpExpand (hrp) {
+  var ret = [];
+  var p;
+  for (p = 0; p < hrp.length; ++p) {
+    ret.push(hrp.charCodeAt(p) >> 5);
+  }
+  ret.push(0);
+  for (p = 0; p < hrp.length; ++p) {
+    ret.push(hrp.charCodeAt(p) & 31);
+  }
+  return ret;
+}
+
+function verifyChecksum (hrp, data) {
+  return polymod(hrpExpand(hrp).concat(data)) === 1;
+}
+
+function createChecksum (hrp, data) {
+  var values = hrpExpand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
+  var mod = polymod(values) ^ 1;
+  var ret = [];
+  for (var p = 0; p < 6; ++p) {
+    ret.push((mod >> 5 * (5 - p)) & 31);
+  }
+  return ret;
+}
+
+function encode (hrp, data) {
+  var combined = data.concat(createChecksum(hrp, data));
+  var ret = hrp + '1';
+  for (var p = 0; p < combined.length; ++p) {
+    ret += CHARSET.charAt(combined[p]);
+  }
+  return ret;
+}
+
+function decode (bechString) {
+  var p;
+  var has_lower = false;
+  var has_upper = false;
+  for (p = 0; p < bechString.length; ++p) {
+    if (bechString.charCodeAt(p) < 33 || bechString.charCodeAt(p) > 126) {
+      return null;
+    }
+    if (bechString.charCodeAt(p) >= 97 && bechString.charCodeAt(p) <= 122) {
+        has_lower = true;
+    }
+    if (bechString.charCodeAt(p) >= 65 && bechString.charCodeAt(p) <= 90) {
+        has_upper = true;
+    }
+  }
+  if (has_lower && has_upper) {
+    return null;
+  }
+  bechString = bechString.toLowerCase();
+  var pos = bechString.lastIndexOf('1');
+  if (pos < 1 || pos + 7 > bechString.length || bechString.length > 90) {
+    return null;
+  }
+  var hrp = bechString.substring(0, pos);
+  var data = [];
+  for (p = pos + 1; p < bechString.length; ++p) {
+    var d = CHARSET.indexOf(bechString.charAt(p));
+    if (d === -1) {
+      return null;
+    }
+    data.push(d);
+  }
+  if (!verifyChecksum(hrp, data)) {
+    return null;
+  }
+  return {hrp: hrp, data: data.slice(0, data.length - 6)};
+}
+
+},{}],11:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -2554,7 +2757,85 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
-},{"buffer":3}],10:[function(require,module,exports){
+},{"buffer":3}],12:[function(require,module,exports){
+// Copyright (c) 2017 Pieter Wuille
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+var bech32 = require('./bech32');
+
+module.exports = {
+  encode: encode,
+  decode: decode
+};
+
+function convertbits (data, frombits, tobits, pad) {
+  var acc = 0;
+  var bits = 0;
+  var ret = [];
+  var maxv = (1 << tobits) - 1;
+  for (var p = 0; p < data.length; ++p) {
+    var value = data[p];
+    if (value < 0 || (value >> frombits) !== 0) {
+      return null;
+    }
+    acc = (acc << frombits) | value;
+    bits += frombits;
+    while (bits >= tobits) {
+      bits -= tobits;
+      ret.push((acc >> bits) & maxv);
+    }
+  }
+  if (pad) {
+    if (bits > 0) {
+      ret.push((acc << (tobits - bits)) & maxv);
+    }
+  } else if (bits >= frombits || ((acc << (tobits - bits)) & maxv)) {
+    return null;
+  }
+  return ret;
+}
+
+function decode (hrp, addr) {
+  var dec = bech32.decode(addr);
+  if (dec === null || dec.hrp !== hrp || dec.data.length < 1 || dec.data[0] > 16) {
+    return null;
+  }
+  var res = convertbits(dec.data.slice(1), 5, 8, false);
+  if (res === null || res.length < 2 || res.length > 40) {
+    return null;
+  }
+  if (dec.data[0] === 0 && res.length !== 20 && res.length !== 32) {
+    return null;
+  }
+  return {version: dec.data[0], program: res};
+}
+
+function encode (hrp, version, program) {
+  var ret = bech32.encode(hrp, [version].concat(convertbits(program, 8, 5, true)));
+  if (decode(hrp, ret) === null) {
+    return null;
+  }
+  return ret;
+}
+
+},{"./bech32":10}],13:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -3198,7 +3479,7 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":6}],11:[function(require,module,exports){
+},{"_process":6}],14:[function(require,module,exports){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
@@ -3238,15 +3519,17 @@ module.exports = {
     }
 };
 
-},{"./blake256":9,"./sha3":10,"jssha/src/sha256":5}],12:[function(require,module,exports){
+},{"./blake256":11,"./sha3":13,"jssha/src/sha256":5}],15:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
+var BTCValidator = require('./bitcoin_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
     name: 'bitcoin',
     symbol: 'btc',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    networkValidator: BTCValidator
 },{
     name: 'bitcoincash',
     symbol: 'bch',
@@ -3413,7 +3696,7 @@ module.exports = {
     }
 };
 
-},{"./ethereum_validator":13,"./ripple_validator":14}],13:[function(require,module,exports){
+},{"./bitcoin_validator":8,"./ethereum_validator":16,"./ripple_validator":17}],16:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -3449,7 +3732,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":11}],14:[function(require,module,exports){
+},{"./crypto/utils":14}],17:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -3479,7 +3762,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":11,"base-x":1}],15:[function(require,module,exports){
+},{"./crypto/utils":14,"base-x":1}],18:[function(require,module,exports){
 var base58 = require('./crypto/base58');
 var cryptoUtils = require('./crypto/utils');
 var currencies = require('./currencies');
@@ -3542,13 +3825,17 @@ function validate(address, currencyNameOrSymbol, networkType) {
         return currency.validator.isValidAddress(address);
     }
 
+    if (currency.networkValidator) {
+        return currency.networkValidator.isValidNetworkAddress(address, networkType);
+    }
+
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
     if (addressType == null) {
         return false;
     }
 
-    if (networkType === 'prod' || networkType === 'testnet'){
+    if (networkType === 'prod' || networkType === 'testnet') {
         correctAddressTypes = currency.addressTypes[networkType]
     } else {
         correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
@@ -3563,5 +3850,5 @@ module.exports = {
     validate: validate,
 };
 
-},{"./crypto/base58":8,"./crypto/utils":11,"./currencies":12}]},{},[15])(15)
+},{"./crypto/base58":9,"./crypto/utils":14,"./currencies":15}]},{},[18])(18)
 });
