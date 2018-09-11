@@ -20,11 +20,6 @@
 
 var bech32 = require('./bech32');
 
-module.exports = {
-  encode: encode,
-  decode: decode
-};
-
 function convertbits (data, frombits, tobits, pad) {
   var acc = 0;
   var bits = 0;
@@ -74,3 +69,26 @@ function encode (hrp, version, program) {
   }
   return ret;
 }
+
+function isValidAddress(address) {
+    var hrp = 'bc';
+    var ret = decode(hrp, address);
+
+    if (ret === null) {
+        hrp = 'tb';
+        ret = decode(hrp, address);
+    }
+
+    if (ret === null) {
+        return false;
+    }
+
+    var recreate = encode(hrp, ret.version, ret.program);
+    return recreate === address.toLowerCase();
+}
+
+module.exports = {
+    encode: encode,
+    decode: decode,
+    isValidAddress: isValidAddress,
+};

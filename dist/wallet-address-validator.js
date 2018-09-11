@@ -1,4 +1,4 @@
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WAValidator = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.WAValidator = f()}})(function(){var define,module,exports;return (function(){function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s}return e})()({1:[function(require,module,exports){
 // base-x encoding
 // Forked from https://github.com/cryptocoinjs/bs58
 // Originally written by Mike Hearn for BitcoinJ
@@ -114,97 +114,65 @@ for (var i = 0, len = code.length; i < len; ++i) {
 revLookup['-'.charCodeAt(0)] = 62
 revLookup['_'.charCodeAt(0)] = 63
 
-function getLens (b64) {
+function placeHoldersCount (b64) {
   var len = b64.length
-
   if (len % 4 > 0) {
     throw new Error('Invalid string. Length must be a multiple of 4')
   }
 
-  // Trim off extra bytes after placeholder bytes are found
-  // See: https://github.com/beatgammit/base64-js/issues/42
-  var validLen = b64.indexOf('=')
-  if (validLen === -1) validLen = len
-
-  var placeHoldersLen = validLen === len
-    ? 0
-    : 4 - (validLen % 4)
-
-  return [validLen, placeHoldersLen]
+  // the number of equal signs (place holders)
+  // if there are two placeholders, than the two characters before it
+  // represent one byte
+  // if there is only one, then the three characters before it represent 2 bytes
+  // this is just a cheap hack to not do indexOf twice
+  return b64[len - 2] === '=' ? 2 : b64[len - 1] === '=' ? 1 : 0
 }
 
-// base64 is 4/3 + up to two characters of the original data
 function byteLength (b64) {
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
-}
-
-function _byteLength (b64, validLen, placeHoldersLen) {
-  return ((validLen + placeHoldersLen) * 3 / 4) - placeHoldersLen
+  // base64 is 4/3 + up to two characters of the original data
+  return (b64.length * 3 / 4) - placeHoldersCount(b64)
 }
 
 function toByteArray (b64) {
-  var tmp
-  var lens = getLens(b64)
-  var validLen = lens[0]
-  var placeHoldersLen = lens[1]
+  var i, l, tmp, placeHolders, arr
+  var len = b64.length
+  placeHolders = placeHoldersCount(b64)
 
-  var arr = new Arr(_byteLength(b64, validLen, placeHoldersLen))
-
-  var curByte = 0
+  arr = new Arr((len * 3 / 4) - placeHolders)
 
   // if there are placeholders, only get up to the last complete 4 chars
-  var len = placeHoldersLen > 0
-    ? validLen - 4
-    : validLen
+  l = placeHolders > 0 ? len - 4 : len
 
-  for (var i = 0; i < len; i += 4) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 18) |
-      (revLookup[b64.charCodeAt(i + 1)] << 12) |
-      (revLookup[b64.charCodeAt(i + 2)] << 6) |
-      revLookup[b64.charCodeAt(i + 3)]
-    arr[curByte++] = (tmp >> 16) & 0xFF
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
+  var L = 0
+
+  for (i = 0; i < l; i += 4) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 18) | (revLookup[b64.charCodeAt(i + 1)] << 12) | (revLookup[b64.charCodeAt(i + 2)] << 6) | revLookup[b64.charCodeAt(i + 3)]
+    arr[L++] = (tmp >> 16) & 0xFF
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
   }
 
-  if (placeHoldersLen === 2) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 2) |
-      (revLookup[b64.charCodeAt(i + 1)] >> 4)
-    arr[curByte++] = tmp & 0xFF
-  }
-
-  if (placeHoldersLen === 1) {
-    tmp =
-      (revLookup[b64.charCodeAt(i)] << 10) |
-      (revLookup[b64.charCodeAt(i + 1)] << 4) |
-      (revLookup[b64.charCodeAt(i + 2)] >> 2)
-    arr[curByte++] = (tmp >> 8) & 0xFF
-    arr[curByte++] = tmp & 0xFF
+  if (placeHolders === 2) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 2) | (revLookup[b64.charCodeAt(i + 1)] >> 4)
+    arr[L++] = tmp & 0xFF
+  } else if (placeHolders === 1) {
+    tmp = (revLookup[b64.charCodeAt(i)] << 10) | (revLookup[b64.charCodeAt(i + 1)] << 4) | (revLookup[b64.charCodeAt(i + 2)] >> 2)
+    arr[L++] = (tmp >> 8) & 0xFF
+    arr[L++] = tmp & 0xFF
   }
 
   return arr
 }
 
 function tripletToBase64 (num) {
-  return lookup[num >> 18 & 0x3F] +
-    lookup[num >> 12 & 0x3F] +
-    lookup[num >> 6 & 0x3F] +
-    lookup[num & 0x3F]
+  return lookup[num >> 18 & 0x3F] + lookup[num >> 12 & 0x3F] + lookup[num >> 6 & 0x3F] + lookup[num & 0x3F]
 }
 
 function encodeChunk (uint8, start, end) {
   var tmp
   var output = []
   for (var i = start; i < end; i += 3) {
-    tmp =
-      ((uint8[i] << 16) & 0xFF0000) +
-      ((uint8[i + 1] << 8) & 0xFF00) +
-      (uint8[i + 2] & 0xFF)
+    tmp = ((uint8[i] << 16) & 0xFF0000) + ((uint8[i + 1] << 8) & 0xFF00) + (uint8[i + 2] & 0xFF)
     output.push(tripletToBase64(tmp))
   }
   return output.join('')
@@ -214,33 +182,30 @@ function fromByteArray (uint8) {
   var tmp
   var len = uint8.length
   var extraBytes = len % 3 // if we have 1 byte left, pad 2 bytes
+  var output = ''
   var parts = []
   var maxChunkLength = 16383 // must be multiple of 3
 
   // go through the array every three bytes, we'll deal with trailing stuff later
   for (var i = 0, len2 = len - extraBytes; i < len2; i += maxChunkLength) {
-    parts.push(encodeChunk(
-      uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)
-    ))
+    parts.push(encodeChunk(uint8, i, (i + maxChunkLength) > len2 ? len2 : (i + maxChunkLength)))
   }
 
   // pad the end with zeros, but make sure to not forget the extra bytes
   if (extraBytes === 1) {
     tmp = uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 2] +
-      lookup[(tmp << 4) & 0x3F] +
-      '=='
-    )
+    output += lookup[tmp >> 2]
+    output += lookup[(tmp << 4) & 0x3F]
+    output += '=='
   } else if (extraBytes === 2) {
-    tmp = (uint8[len - 2] << 8) + uint8[len - 1]
-    parts.push(
-      lookup[tmp >> 10] +
-      lookup[(tmp >> 4) & 0x3F] +
-      lookup[(tmp << 2) & 0x3F] +
-      '='
-    )
+    tmp = (uint8[len - 2] << 8) + (uint8[len - 1])
+    output += lookup[tmp >> 10]
+    output += lookup[(tmp >> 4) & 0x3F]
+    output += lookup[(tmp << 2) & 0x3F]
+    output += '='
   }
+
+  parts.push(output)
 
   return parts.join('')
 }
@@ -1986,7 +1951,7 @@ function numberIsNaN (obj) {
 },{"base64-js":2,"ieee754":4}],4:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
-  var eLen = (nBytes * 8) - mLen - 1
+  var eLen = nBytes * 8 - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var nBits = -7
@@ -1999,12 +1964,12 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   e = s & ((1 << (-nBits)) - 1)
   s >>= (-nBits)
   nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; e = e * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   m = e & ((1 << (-nBits)) - 1)
   e >>= (-nBits)
   nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+  for (; nBits > 0; m = m * 256 + buffer[offset + i], i += d, nBits -= 8) {}
 
   if (e === 0) {
     e = 1 - eBias
@@ -2019,7 +1984,7 @@ exports.read = function (buffer, offset, isLE, mLen, nBytes) {
 
 exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
+  var eLen = nBytes * 8 - mLen - 1
   var eMax = (1 << eLen) - 1
   var eBias = eMax >> 1
   var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
@@ -2052,7 +2017,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
       m = 0
       e = eMax
     } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
+      m = (value * c - 1) * Math.pow(2, mLen)
       e = e + eBias
     } else {
       m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
@@ -2351,56 +2316,83 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 }
 
 },{"buffer":3}],8:[function(require,module,exports){
-var segwit_addr = require('./crypto/segwit_addr');
-var CURRENCY_NAME = 'bitcoin';
+var base58 = require('./crypto/base58');
+var segwit = require('./crypto/segwit_addr');
+var cryptoUtils = require('./crypto/utils');
 
-function isValidNetworkAddress(address, networkType) {
-    return isValidP2PKHandP2SHAddress(address, networkType) || isValidSegwitAddress(address)
+var DEFAULT_NETWORK_TYPE = 'prod';
+
+function getDecoded(address) {
+    try {
+        return base58.decode(address);
+    } catch (e) {
+        // if decoding fails, assume invalid address
+        return null;
+    }
 }
 
-function isValidP2PKHandP2SHAddress(address, networkType) {
-    // These libs need to reqired in here.
-    var WAValidator = require('./wallet_address_validator.js');
-    var currencies = require('./currencies.js');
+function getChecksum(hashFunction, payload) {
+    // Each currency may implement different hashing algorithm
+    switch (hashFunction) {
+        case 'blake256':
+            return cryptoUtils.blake256Checksum(payload);
+            break;
+        case 'sha256':
+        default:
+            return cryptoUtils.sha256Checksum(payload);
+    }
+}
 
-    var currency = currencies.getByNameOrSymbol(CURRENCY_NAME);
-    
+function getAddressType(address, currency) {
+    currency = currency || {};
+    // should be 25 bytes per btc address spec and 26 decred
+    var expectedLength = currency.expectedLength || 25;
+    var hashFunction = currency.hashFunction || 'sha256';
+    var decoded = getDecoded(address);
+
+    if (decoded) {
+        var length = decoded.length;
+
+        if (length !== expectedLength) {
+            return null;
+        }
+
+        var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
+            body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
+            goodChecksum = getChecksum(hashFunction, body);
+
+        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+    }
+
+    return null;
+}
+
+function isValidP2PKHandP2SHAddress(address, currency, networkType) {
+    networkType = networkType || DEFAULT_NETWORK_TYPE;
+
     var correctAddressTypes;
-    var addressType = WAValidator.getAddressType(address, currency);
-    if (addressType == null) {
-        return false;
+    var addressType = getAddressType(address, currency);
+
+    if (addressType) {
+        if (networkType === 'prod' || networkType === 'testnet') {
+            correctAddressTypes = currency.addressTypes[networkType]
+        } else {
+            correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+        }
+
+        return correctAddressTypes.indexOf(addressType) >= 0;
     }
 
-    if (networkType === 'prod' || networkType === 'testnet'){
-        correctAddressTypes = currency.addressTypes[networkType]
-    } else {
-        correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
-    }
-    
-    return correctAddressTypes.indexOf(addressType) >= 0;
-}
-
-function isValidSegwitAddress(address) {
-    var hrp = "bc";
-    var ret = segwit_addr.decode(hrp, address);
-    if (ret === null) {
-        hrp = "tb";
-        ret = segwit_addr.decode(hrp, address);
-    }
-    var ok = ret !== null;
-    if (ok) {
-        var recreate = segwit_addr.encode(hrp, ret.version, ret.program);
-        ok = (recreate === address.toLowerCase());
-    }
-
-    return !!ok;
+    return false;
 }
 
 module.exports = {
-    isValidNetworkAddress: isValidNetworkAddress
+    isValidAddress: function (address, currency, networkType) {
+        return isValidP2PKHandP2SHAddress(address, currency, networkType) || segwit.isValidAddress(address);
+    }
 };
 
-},{"./crypto/segwit_addr":12,"./currencies.js":15,"./wallet_address_validator.js":18}],9:[function(require,module,exports){
+},{"./crypto/base58":9,"./crypto/segwit_addr":12,"./crypto/utils":14}],9:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -2780,11 +2772,6 @@ module.exports = Blake256;
 
 var bech32 = require('./bech32');
 
-module.exports = {
-  encode: encode,
-  decode: decode
-};
-
 function convertbits (data, frombits, tobits, pad) {
   var acc = 0;
   var bits = 0;
@@ -2834,6 +2821,29 @@ function encode (hrp, version, program) {
   }
   return ret;
 }
+
+function isValidAddress(address) {
+    var hrp = 'bc';
+    var ret = decode(hrp, address);
+
+    if (ret === null) {
+        hrp = 'tb';
+        ret = decode(hrp, address);
+    }
+
+    if (ret === null) {
+        return false;
+    }
+
+    var recreate = encode(hrp, ret.version, ret.program);
+    return recreate === address.toLowerCase();
+}
+
+module.exports = {
+    encode: encode,
+    decode: decode,
+    isValidAddress: isValidAddress,
+};
 
 },{"./bech32":10}],13:[function(require,module,exports){
 (function (process,global){
@@ -3529,121 +3539,147 @@ var CURRENCIES = [{
     name: 'bitcoin',
     symbol: 'btc',
     addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
-    networkValidator: BTCValidator
+    validator: BTCValidator
 },{
     name: 'bitcoincash',
     symbol: 'bch',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'litecoin',
     symbol: 'ltc',
-    addressTypes: {prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a']}
+    addressTypes: {prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a']},
+    validator: BTCValidator
 },{
     name: 'peercoin',
     symbol: 'ppc',
-    addressTypes: {prod: ['37', '75'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['37', '75'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'dogecoin',
     symbol: 'doge',
-    addressTypes: {prod: ['1e', '16'], testnet: ['71', 'c4']}
+    addressTypes: {prod: ['1e', '16'], testnet: ['71', 'c4']},
+    validator: BTCValidator
 },{
     name: 'beavercoin',
     symbol: 'bvc',
-    addressTypes: {prod: ['19', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['19', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator,
 },{
     name: 'freicoin',
     symbol: 'frc',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'protoshares',
     symbol: 'pts',
-    addressTypes: {prod: ['38', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['38', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'megacoin',
     symbol: 'mec',
-    addressTypes: {prod: ['32', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['32', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'primecoin',
     symbol: 'xpm',
-    addressTypes: {prod: ['17', '53'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['17', '53'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'auroracoin',
     symbol: 'aur',
-    addressTypes: {prod: ['17', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['17', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'namecoin',
     symbol: 'nmc',
-    addressTypes: {prod: ['34'], testnet: []}
+    addressTypes: {prod: ['34'], testnet: []},
+    validator: BTCValidator
 },{
     name: 'biocoin',
     symbol: 'bio',
-    addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'garlicoin',
     symbol: 'grlc',
-    addressTypes: {prod: ['26', '05'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['26', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'vertcoin',
     symbol: 'vtc',
-    addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'bitcoingold',
     symbol: 'btg',
-    addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'komodo',
     symbol: 'kmd',
-    addressTypes: {prod: ['3c', '55'], testnet: ['0','5']}
+    addressTypes: {prod: ['3c', '55'], testnet: ['0','5']},
+    validator: BTCValidator
 },{
     name: 'bitcoinz',
     symbol: 'btcz',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'bitcoinprivate',
     symbol: 'btcp',
     expectedLength: 26,
-    addressTypes: {prod: ['1325','13af'], testnet: ['1957', '19e0']}
+    addressTypes: {prod: ['1325','13af'], testnet: ['1957', '19e0']},
+    validator: BTCValidator
 },{
     name: 'hush',
     symbol: 'hush',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'snowgem',
     symbol: 'sng',
     expectedLength: 26,
-    addressTypes: {prod: ['1c28','1c2d'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1c28','1c2d'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'zcash',
     symbol: 'zec',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'zclassic',
     symbol: 'zcl',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'zencash',
     symbol: 'zen',
     expectedLength: 26,
-    addressTypes: {prod: ['2089','2096'], testnet: ['2092','2098']}
+    addressTypes: {prod: ['2089','2096'], testnet: ['2092','2098']},
+    validator: BTCValidator
 },{
     name: 'votecoin',
     symbol: 'vot',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']}
+    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    validator: BTCValidator
 },{
     name: 'decred',
     symbol: 'dcr',
     addressTypes: {prod: ['073f', '071a'], testnet: ['0f21', '0efc']},
     hashFunction: 'blake256',
-    expectedLength: 26
+    expectedLength: 26,
+    validator: BTCValidator
 },{
     name: 'digibyte',
     symbol: 'dgb',
     addressTypes: {prod: ['1e'], testnet: []},
+    validator: BTCValidator
 },{
     name: 'ethereum',
     symbol: 'eth',
@@ -3667,19 +3703,23 @@ var CURRENCIES = [{
 },{
     name: 'dash',
     symbol: 'dash',
-    addressTypes: {prod: ['4c', '10'], testnet: ['8c', '13']}
+    addressTypes: {prod: ['4c', '10'], testnet: ['8c', '13']},
+    validator: BTCValidator
 },{
     name: 'neo',
     symbol: 'neo',
-    addressTypes: {prod: ['17'], testnet: []}
+    addressTypes: {prod: ['17'], testnet: []},
+    validator: BTCValidator
 },{
     name: 'neogas',
     symbol: 'gas',
-    addressTypes: {prod: ['17'], testnet: []}
+    addressTypes: {prod: ['17'], testnet: []},
+    validator: BTCValidator
 },{
     name: 'qtum',
     symbol: 'qtum',
-    addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']}
+    addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 }];
 
 
@@ -3763,92 +3803,21 @@ module.exports = {
 };
 
 },{"./crypto/utils":14,"base-x":1}],18:[function(require,module,exports){
-var base58 = require('./crypto/base58');
-var cryptoUtils = require('./crypto/utils');
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
-var DEFAULT_NETWORK_TYPE = 'prod';
-
-function getDecoded(address) {
-    try {
-        return base58.decode(address);
-    } catch (e) {
-        // if decoding fails, assume invalid address
-        return null;
-    }
-}
-
-function getChecksum(hashFunction, payload) {
-    // Each currency may implement different hashing algorithm
-    switch (hashFunction) {
-        case 'blake256':
-            return cryptoUtils.blake256Checksum(payload);
-            break;
-        case 'sha256':
-        default:
-            return cryptoUtils.sha256Checksum(payload);
-    }
-}
-
-function getAddressType(address, currency) {
-    currency = currency || {};
-    // should be 25 bytes per btc address spec and 26 decred
-    var expectedLength = currency.expectedLength || 25;
-    var hashFunction = currency.hashFunction || 'sha256';
-    var decoded = getDecoded(address);
-
-    if (decoded) {
-        var length = decoded.length;
-
-        if (length !== expectedLength) {
-            return null;
-        }
-
-        var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),
-            body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
-            goodChecksum = getChecksum(hashFunction, body);
-
-        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
-    }
-
-    return null;
-}
-
-function validate(address, currencyNameOrSymbol, networkType) {
-    currencyNameOrSymbol = currencyNameOrSymbol || DEFAULT_CURRENCY_NAME;
-    networkType = networkType || DEFAULT_NETWORK_TYPE;
-
-    var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol);
-
-    if (currency.validator) {
-        return currency.validator.isValidAddress(address);
-    }
-
-    if (currency.networkValidator) {
-        return currency.networkValidator.isValidNetworkAddress(address, networkType);
-    }
-
-    var correctAddressTypes;
-    var addressType = getAddressType(address, currency);
-    if (addressType == null) {
-        return false;
-    }
-
-    if (networkType === 'prod' || networkType === 'testnet') {
-        correctAddressTypes = currency.addressTypes[networkType]
-    } else {
-        correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
-    }
-
-    return correctAddressTypes.indexOf(addressType) >= 0;
-}
 
 module.exports = {
-    getAddressType: getAddressType,
-    checksum: getChecksum,
-    validate: validate,
+    validate: function (address, currencyNameOrSymbol, networkType) {
+        var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
+
+        if (currency.validator) {
+            return currency.validator.isValidAddress(address, currency, networkType);
+        }
+
+        throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
+    },
 };
 
-},{"./crypto/base58":9,"./crypto/utils":14,"./currencies":15}]},{},[18])(18)
+},{"./currencies":15}]},{},[18])(18)
 });

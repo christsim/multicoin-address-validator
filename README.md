@@ -28,13 +28,6 @@ npm install wallet-address-validator
 
 > Returns true if the address (string) is a valid wallet address for the crypto currency specified, see below for supported currencies.
 
-##### getAddressType (address)
-
-###### Parameters
-* address - Wallet address.
-
-> Returns address type (as 2 character hex string) if valid base58 address, otherwise null.
-
 ### Supported crypto currencies
 
 * Auroracoin/AUR, `'auroracoin'` or `'AUR'`

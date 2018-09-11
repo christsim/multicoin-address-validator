@@ -17,6 +17,7 @@
     "zcash",
     "qtum",
     "altcoin",
+    "segwit",
     "crypto",
     "address",
     "wallet",
@@ -25,7 +26,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.1.7",
+  "version": "0.2.0",
   "author": "Tomek Kolasa <tomek@kolasa.me>",
   "homepage": "https://github.com/ognus/wallet-address-validator",
   "license": "MIT",
