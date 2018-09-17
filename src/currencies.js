@@ -188,6 +188,10 @@ var CURRENCIES = [{
     symbol: 'qtum',
     addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']},
     validator: BTCValidator
+},{
+    name: 'bankex',
+    symbol: 'bkx',
+    validator: ETHValidator
 }];
 
 

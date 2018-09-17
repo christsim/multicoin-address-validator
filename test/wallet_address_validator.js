@@ -347,6 +347,13 @@ describe('WAValidator.validate()', function () {
             valid('RAvj2KKVUohTu3hVdNJ4U6hQi7TNawpacH', 'KMD');
             //valid('t2UNzUUx8mWBCRYPRezvA363EYXyEpHokyi', 'komodo', 'testnet');
         });
+
+        it('should return true for correct Bankex addresses', function () {
+            valid('0xeac39e1bc802baae3d4b9cb518f3f60374bbad6c', 'bankex');
+            valid('0x45245bc59219eeaaf6cd3f382e078a461ff9de7b', 'BKX');
+            valid('0xf40d80FCfa5cdEa0bB1E570c2D52132ac9bC6aEC', 'bankex', 'testnet');
+            valid('0x8A7395f281EeCf2B471B689E87Cf4C7fa8bb957d', 'BKX', 'testnet');
+        });
     });
 
     describe('invalid results', function () {
@@ -428,6 +435,13 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect decred addresses', function () {
             commonTests('decred');
+        });
+
+        it('should return false for incorrect bankex addresses', function () {
+            invalid('1SQHtwR5oJRKLfiWQ2APsAd9miUc4k2ez', 'bankex');
+            invalid('116CGDLddrZhMrTwhCVJXtXQpxygTT1kHd', 'BKX');
+            invalid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'bankex', 'testnet');
+            invalid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'BKX', 'testnet');
         });
 
         it('should return false for incorrect digibyte addresses', function () {

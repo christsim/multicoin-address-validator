@@ -32,6 +32,7 @@ npm install wallet-address-validator
 
 * Auroracoin/AUR, `'auroracoin'` or `'AUR'`
 
+* Bankex/BKX, `'bankex'` or `'BKX'`
 * BeaverCoin/BVC, `'beavercoin'` or `'BVC'`
 * Biocoin/BIO, `'biocoin'` or `'BIO'`
 * Bitcoin/BTC, `'bitcoin'` or `'BTC'`
