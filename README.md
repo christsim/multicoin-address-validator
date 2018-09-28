@@ -65,6 +65,7 @@ npm install wallet-address-validator
 * Megacoin/MEC, `'megacoin'` or `'MEC'`
 
 * Namecoin/NMC, `'namecoin'` or `'NMC'`
+* Nano/NANO, `'nano'` or `'NANO'`
 * NEO/NEO, `'NEO'` or `'NEO'`
 * NeoGas/GAS, `'neogas'` or `'GAS'`
 
@@ -74,6 +75,7 @@ npm install wallet-address-validator
 
 * Qtum/QTUM, `'qtum'` or `'QTUM'`
 
+* Raiblocks/XRB, `'raiblocks'` or `'XRB'`
 * Ripple/XRP, `'ripple'` or `'XRP'`
 
 * Snowgem/SNG, `'snowgem'` or `'SNG'`
