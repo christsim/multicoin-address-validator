@@ -1,6 +1,7 @@
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
+var NANOValidator = require('./nano_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -192,6 +193,14 @@ var CURRENCIES = [{
     name: 'bankex',
     symbol: 'bkx',
     validator: ETHValidator
+},{
+    name: 'nano',
+    symbol: 'nano',
+    validator: NANOValidator,
+},{
+    name: 'raiblocks',
+    symbol: 'xrb',
+    validator: NANOValidator,
 }];
 
 
