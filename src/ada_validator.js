@@ -1,10 +1,6 @@
-var cryptoUtils = require('./crypto/utils');
-var base58 = require('./crypto/base58');
-
-const bs58 = require('bs58');
-const CRC = require('crc');
-const cbor = require('cbor');
-const Tagged = cbor.Tagged;
+var cbor = require('cbor');
+var bs58 = require('bs58');
+var CRC = require('crc');
 
 function getDecoded(address) {
     try {
@@ -24,8 +20,9 @@ module.exports = {
             return false;
         }
 
-        var [tagged, validCrc] = decoded;
-        if (!tagged instanceof Tagged) {
+        var tagged = decoded[0];
+        var validCrc = decoded[1];
+        if (!tagged instanceof cbor.Tagged) {
             return false;
         }
         if (typeof (validCrc) != 'number') {
@@ -38,7 +35,7 @@ module.exports = {
         }
 
         // get crc of the payload
-        let crc = CRC.crc32(tagged.value);
+        var crc = CRC.crc32(tagged.value);
 
         return crc == validCrc;
     }

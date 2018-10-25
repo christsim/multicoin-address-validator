@@ -326,6 +326,3 @@ module.exports = {
 };
 
 
-CURRENCIES.forEach(c => console.log(c.symbol));
-
-
