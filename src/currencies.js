@@ -146,26 +146,35 @@ var CURRENCIES = [{
     expectedLength: 26,
     validator: BTCValidator
 },{
+    name: 'gamecredits',
+    symbol: 'game',
+    addressTypes: {prod: ['26', '05'], testnet: []},
+    validator: BTCValidator
+},{
+    name: 'pivx',
+    symbol: 'pivx',
+    addressTypes: {prod: ['1e', '0d'], testnet: []},
+    validator: BTCValidator
+},{
+    name: 'SolarCoin',
+    symbol: 'slr',
+    addressTypes: {prod: ['12', '05'], testnet: []},
+    validator: BTCValidator
+},{
+    name: 'MonaCoin',
+    symbol: 'mona',
+    addressTypes: {prod: ['32', '37'], testnet: []},
+    validator: BTCValidator
+},{
     name: 'digibyte',
     symbol: 'dgb',
     addressTypes: {prod: ['1e'], testnet: []},
     validator: BTCValidator
 },{
-    name: 'ethereum',
-    symbol: 'eth',
-    validator: ETHValidator,
-},{
-    name: 'etherzero',
-    symbol: 'etz',
-    validator: ETHValidator,
-},{
-    name: 'ethereumclassic',
-    symbol: 'etc',
-    validator: ETHValidator,
-},{
-    name: 'callisto',
-    symbol: 'clo',
-    validator: ETHValidator,
+    name: 'Tether',
+    symbol: 'usdt',
+    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    validator: BTCValidator
 },{
     name: 'ripple',
     symbol: 'xrp',
@@ -191,6 +200,22 @@ var CURRENCIES = [{
     addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']},
     validator: BTCValidator
 },{
+    name: 'ethereum',
+    symbol: 'eth',
+    validator: ETHValidator,
+},{
+    name: 'etherzero',
+    symbol: 'etz',
+    validator: ETHValidator,
+},{
+    name: 'ethereumclassic',
+    symbol: 'etc',
+    validator: ETHValidator,
+},{
+    name: 'callisto',
+    symbol: 'clo',
+    validator: ETHValidator,
+},{
     name: 'bankex',
     symbol: 'bkx',
     validator: ETHValidator
@@ -204,6 +229,82 @@ var CURRENCIES = [{
     addressTypes: {prod: ['18'], testnet: ['53']},
     iAddressTypes: {prod: ['19'], testnet: ['54']},
     validator: XMRValidator
+},{
+    name: 'Aragon',
+    symbol: 'ant',
+    validator: ETHValidator
+},{
+    name: 'Basic Attention Token',
+    symbol: 'bat',
+    validator: ETHValidator
+},{
+    name: 'Bancor',
+    symbol: 'bnt',
+    validator: ETHValidator
+},{
+    name: 'cvc',
+    symbol: 'Civic',
+    validator: ETHValidator
+},{
+    name: 'dnt',
+    symbol: 'District0x',
+    validator: ETHValidator
+},{
+    name: 'Gnosis',
+    symbol: 'gno',
+    validator: ETHValidator
+},{
+    name: 'Golem',
+    symbol: 'gnt',
+    validator: ETHValidator
+},{
+    name: 'Matchpool',
+    symbol: 'gup',
+    validator: ETHValidator
+},{
+    name: 'Melon',
+    symbol: 'mln',
+    validator: ETHValidator
+},{
+    name: 'Numeraire',
+    symbol: 'nmr',
+    validator: ETHValidator
+},{
+    name: 'OmiseGO',
+    symbol: 'omg',
+    validator: ETHValidator
+},{
+    name: 'TenX',
+    symbol: 'pay',
+    validator: ETHValidator
+},{
+    name: 'Ripio Credit Network',
+    symbol: 'rcn',
+    validator: ETHValidator
+},{
+    name: 'Augur',
+    symbol: 'rep',
+    validator: ETHValidator
+},{
+    name: 'Status',
+    symbol: 'snt',
+    validator: ETHValidator
+},{
+    name: 'Swarm City',
+    symbol: 'swt',
+    validator: ETHValidator
+},{
+    name: 'TrueUSD',
+    symbol: 'tusd',
+    validator: ETHValidator
+},{
+    name: 'Wings',
+    symbol: 'wings',
+    validator: ETHValidator
+},{
+    name: '0x',
+    symbol: 'zrx',
+    validator: ETHValidator
 }];
 
 
@@ -212,10 +313,15 @@ module.exports = {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
         for (var i = 0; i < CURRENCIES.length; i++) {
             var currency = CURRENCIES[i];
-            if(currency.name === nameOrSymbol || currency.symbol === nameOrSymbol) {
+            if(currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol) {
                 return currency;
             }
         }
         return null;
     }
 };
+
+
+CURRENCIES.forEach(c => console.log(c.symbol));
+
+

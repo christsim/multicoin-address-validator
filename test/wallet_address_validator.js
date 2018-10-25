@@ -6,13 +6,13 @@ var chai = isNode ? require('chai') : window.chai,
 var WAValidator = isNode ? require('../src/wallet_address_validator') : window.WAValidator;
 
 function valid (address, currency, networkType) {
-    var result = WAValidator.validate(address, currency, networkType);
-    expect(result).to.be.true;
+    var valid = WAValidator.validate(address, currency, networkType);
+    expect({ address, currency, valid }).to.deep.equal({address, currency, valid: true});
 }
 
 function invalid (address, currency, networkType) {
-    var result = WAValidator.validate(address, currency, networkType);
-    expect(result).to.be.false;
+    var valid = WAValidator.validate(address, currency, networkType);
+    expect({ address, currency, valid }).to.deep.equal({address, currency, valid: false});
 }
 
 describe('WAValidator.validate()', function () {
@@ -277,6 +277,8 @@ describe('WAValidator.validate()', function () {
             valid('XcY4WJ6Z2Q8w7vcYER1JypC8s2oa3SQ1b1', 'DASH');
             valid('XqMkVUZnqe3w4xvgdZRtZoe7gMitDudGs4', 'dash');
             valid('yPv7h2i8v3dJjfSH4L3x91JSJszjdbsJJA', 'dash', 'testnet');
+            valid('XoAAqv3oUYZ6xRjX3brfbf9PotrGanS6Th', 'dash');
+            valid('yP5oXZQXBfBf9FyfZDpFiKDypxuNUKUV2E', 'dash', 'testnet');
         });
 
         it('should return true for correct neo addresses', function () {
@@ -372,6 +374,36 @@ describe('WAValidator.validate()', function () {
             valid('4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7', 'monero');
             valid('4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b', 'XMR');
         });
+
+        it('should return true for correct gamecredits addresses', function () {
+            valid('GU5BBtW9gxSKvAknvFi9yUaXKUNW9zUN2p', 'game');
+            valid('GYxQMVzP6YpzX59QNRYqmJeHNtUMYSZPri', 'game');
+        });
+
+        it('should return true for correct monacoin addresses', function () {
+            valid('MMN1Q1aRVUzanmg9DJjcRYzQSJQoBeQPui', 'mona');
+            valid('PFMzNYnBm5X4c9qJkJPkfgdCyd9fuuy2vT', 'mona');
+            valid('PCtN7VUYHW8w4g59BaphrfPs8g7pNgAzxn', 'mona');
+            valid('MXCcYFGRmsd4d3CcQugFiqG8uarj5tVu76', 'mona');
+            valid('MNK1pGsBf9WdoE54fZM9VFhkeYHW6VUf2u', 'mona');
+        });
+
+        it('should return true for correct pivx addresses', function () {
+            valid('DJXFW9oJJBUX7QKrG6GKvmTs63MYKzwtpZ', 'pivx');
+            valid('DEaYb8EHQgyKvX6VXDS3DZQautJrHBmK3T', 'pivx');
+            valid('DDeCGR3QSgqsBxVR23bJvteiyYE34ZmxAc', 'pivx');
+            valid('DSqQM8DPpBHHoZXHgRdwmaf6hZPEoZcFkh', 'pivx');
+        });
+
+        it('should return true for correct solarcoin addresses', function () {
+            valid('8VxVLzwB26E2YZZ82o1NcQe96QSM2z6GwW', 'slr');
+            valid('8YW5qcTjeyqX5kESsqu2BUdXiedgssegtQ', 'SolarCoin');
+        });        
+
+        it('should return true for correct tether addresses', function () {
+            valid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt');
+            valid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6J', 'tether');
+        });         
     });
 
     describe('invalid results', function () {
@@ -454,6 +486,22 @@ describe('WAValidator.validate()', function () {
         it('should return false for incorrect decred addresses', function () {
             commonTests('decred');
         });
+
+        it('should return false for incorrect gamecredits addresses', function () {
+            commonTests('game');
+        });        
+
+        it('should return false for incorrect monacoin addresses', function () {
+            commonTests('mona');
+        }); 
+
+        it('should return false for incorrect solarcoin addresses', function () {
+            commonTests('slr');
+        }); 
+
+        it('should return false for incorrect usdt addresses', function () {
+            commonTests('usdt');
+        }); 
 
         it('should return false for incorrect bankex addresses', function () {
             invalid('1SQHtwR5oJRKLfiWQ2APsAd9miUc4k2ez', 'bankex');
@@ -581,5 +629,7 @@ describe('WAValidator.validate()', function () {
             invalid('4LNSCKNSTPNbJYkyAEgL966eHJHLDHiq1PpwKoiFBybcSqNGYfLBJApC62uQEeGAFxfYEd29uXBBrJFo7DhKqFVNi3GhmN79EtD5dgycYz', 'monero');
             invalid('4JpzTwf3i1GeCV76beVr19179oa8j1L8xNSC1bXMtAxxdf4aTTLqubL8EvXfQmUGKt9MMigFtKy91VtoTTSfg1LU7LocPruT6KcGC9RKJV', 'xmr');
         });
+
+
     });
 });

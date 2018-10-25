@@ -6,7 +6,7 @@ module.exports = {
     validate: function (address, currencyNameOrSymbol, networkType) {
         var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
-        if (currency.validator) {
+        if (currency && currency.validator) {
             return currency.validator.isValidAddress(address, currency, networkType);
         }
 
