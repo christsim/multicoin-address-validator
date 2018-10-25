@@ -1,6 +1,7 @@
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
+var ADAValidator = require('./ada_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -192,6 +193,10 @@ var CURRENCIES = [{
     name: 'bankex',
     symbol: 'bkx',
     validator: ETHValidator
+},{
+    name: 'cardano',
+    symbol: 'ada',
+    validator: ADAValidator
 }];
 
 
