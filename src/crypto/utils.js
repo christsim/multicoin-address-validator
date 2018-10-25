@@ -34,5 +34,8 @@ module.exports = {
     },
     keccak256: function (hexString) {
         return keccak256(hexString);
+    },
+    keccak256Checksum: function (payload) {
+        return keccak256(payload).toString().substr(0, 8);
     }
 };

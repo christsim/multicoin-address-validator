@@ -64,6 +64,8 @@ npm install wallet-address-validator
 
 * Megacoin/MEC, `'megacoin'` or `'MEC'`
 
+* Monero/XMR, `'monero'` or `'XMR'`
+
 * Namecoin/NMC, `'namecoin'` or `'NMC'`
 * NEO/NEO, `'NEO'` or `'NEO'`
 * NeoGas/GAS, `'neogas'` or `'GAS'`
