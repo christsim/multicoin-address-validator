@@ -305,6 +305,10 @@ var CURRENCIES = [{
     name: '0x',
     symbol: 'zrx',
     validator: ETHValidator
+},{
+    name: 'Expanse',
+    symbol: 'exp',
+    validator: ETHValidator
 }];
 
 
