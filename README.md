@@ -30,66 +30,70 @@ npm install wallet-address-validator
 
 ### Supported crypto currencies
 
-* Auroracoin/AUR, `'auroracoin'` or `'AUR'`
-
-* Bankex/BKX, `'bankex'` or `'BKX'`
-* BeaverCoin/BVC, `'beavercoin'` or `'BVC'`
-* Biocoin/BIO, `'biocoin'` or `'BIO'`
-* Bitcoin/BTC, `'bitcoin'` or `'BTC'`
-* BitcoinCash/BCH, `'bitcoincash'` or `'BCH'`
-* BitcoinGold/BTG, `'bitcoingold'` or `'BTG'`
-* BitcoinPrivate/BTCP, `'bitcoinprivate'` or `'BTCP'`
-* BitcoinZ/BTCZ, `'bitcoinz'` or `'BTCZ'`
-
-* Callisto/CLO, `'callisto'` or `'CLO'`
-
-* Dash, `'dash'` or `'DASH'`
-* Decred/DCR, `'decred'` or `'DCR'`
-* Digibyte/DGB, `'digibyte'` or `'DGB'`
-* Dogecoin/DOGE, `'dogecoin'` or `'DOGE'`
-
-* Ethereum/ETH, `'ethereum'` or `'ETH'`
-* EthereumClassic/ETH, `'ethereumclassic'` or `'ETC'`
-* EthereumZero/ETZ, `'etherzero'` or `'ETZ'`
-
-* Freicoin/FRC, `'freicoin'` or `'FRC'`
-
-* Garlicoin/GRLC, `'garlicoin'` or `'GRLC'`
-
-* Hush/HUSH, `'hush'` or `'HUSH'`
-
-* Komodo/KMD, `'komodo'` or `'KMD'`
-
-* Litecoin/LTC, `'litecoin'` or `'LTC'`
-
-* Megacoin/MEC, `'megacoin'` or `'MEC'`
-
-* Monero/XMR, `'monero'` or `'XMR'`
-
-* Namecoin/NMC, `'namecoin'` or `'NMC'`
-* NEO/NEO, `'NEO'` or `'NEO'`
-* NeoGas/GAS, `'neogas'` or `'GAS'`
-
-* Peercoin/PPCoin/PPC, `'peercoin'` or `'PPC'`
-* Primecoin/XPM, `'primecoin'` or `'XPM'`
-* Protoshares/PTS, `'protoshares'` or `'PTS'`
-
-* Qtum/QTUM, `'qtum'` or `'QTUM'`
-
-* Ripple/XRP, `'ripple'` or `'XRP'`
-
-* Snowgem/SNG, `'snowgem'` or `'SNG'`
-
-* Vertcoin/VTC, `'vertcoin'` or `'VTC'`
-
-* Votecoin/VTC, `'votecoin'` or `'VOT'`
-
-* Zcash/ZEC, `'zcash'` or `'ZEC'`
-    
-* Zclassic/ZCL, `'zclassic'` or `'ZCL'`
-
-* ZenCash/ZEN, `'zencash'` or `'ZEN'`
-
+* 0x/zrx `'0x'` or `'zrx'`
+* Aragon/ant `'Aragon'` or `'ant'`
+* Augur/rep `'Augur'` or `'rep'`
+* AuroraCoin/aur `'AuroraCoin'` or `'aur'`
+* Bancor/bnt `'Bancor'` or `'bnt'`
+* Bankex/bkx `'Bankex'` or `'bkx'`
+* Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
+* BeaverCoin/bvc `'BeaverCoin'` or `'bvc'`
+* BioCoin/bio `'BioCoin'` or `'bio'`
+* Bitcoin/btc `'Bitcoin'` or `'btc'`
+* BitcoinCash/bch `'BitcoinCash'` or `'bch'`
+* BitcoinGold/btg `'BitcoinGold'` or `'btg'`
+* BitcoinPrivate/btcp `'BitcoinPrivate'` or `'btcp'`
+* BitcoinZ/btcz `'BitcoinZ'` or `'btcz'`
+* Callisto/clo `'Callisto'` or `'clo'`
+* Cardano/ada `'Cardano'` or `'ada'`
+* Civic/cvc `'Civic'` or `'cvc'`
+* Dash/dash `'Dash'` or `'dash'`
+* Decred/dcr `'Decred'` or `'dcr'`
+* DigiByte/dgb `'DigiByte'` or `'dgb'`
+* District0x/dnt `'District0x'` or `'dnt'`
+* DogeCoin/doge `'DogeCoin'` or `'doge'`
+* Ethereum/eth `'Ethereum'` or `'eth'`
+* EthereumClassic/etc `'EthereumClassic'` or `'etc'`
+* EtherZero/etz `'EtherZero'` or `'etz'`
+* Expanse/exp `'Expanse'` or `'exp'`
+* FreiCoin/frc `'FreiCoin'` or `'frc'`
+* GameCredits/game `'GameCredits'` or `'game'`
+* GarliCoin/grlc `'GarliCoin'` or `'grlc'`
+* Gnosis/gno `'Gnosis'` or `'gno'`
+* Golem/gnt `'Golem'` or `'gnt'`
+* Hush/hush `'Hush'` or `'hush'`
+* Komodo/kmd `'Komodo'` or `'kmd'`
+* LiteCoin/ltc `'LiteCoin'` or `'ltc'`
+* Matchpool/gup `'Matchpool'` or `'gup'`
+* MegaCoin/mec `'MegaCoin'` or `'mec'`
+* Melon/mln `'Melon'` or `'mln'`
+* MonaCoin/mona `'MonaCoin'` or `'mona'`
+* Monero/xmr `'Monero'` or `'xmr'`
+* NameCoin/nmc `'NameCoin'` or `'nmc'`
+* Neo/neo `'Neo'` or `'neo'`
+* NeoGas/gas `'NeoGas'` or `'gas'`
+* Numeraire/nmr `'Numeraire'` or `'nmr'`
+* OmiseGO/omg `'OmiseGO'` or `'omg'`
+* PeerCoin/ppc `'PeerCoin'` or `'ppc'`
+* PIVX/pivx `'PIVX'` or `'pivx'`
+* PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
+* ProtoShares/pts `'ProtoShares'` or `'pts'`
+* Qtum/qtum `'Qtum'` or `'qtum'`
+* Ripio Credit Network/rcn `'Ripio Credit Network'` or `'rcn'`
+* Ripple/xrp `'Ripple'` or `'xrp'`
+* SnowGem/sng `'SnowGem'` or `'sng'`
+* SolarCoin/slr `'SolarCoin'` or `'slr'`
+* Status/snt `'Status'` or `'snt'`
+* Swarm City/swt `'Swarm City'` or `'swt'`
+* TenX/pay `'TenX'` or `'pay'`
+* Tether/usdt `'Tether'` or `'usdt'`
+* TrueUSD/tusd `'TrueUSD'` or `'tusd'`
+* VertCoin/vtc `'VertCoin'` or `'vtc'`
+* VoteCoin/vot `'VoteCoin'` or `'vot'`
+* Wings/wings `'Wings'` or `'wings'`
+* ZCash/zec `'ZCash'` or `'zec'`
+* ZClassic/zcl `'ZClassic'` or `'zcl'`
+* ZenCash/zen `'ZenCash'` or `'zen'`
 
 ### Usage example
 

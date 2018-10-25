@@ -1,6 +1,6 @@
 {
-  "name": "wallet-address-validator",
-  "description": "Wallet address validator for Bitcoin and other Altcoins.",
+  "name": "multicoin-address-validator",
+  "description": "Multicoin address validator for Bitcoin and other Altcoins.",
   "keywords": [
     "ada",
     "btc",
@@ -29,8 +29,8 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.2.1",
-  "author": "Tomek Kolasa <tomek@kolasa.me>",
+  "version": "0.3.0",
+  "author": "Chris Tsimogiannis <chris.tsim@gmail.com>",
   "homepage": "https://github.com/ognus/wallet-address-validator",
   "license": "MIT",
   "repository": {
