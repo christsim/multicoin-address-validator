@@ -29,13 +29,13 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Chris <chris.tsim@gmail.com>",
-  "homepage": "https://github.com/ognus/wallet-address-validator",
+  "homepage": "https://github.com/christsim/multicoin-address-validator",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ognus/wallet-address-validator.git"
+    "url": "https://github.com/christsim/multicoin-address-validator.git"
   },
   "main": "src/wallet_address_validator",
   "engines": {
