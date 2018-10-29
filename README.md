@@ -9,7 +9,7 @@ Forked from [ryanralph/altcoin-address](https://github.com/ryanralph/altcoin-add
 
 ### NPM
 ```
-npm install wallet-address-validator
+npm install multicoin-address-validator
 ```
 
 ### Browser
@@ -90,6 +90,7 @@ npm install wallet-address-validator
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
 * VoteCoin/vot `'VoteCoin'` or `'vot'`
+* Waves/waves `'Waves'` or `'waves'`
 * Wings/wings `'Wings'` or `'wings'`
 * ZCash/zec `'ZCash'` or `'zec'`
 * ZClassic/zcl `'ZClassic'` or `'zcl'`
@@ -99,7 +100,7 @@ npm install wallet-address-validator
 
 #### Node
 ```javascript
-var WAValidator = require('wallet-address-validator');
+var WAValidator = require('multicoin-address-validator');
 
 var valid = WAValidator.validate('1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'BTC');
 if(valid)
@@ -111,7 +112,7 @@ else
 ```
 
 ```javascript
-var WAValidator = require('wallet-address-validator');
+var WAValidator = require('multicoin-address-validator');
 
 var valid = WAValidator.validate('1KFzzGtDdnq5hrwxXGjwVnKzRbvf8WVxck', 'litecoin', 'testnet');
 if(valid)

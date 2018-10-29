@@ -1,6 +1,7 @@
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
+var blake2b = require('./blake2b');
 
 function numberToHex (number) {
     var hex = Math.round(number).toString(16);
@@ -37,5 +38,8 @@ module.exports = {
     },
     keccak256Checksum: function (payload) {
         return keccak256(payload).toString().substr(0, 8);
+    },
+    blake2b256: function(payload) {
+        return blake2b.blake2bHex(payload, null, 32);
     }
 };

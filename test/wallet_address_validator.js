@@ -409,6 +409,14 @@ describe('WAValidator.validate()', function () {
             valid('0xbab463743603a253bdf1f84975b1a9517505ae05', 'exp');
             valid('0x5d0777cb5d6977873904864c6ab531f4b3261f0b', 'expanse');
         });  
+
+        it('should return true for correct waves addresses', function () {
+            valid('3P93mVrYnQ4ahaRMYwA2BeWY32eDxTpLVEs', 'waves');
+            valid('3P4eeU7v1LMHQFwwT2GW9W99c6vZyytHajj', 'waves');
+
+            valid('3Myrq5QDgRq3nBVRSSv9UYrP36xTtpJND5y', 'waves', 'testnet');
+            valid('3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8', 'waves', 'testnet');
+        });  
     });
 
     describe('invalid results', function () {

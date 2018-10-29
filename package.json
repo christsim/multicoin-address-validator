@@ -17,6 +17,7 @@
     "komodo",
     "zcash",
     "qtum",
+    "waves",
     "altcoin",
     "bankex",
     "monero",
@@ -29,7 +30,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Chris <chris.tsim@gmail.com>",
   "homepage": "https://github.com/christsim/multicoin-address-validator",
   "license": "MIT",

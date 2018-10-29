@@ -16,9 +16,14 @@ function getDecoded(address) {
 function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
+        // blake the keccak
+        case 'blake256keccak256':
+            var blake = cryptoUtils.blake2b256(Buffer.from(payload, 'hex'));
+            return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
         case 'blake256':
             return cryptoUtils.blake256Checksum(payload);
-            break;
+        case 'keccak256':
+            return cryptoUtils.keccak256Checksum(payload);
         case 'sha256':
         default:
             return cryptoUtils.sha256Checksum(payload);
@@ -37,6 +42,12 @@ function getAddressType(address, currency) {
 
         if (length !== expectedLength) {
             return null;
+        }
+
+        if(currency.regex) {
+            if(!currency.regex.test(address)) {
+                return false;
+            }
         }
 
         var checksum = cryptoUtils.toHex(decoded.slice(length - 4, length)),

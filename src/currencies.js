@@ -200,6 +200,14 @@ var CURRENCIES = [{
     addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']},
     validator: BTCValidator
 },{
+    name: 'Waves',
+    symbol: 'waves',
+    addressTypes: {prod: ['0157'], testnet: ['0154']},
+    expectedLength: 26,
+    hashFunction: 'blake256keccak256',
+    regex: /^[a-zA-Z0-9]{35}$/,
+    validator: BTCValidator
+}, {
     name: 'Ethereum',
     symbol: 'eth',
     validator: ETHValidator,
