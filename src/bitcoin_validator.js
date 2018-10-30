@@ -16,9 +16,9 @@ function getDecoded(address) {
 function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
-        // blake the keccak
+        // blake then keccak hash chain
         case 'blake256keccak256':
-            var blake = cryptoUtils.blake2b256(Buffer.from(payload, 'hex'));
+            var blake = cryptoUtils.blake2b256(payload);
             return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
         case 'blake256':
             return cryptoUtils.blake256Checksum(payload);

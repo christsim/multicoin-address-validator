@@ -3417,9 +3417,9 @@ function getDecoded(address) {
 function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
-        // blake the keccak
+        // blake then keccak hash chain
         case 'blake256keccak256':
-            var blake = cryptoUtils.blake2b256(Buffer.from(payload, 'hex'));
+            var blake = cryptoUtils.blake2b256(payload);
             return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
         case 'blake256':
             return cryptoUtils.blake256Checksum(payload);
@@ -5296,35 +5296,17 @@ Blake256.prototype.digest = function (encoding) {
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
 },{"buffer":4}],41:[function(require,module,exports){
-(function (Buffer){
-// Blake2B in pure Javascript
-// Adapted from the reference implementation in RFC7693
-// Ported to Javascript by DC - https://github.com/dcposch
-// credit: https://github.com/dcposch/blakejs/blob/master/blake2b.js
+'use strict';
 
-// var util = require('./util')
-// For convenience, let people hash a string, not just a Uint8Array
-function normalizeInput (input) {
-  var ret
-  if (input instanceof Uint8Array) {
-    ret = input
-  } else if (input instanceof Buffer) {
-    ret = new Uint8Array(input)
-  } else if (typeof (input) === 'string') {
-    ret = new Uint8Array(Buffer.from(input, 'utf8'))
-  } else {
-    throw new Error(ERROR_MSG_INPUT)
-  }
-  return ret
-}
-
-// Converts a Uint8Array to a hexadecimal string
-// For example, toHex([255, 0, 255]) returns "ff00ff"
-function toHex (bytes) {
-  return Array.prototype.map.call(bytes, function (n) {
-    return (n < 16 ? '0' : '') + n.toString(16)
-  }).join('')
-}
+/**
+ * Credits to https://github.com/emilbayes/blake2b
+ *
+ * Copyright (c) 2017, Emil Bay github@tixz.dk
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
 
 // 64-bit unsigned addition
 // Sets v[a,a+1] += v[b,b+1]
@@ -5464,11 +5446,7 @@ function blake2bCompress (ctx, last) {
   }
 
   // twelve rounds of mixing
-  // uncomment the DebugPrint calls to log the computation
-  // and match the RFC sample documentation
-  // util.debugPrint('          m[16]', m, 64)
   for (i = 0; i < 12; i++) {
-    // util.debugPrint('   (i=' + (i < 10 ? ' ' : '') + i + ') v[16]', v, 64)
     B2B_G(0, 8, 16, 24, SIGMA82[i * 16 + 0], SIGMA82[i * 16 + 1])
     B2B_G(2, 10, 18, 26, SIGMA82[i * 16 + 2], SIGMA82[i * 16 + 3])
     B2B_G(4, 12, 20, 28, SIGMA82[i * 16 + 4], SIGMA82[i * 16 + 5])
@@ -5478,50 +5456,80 @@ function blake2bCompress (ctx, last) {
     B2B_G(4, 14, 16, 26, SIGMA82[i * 16 + 12], SIGMA82[i * 16 + 13])
     B2B_G(6, 8, 18, 28, SIGMA82[i * 16 + 14], SIGMA82[i * 16 + 15])
   }
-  // util.debugPrint('   (i=12) v[16]', v, 64)
 
   for (i = 0; i < 16; i++) {
     ctx.h[i] = ctx.h[i] ^ v[i] ^ v[i + 16]
   }
-  // util.debugPrint('h[8]', ctx.h, 64)
 }
+
+// reusable parameter_block
+var parameter_block = new Uint8Array([
+  0, 0, 0, 0,      //  0: outlen, keylen, fanout, depth
+  0, 0, 0, 0,      //  4: leaf length, sequential mode
+  0, 0, 0, 0,      //  8: node offset
+  0, 0, 0, 0,      // 12: node offset
+  0, 0, 0, 0,      // 16: node depth, inner length, rfu
+  0, 0, 0, 0,      // 20: rfu
+  0, 0, 0, 0,      // 24: rfu
+  0, 0, 0, 0,      // 28: rfu
+  0, 0, 0, 0,      // 32: salt
+  0, 0, 0, 0,      // 36: salt
+  0, 0, 0, 0,      // 40: salt
+  0, 0, 0, 0,      // 44: salt
+  0, 0, 0, 0,      // 48: personal
+  0, 0, 0, 0,      // 52: personal
+  0, 0, 0, 0,      // 56: personal
+  0, 0, 0, 0       // 60: personal
+])
 
 // Creates a BLAKE2b hashing context
 // Requires an output length between 1 and 64 bytes
 // Takes an optional Uint8Array key
-function blake2bInit (outlen, key) {
-  if (outlen === 0 || outlen > 64) {
-    throw new Error('Illegal output length, expected 0 < length <= 64')
-  }
-  if (key && key.length > 64) {
-    throw new Error('Illegal key, expected Uint8Array with 0 < length <= 64')
-  }
-
+function Blake2b (outlen, key, salt, personal) {
+  // zero out parameter_block before usage
+  parameter_block.fill(0)
   // state, 'param block'
-  var ctx = {
-    b: new Uint8Array(128),
-    h: new Uint32Array(16),
-    t: 0, // input count
-    c: 0, // pointer within buffer
-    outlen: outlen // output length in bytes
-  }
+
+  this.b = new Uint8Array(128)
+  this.h = new Uint32Array(16)
+  this.t = 0 // input count
+  this.c = 0 // pointer within buffer
+  this.outlen = outlen // output length in bytes
+
+  parameter_block[0] = outlen
+  if (key) parameter_block[1] = key.length
+  parameter_block[2] = 1 // fanout
+  parameter_block[3] = 1 // depth
+
+  if (salt) parameter_block.set(salt, 32)
+  if (personal) parameter_block.set(personal, 48)
 
   // initialize hash state
   for (var i = 0; i < 16; i++) {
-    ctx.h[i] = BLAKE2B_IV32[i]
+    this.h[i] = BLAKE2B_IV32[i] ^ B2B_GET32(parameter_block, i * 4)
   }
-  var keylen = key ? key.length : 0
-  ctx.h[0] ^= 0x01010000 ^ (keylen << 8) ^ outlen
 
   // key the hash, if applicable
   if (key) {
-    blake2bUpdate(ctx, key)
+    blake2bUpdate(this, key)
     // at the end
-    ctx.c = 128
+    this.c = 128
   }
-
-  return ctx
 }
+
+Blake2b.prototype.update = function (input) {
+  blake2bUpdate(this, input)
+  return this
+}
+
+Blake2b.prototype.digest = function (out) {
+  var buf = (!out || out === 'binary' || out === 'hex') ? new Uint8Array(this.outlen) : out
+  blake2bFinal(this, buf)
+  if (out === 'hex') return hexSlice(buf)
+  return buf
+}
+
+Blake2b.prototype.final = Blake2b.prototype.digest
 
 // Updates a BLAKE2b streaming hash
 // Requires hash context and Uint8Array (byte array)
@@ -5538,7 +5546,7 @@ function blake2bUpdate (ctx, input) {
 
 // Completes a BLAKE2b streaming hash
 // Returns a Uint8Array containing the message digest
-function blake2bFinal (ctx) {
+function blake2bFinal (ctx, out) {
   ctx.t += ctx.c // mark last block offset
 
   while (ctx.c < 128) { // fill up with zeros
@@ -5546,55 +5554,26 @@ function blake2bFinal (ctx) {
   }
   blake2bCompress(ctx, true) // final block flag = 1
 
-  // little endian convert and store
-  var out = new Uint8Array(ctx.outlen)
   for (var i = 0; i < ctx.outlen; i++) {
     out[i] = ctx.h[i >> 2] >> (8 * (i & 3))
   }
   return out
 }
 
-// Computes the BLAKE2B hash of a string or byte array, and returns a Uint8Array
-//
-// Returns a n-byte Uint8Array
-//
-// Parameters:
-// - input - the input bytes, as a string, Buffer or Uint8Array
-// - key - optional key Uint8Array, up to 64 bytes
-// - outlen - optional output length in bytes, default 64
-function blake2b (input, key, outlen) {
-  // preprocess inputs
-  outlen = outlen || 64
-  input = normalizeInput(input)
-
-  // do the math
-  var ctx = blake2bInit(outlen, key)
-  blake2bUpdate(ctx, input)
-  return blake2bFinal(ctx)
+function hexSlice (buf) {
+  var str = ''
+  for (var i = 0; i < buf.length; i++) str += toHex(buf[i])
+  return str
 }
 
-// Computes the BLAKE2B hash of a string or byte array
-//
-// Returns an n-byte hash in hex, all lowercase
-//
-// Parameters:
-// - input - the input bytes, as a string, Buffer, or Uint8Array
-// - key - optional key Uint8Array, up to 64 bytes
-// - outlen - optional output length in bytes, default 64
-function blake2bHex (input, key, outlen) {
-  var output = blake2b(input, key, outlen)
-  return toHex(output)
+function toHex (n) {
+  if (n < 16) return '0' + n.toString(16)
+  return n.toString(16)
 }
 
-module.exports = {
-  blake2b: blake2b,
-  blake2bHex: blake2bHex,
-  blake2bInit: blake2bInit,
-  blake2bUpdate: blake2bUpdate,
-  blake2bFinal: blake2bFinal
-}
-}).call(this,require("buffer").Buffer)
-},{"buffer":4}],42:[function(require,module,exports){
+module.exports = Blake2b;
+
+},{}],42:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -6562,10 +6541,11 @@ module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":33}],45:[function(require,module,exports){
+(function (Buffer){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
-var blake2b = require('./blake2b');
+var Blake2B = require('./blake2b');
 
 function numberToHex (number) {
     var hex = Math.round(number).toString(16);
@@ -6597,223 +6577,228 @@ module.exports = {
     blake256Checksum: function (payload) {
         return this.blake256(this.blake256(payload)).substr(0, 8);
     },
+    blake2b: function (hexString, outlen) {
+        return new Blake2B(outlen).update(Buffer.from(hexString, 'hex')).digest('hex');
+    },
     keccak256: function (hexString) {
         return keccak256(hexString);
     },
     keccak256Checksum: function (payload) {
         return keccak256(payload).toString().substr(0, 8);
     },
-    blake2b256: function(payload) {
-        return blake2b.blake2bHex(payload, null, 32);
+    blake2b256: function(hexString) {
+        return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     }
 };
 
-},{"./blake256":40,"./blake2b":41,"./sha3":44,"jssha/src/sha256":32}],46:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"./blake256":40,"./blake2b":41,"./sha3":44,"buffer":4,"jssha/src/sha256":32}],46:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
 var ADAValidator = require('./ada_validator');
 var XMRValidator = require('./monero_validator');
+var NANOValidator = require('./nano_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
     name: 'Bitcoin',
     symbol: 'btc',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'BitcoinCash',
     symbol: 'bch',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'LiteCoin',
     symbol: 'ltc',
-    addressTypes: {prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a']},
+    addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
     validator: BTCValidator
-},{
+}, {
     name: 'PeerCoin',
     symbol: 'ppc',
-    addressTypes: {prod: ['37', '75'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['37', '75'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'DogeCoin',
     symbol: 'doge',
-    addressTypes: {prod: ['1e', '16'], testnet: ['71', 'c4']},
+    addressTypes: { prod: ['1e', '16'], testnet: ['71', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'BeaverCoin',
     symbol: 'bvc',
-    addressTypes: {prod: ['19', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['19', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator,
-},{
+}, {
     name: 'FreiCoin',
     symbol: 'frc',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'ProtoShares',
     symbol: 'pts',
-    addressTypes: {prod: ['38', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['38', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'MegaCoin',
     symbol: 'mec',
-    addressTypes: {prod: ['32', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['32', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'PrimeCoin',
     symbol: 'xpm',
-    addressTypes: {prod: ['17', '53'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['17', '53'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'AuroraCoin',
     symbol: 'aur',
-    addressTypes: {prod: ['17', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['17', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'NameCoin',
     symbol: 'nmc',
-    addressTypes: {prod: ['34'], testnet: []},
+    addressTypes: { prod: ['34'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'BioCoin',
     symbol: 'bio',
-    addressTypes: {prod: ['19', '14'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['19', '14'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'GarliCoin',
     symbol: 'grlc',
-    addressTypes: {prod: ['26', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['26', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'VertCoin',
     symbol: 'vtc',
-    addressTypes: {prod: ['0x', '47'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['0x', '47'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'BitcoinGold',
     symbol: 'btg',
-    addressTypes: {prod: ['26', '17'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['26', '17'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Komodo',
     symbol: 'kmd',
-    addressTypes: {prod: ['3c', '55'], testnet: ['0','5']},
+    addressTypes: { prod: ['3c', '55'], testnet: ['0', '5'] },
     validator: BTCValidator
-},{
+}, {
     name: 'BitcoinZ',
     symbol: 'btcz',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'BitcoinPrivate',
     symbol: 'btcp',
     expectedLength: 26,
-    addressTypes: {prod: ['1325','13af'], testnet: ['1957', '19e0']},
+    addressTypes: { prod: ['1325', '13af'], testnet: ['1957', '19e0'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Hush',
     symbol: 'hush',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'SnowGem',
     symbol: 'sng',
     expectedLength: 26,
-    addressTypes: {prod: ['1c28','1c2d'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1c28', '1c2d'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'ZCash',
     symbol: 'zec',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'ZClassic',
     symbol: 'zcl',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'ZenCash',
     symbol: 'zen',
     expectedLength: 26,
-    addressTypes: {prod: ['2089','2096'], testnet: ['2092','2098']},
+    addressTypes: { prod: ['2089', '2096'], testnet: ['2092', '2098'] },
     validator: BTCValidator
-},{
+}, {
     name: 'VoteCoin',
     symbol: 'vot',
     expectedLength: 26,
-    addressTypes: {prod: ['1cb8','1cbd'], testnet: ['1d25', '1cba']},
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Decred',
     symbol: 'dcr',
-    addressTypes: {prod: ['073f', '071a'], testnet: ['0f21', '0efc']},
+    addressTypes: { prod: ['073f', '071a'], testnet: ['0f21', '0efc'] },
     hashFunction: 'blake256',
     expectedLength: 26,
     validator: BTCValidator
-},{
+}, {
     name: 'GameCredits',
     symbol: 'game',
-    addressTypes: {prod: ['26', '05'], testnet: []},
+    addressTypes: { prod: ['26', '05'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'PIVX',
     symbol: 'pivx',
-    addressTypes: {prod: ['1e', '0d'], testnet: []},
+    addressTypes: { prod: ['1e', '0d'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'SolarCoin',
     symbol: 'slr',
-    addressTypes: {prod: ['12', '05'], testnet: []},
+    addressTypes: { prod: ['12', '05'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'MonaCoin',
     symbol: 'mona',
-    addressTypes: {prod: ['32', '37'], testnet: []},
+    addressTypes: { prod: ['32', '37'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'DigiByte',
     symbol: 'dgb',
-    addressTypes: {prod: ['1e'], testnet: []},
+    addressTypes: { prod: ['1e'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'Tether',
     symbol: 'usdt',
-    addressTypes: {prod: ['00', '05'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Ripple',
     symbol: 'xrp',
     validator: XRPValidator,
-},{
+}, {
     name: 'Dash',
     symbol: 'dash',
-    addressTypes: {prod: ['4c', '10'], testnet: ['8c', '13']},
+    addressTypes: { prod: ['4c', '10'], testnet: ['8c', '13'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Neo',
     symbol: 'neo',
-    addressTypes: {prod: ['17'], testnet: []},
+    addressTypes: { prod: ['17'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'NeoGas',
     symbol: 'gas',
-    addressTypes: {prod: ['17'], testnet: []},
+    addressTypes: { prod: ['17'], testnet: [] },
     validator: BTCValidator
-},{
+}, {
     name: 'Qtum',
     symbol: 'qtum',
-    addressTypes: {prod: ['3a', '32'], testnet: ['6f', 'c4']},
+    addressTypes: { prod: ['3a', '32'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-},{
+}, {
     name: 'Waves',
     symbol: 'waves',
-    addressTypes: {prod: ['0157'], testnet: ['0154']},
+    addressTypes: { prod: ['0157'], testnet: ['0154'] },
     expectedLength: 26,
     hashFunction: 'blake256keccak256',
     regex: /^[a-zA-Z0-9]{35}$/,
@@ -6822,112 +6807,120 @@ var CURRENCIES = [{
     name: 'Ethereum',
     symbol: 'eth',
     validator: ETHValidator,
-},{
+}, {
     name: 'EtherZero',
     symbol: 'etz',
     validator: ETHValidator,
-},{
+}, {
     name: 'EthereumClassic',
     symbol: 'etc',
     validator: ETHValidator,
-},{
+}, {
     name: 'Callisto',
     symbol: 'clo',
     validator: ETHValidator,
-},{
+}, {
     name: 'Bankex',
     symbol: 'bkx',
     validator: ETHValidator
-},{
+}, {
     name: 'Cardano',
     symbol: 'ada',
     validator: ADAValidator
-},{
+}, {
     name: 'Monero',
     symbol: 'xmr',
-    addressTypes: {prod: ['18'], testnet: ['53']},
-    iAddressTypes: {prod: ['19'], testnet: ['54']},
+    addressTypes: { prod: ['18'], testnet: ['53'] },
+    iAddressTypes: { prod: ['19'], testnet: ['54'] },
     validator: XMRValidator
-},{
+}, {
     name: 'Aragon',
     symbol: 'ant',
     validator: ETHValidator
-},{
+}, {
     name: 'Basic Attention Token',
     symbol: 'bat',
     validator: ETHValidator
-},{
+}, {
     name: 'Bancor',
     symbol: 'bnt',
     validator: ETHValidator
-},{
+}, {
     name: 'Civic',
     symbol: 'cvc',
     validator: ETHValidator
-},{
+}, {
     name: 'District0x',
     symbol: 'dnt',
     validator: ETHValidator
-},{
+}, {
     name: 'Gnosis',
     symbol: 'gno',
     validator: ETHValidator
-},{
+}, {
     name: 'Golem',
     symbol: 'gnt',
     validator: ETHValidator
-},{
+}, {
     name: 'Matchpool',
     symbol: 'gup',
     validator: ETHValidator
-},{
+}, {
     name: 'Melon',
     symbol: 'mln',
     validator: ETHValidator
-},{
+}, {
     name: 'Numeraire',
     symbol: 'nmr',
     validator: ETHValidator
-},{
+}, {
     name: 'OmiseGO',
     symbol: 'omg',
     validator: ETHValidator
-},{
+}, {
     name: 'TenX',
     symbol: 'pay',
     validator: ETHValidator
-},{
+}, {
     name: 'Ripio Credit Network',
     symbol: 'rcn',
     validator: ETHValidator
-},{
+}, {
     name: 'Augur',
     symbol: 'rep',
     validator: ETHValidator
-},{
+}, {
     name: 'Status',
     symbol: 'snt',
     validator: ETHValidator
-},{
+}, {
     name: 'Swarm City',
     symbol: 'swt',
     validator: ETHValidator
-},{
+}, {
     name: 'TrueUSD',
     symbol: 'tusd',
     validator: ETHValidator
-},{
+}, {
     name: 'Wings',
     symbol: 'wings',
     validator: ETHValidator
-},{
+}, {
     name: '0x',
     symbol: 'zrx',
     validator: ETHValidator
-},{
+}, {
     name: 'Expanse',
     symbol: 'exp',
     validator: ETHValidator
+}, {
+    name: 'nano',
+    symbol: 'nano',
+    validator: NANOValidator,
+}, {
+    name: 'raiblocks',
+    symbol: 'xrb',
+    validator: NANOValidator,
 }];
 
 
@@ -6936,7 +6929,7 @@ module.exports = {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
         for (var i = 0; i < CURRENCIES.length; i++) {
             var currency = CURRENCIES[i];
-            if(currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol) {
+            if (currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol) {
                 return currency;
             }
         }
@@ -6951,7 +6944,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":35,"./bitcoin_validator":36,"./ethereum_validator":47,"./monero_validator":48,"./ripple_validator":49}],47:[function(require,module,exports){
+},{"./ada_validator":35,"./bitcoin_validator":36,"./ethereum_validator":47,"./monero_validator":48,"./nano_validator":49,"./ripple_validator":50}],47:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -7053,6 +7046,35 @@ module.exports = {
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
+var ALLOWED_CHARS = '13456789abcdefghijkmnopqrstuwxyz';
+
+var codec = baseX(ALLOWED_CHARS);
+// https://github.com/nanocurrency/raiblocks/wiki/Accounts,-Keys,-Seeds,-and-Wallet-Identifiers
+var regexp = new RegExp('^(xrb|nano)_([' + ALLOWED_CHARS + ']{60})$');
+
+module.exports = {
+    isValidAddress: function (address) {
+        if (regexp.test(address)) {
+            return this.verifyChecksum(address);
+        }
+
+        return false;
+    },
+
+    verifyChecksum: function (address) {
+        var bytes = codec.decode(regexp.exec(address)[2]).slice(-37);
+        // https://github.com/nanocurrency/raiblocks/blob/master/rai/lib/numbers.cpp#L73
+        var computedChecksum = cryptoUtils.blake2b(cryptoUtils.toHex(bytes.slice(0, -5)), 5);
+        var checksum = cryptoUtils.toHex(bytes.slice(-5).reverse());
+
+        return computedChecksum === checksum
+    }
+};
+
+},{"./crypto/utils":45,"base-x":1}],50:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+var baseX = require('base-x');
+
 var ALLOWED_CHARS = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz';
 
 var codec = baseX(ALLOWED_CHARS);
@@ -7079,7 +7101,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":45,"base-x":1}],50:[function(require,module,exports){
+},{"./crypto/utils":45,"base-x":1}],51:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -7096,5 +7118,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":46}]},{},[50])(50)
+},{"./currencies":46}]},{},[51])(51)
 });

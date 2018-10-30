@@ -417,6 +417,19 @@ describe('WAValidator.validate()', function () {
             valid('3Myrq5QDgRq3nBVRSSv9UYrP36xTtpJND5y', 'waves', 'testnet');
             valid('3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8', 'waves', 'testnet');
         });  
+
+        it('should return true for correct nano addresses', function () {
+            valid('xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3', 'nano');
+            valid('xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo', 'nano');
+            valid('xrb_35jjmmmh81kydepzeuf9oec8hzkay7msr6yxagzxpcht7thwa5bus5tomgz9', 'nano');
+            valid('xrb_1111111111111111111111111111111111111111111111111111hifc8npp', 'nano');
+            valid('xrb_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est', 'nano');
+            valid('xrb_3wm37qz19zhei7nzscjcopbrbnnachs4p1gnwo5oroi3qonw6inwgoeuufdp', 'nano');
+            valid('xrb_3arg3asgtigae3xckabaaewkx3bzsh7nwz7jkmjos79ihyaxwphhm6qgjps4', 'nano');
+            valid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjmgu', 'nano');
+            valid('xrb_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
+            valid('nano_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
+        });
     });
 
     describe('invalid results', function () {
@@ -651,6 +664,22 @@ describe('WAValidator.validate()', function () {
             invalid('4JpzTwf3i1GeCV76beVr19179oa8j1L8xNSC1bXMtAxxdf4aTTLqubL8EvXfQmUGKt9MMigFtKy91VtoTTSfg1LU7LocPruT6KcGC9RKJV', 'xmr');
         });
 
+        it('should return false for incorrect waves addresses', function () {
+            commonTests('waves');
+            invalid('3P93mVrYnQ4ahaRMYwA2BeWY32eDxTpLVEs1', 'waves');
+            invalid('3P4eeU7v1LMHQFwwT2GW9W99c6vZyytHaj', 'waves');
+            invalid('2P93mVrYnQ4ahaRMYwA2BeWY32eDxTpLVEs', 'waves');
 
+            invalid('3Myrq5QDgRq3nBVRSSv9UYRP36xTtpJND5y', 'waves', 'testnet');
+            invalid('3My3KZgFQ3CrVHgz6vGRt8787sH4oAA1qp8', 'waves', 'testnet');
+        });  
+
+        it('should return false for incorrect nano addresses', function () {
+            commonTests('nano');
+            invalid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'nano');
+            invalid('nano_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjdgu', 'nano');
+            invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'nano');
+            invalid('nano_111111111111111111111111111111111111111111111111111hifc8npp', 'nano');
+        });
     });
 });
