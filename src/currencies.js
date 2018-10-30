@@ -295,8 +295,20 @@ var CURRENCIES = [{
     symbol: 'rep',
     validator: ETHValidator
 }, {
+    name: 'iExec RLC',
+    symbol: 'rlc',
+    validator: ETHValidator    
+}, {
+    name: 'Salt',
+    symbol: 'salt',
+    validator: ETHValidator
+}, {    
     name: 'Status',
     symbol: 'snt',
+    validator: ETHValidator
+}, {
+    name: 'Storj',
+    symbol: 'storj',
     validator: ETHValidator
 }, {
     name: 'Swarm City',
