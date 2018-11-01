@@ -297,12 +297,12 @@ var CURRENCIES = [{
 }, {
     name: 'iExec RLC',
     symbol: 'rlc',
-    validator: ETHValidator    
+    validator: ETHValidator
 }, {
     name: 'Salt',
     symbol: 'salt',
     validator: ETHValidator
-}, {    
+}, {
     name: 'Status',
     symbol: 'snt',
     validator: ETHValidator
@@ -331,11 +331,27 @@ var CURRENCIES = [{
     symbol: 'exp',
     validator: ETHValidator
 }, {
-    name: 'nano',
+    name: 'Viberate',
+    symbol: 'vib',
+    validator: ETHValidator
+}, {
+    name: 'Odyssey',
+    symbol: 'ocn',
+    validator: ETHValidator
+}, {
+    name: 'Polymath',
+    symbol: 'poly',
+    validator: ETHValidator
+}, {
+    name: 'Storm',
+    symbol: 'storm',
+    validator: ETHValidator
+}, {
+    name: 'Nano',
     symbol: 'nano',
     validator: NANOValidator,
 }, {
-    name: 'raiblocks',
+    name: 'RaiBlocks',
     symbol: 'xrb',
     validator: NANOValidator,
 }];
@@ -344,13 +360,9 @@ var CURRENCIES = [{
 module.exports = {
     getByNameOrSymbol: function (currencyNameOrSymbol) {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
-        for (var i = 0; i < CURRENCIES.length; i++) {
-            var currency = CURRENCIES[i];
-            if (currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol) {
-                return currency;
-            }
-        }
-        return null;
+        return CURRENCIES.find(function (currency) {
+            return currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol
+        });
     }
 };
 

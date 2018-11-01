@@ -71,17 +71,19 @@ npm install multicoin-address-validator
 * MonaCoin/mona `'MonaCoin'` or `'mona'`
 * Monero/xmr `'Monero'` or `'xmr'`
 * NameCoin/nmc `'NameCoin'` or `'nmc'`
-* nano/nano `'nano'` or `'nano'`
+* Nano/nano `'Nano'` or `'nano'`
 * Neo/neo `'Neo'` or `'neo'`
 * NeoGas/gas `'NeoGas'` or `'gas'`
 * Numeraire/nmr `'Numeraire'` or `'nmr'`
+* Odyssey/ocn `'Odyssey'` or `'ocn'`
 * OmiseGO/omg `'OmiseGO'` or `'omg'`
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'`
 * PIVX/pivx `'PIVX'` or `'pivx'`
+* Polymath/poly `'Polymath'` or `'poly'`
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
 * ProtoShares/pts `'ProtoShares'` or `'pts'`
 * Qtum/qtum `'Qtum'` or `'qtum'`
-* raiblocks/xrb `'raiblocks'` or `'xrb'`
+* RaiBlocks/xrb `'RaiBlocks'` or `'xrb'`
 * Ripio Credit Network/rcn `'Ripio Credit Network'` or `'rcn'`
 * Ripple/xrp `'Ripple'` or `'xrp'`
 * Salt/salt `'Salt'` or `'salt'`
@@ -89,11 +91,13 @@ npm install multicoin-address-validator
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
 * Status/snt `'Status'` or `'snt'`
 * Storj/storj `'Storj'` or `'storj'`
+* Storm/storm `'Storm'` or `'storm'`
 * Swarm City/swt `'Swarm City'` or `'swt'`
 * TenX/pay `'TenX'` or `'pay'`
 * Tether/usdt `'Tether'` or `'usdt'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
+* Viberate/vib `'Viberate'` or `'vib'`
 * VoteCoin/vot `'VoteCoin'` or `'vot'`
 * Waves/waves `'Waves'` or `'waves'`
 * Wings/wings `'Wings'` or `'wings'`
