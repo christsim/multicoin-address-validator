@@ -2,19 +2,11 @@ var cbor = require('cbor-js');
 var bs58 = require('bs58');
 var CRC = require('crc');
 
-function toArrayBuffer(buf) {
-    var ab = new ArrayBuffer(buf.length);
-    var view = new Uint8Array(ab);
-    for (var i = 0; i < buf.length; ++i) {
-        view[i] = buf[i];
-    }
-    return ab;
-}
 
 function getDecoded(address) {
     try {
         var decoded = bs58.decode(address);
-        return decoded = cbor.decode(toArrayBuffer(decoded));
+        return cbor.decode(new Uint8Array(decoded).buffer);
     } catch (e) {
         // if decoding fails, assume invalid address
         return null;
