@@ -92,7 +92,7 @@ module.exports = function base (ALPHABET) {
   }
 }
 
-},{"safe-buffer":34}],2:[function(require,module,exports){
+},{"safe-buffer":33}],2:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -246,12 +246,6 @@ function fromByteArray (uint8) {
 }
 
 },{}],3:[function(require,module,exports){
-var basex = require('base-x')
-var ALPHABET = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
-
-module.exports = basex(ALPHABET)
-
-},{"base-x":1}],4:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2030,7 +2024,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
+},{"base64-js":2,"ieee754":30}],4:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -2438,62 +2432,62 @@ else if (!global.CBOR)
 
 })(this);
 
-},{}],6:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc1').default;
 
-},{"./es6/crc1":17}],7:[function(require,module,exports){
+},{"./es6/crc1":16}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16').default;
 
-},{"./es6/crc16":18}],8:[function(require,module,exports){
+},{"./es6/crc16":17}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16ccitt').default;
 
-},{"./es6/crc16ccitt":19}],9:[function(require,module,exports){
+},{"./es6/crc16ccitt":18}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16kermit').default;
 
-},{"./es6/crc16kermit":20}],10:[function(require,module,exports){
+},{"./es6/crc16kermit":19}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16modbus').default;
 
-},{"./es6/crc16modbus":21}],11:[function(require,module,exports){
+},{"./es6/crc16modbus":20}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16xmodem').default;
 
-},{"./es6/crc16xmodem":22}],12:[function(require,module,exports){
+},{"./es6/crc16xmodem":21}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc24').default;
 
-},{"./es6/crc24":23}],13:[function(require,module,exports){
+},{"./es6/crc24":22}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc32').default;
 
-},{"./es6/crc32":24}],14:[function(require,module,exports){
+},{"./es6/crc32":23}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc8').default;
 
-},{"./es6/crc8":25}],15:[function(require,module,exports){
+},{"./es6/crc8":24}],14:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc81wire').default;
 
-},{"./es6/crc81wire":26}],16:[function(require,module,exports){
+},{"./es6/crc81wire":25}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crcjam').default;
 
-},{"./es6/crcjam":27}],17:[function(require,module,exports){
+},{"./es6/crcjam":26}],16:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2529,7 +2523,7 @@ var crc1 = (0, _define_crc2.default)('crc1', function (buf, previous) {
 
 exports.default = crc1;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],18:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2569,7 +2563,7 @@ var crc16 = (0, _define_crc2.default)('crc-16', function (buf, previous) {
 
 exports.default = crc16;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],19:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2609,7 +2603,7 @@ var crc16ccitt = (0, _define_crc2.default)('ccitt', function (buf, previous) {
 
 exports.default = crc16ccitt;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],20:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2649,7 +2643,7 @@ var crc16kermit = (0, _define_crc2.default)('kermit', function (buf, previous) {
 
 exports.default = crc16kermit;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],21:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2689,7 +2683,7 @@ var crc16modbus = (0, _define_crc2.default)('crc-16-modbus', function (buf, prev
 
 exports.default = crc16modbus;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],22:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2732,7 +2726,7 @@ var crc16xmodem = (0, _define_crc2.default)('xmodem', function (buf, previous) {
 
 exports.default = crc16xmodem;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],23:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2772,7 +2766,7 @@ var crc24 = (0, _define_crc2.default)('crc-24', function (buf, previous) {
 
 exports.default = crc24;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],24:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2812,7 +2806,7 @@ var crc32 = (0, _define_crc2.default)('crc-32', function (buf, previous) {
 
 exports.default = crc32;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],25:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2852,7 +2846,7 @@ var crc8 = (0, _define_crc2.default)('crc-8', function (buf, previous) {
 
 exports.default = crc8;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],26:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2892,7 +2886,7 @@ var crc81wire = (0, _define_crc2.default)('dallas-1-wire', function (buf, previo
 
 exports.default = crc81wire;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],27:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2934,7 +2928,7 @@ var crcjam = (0, _define_crc2.default)('jam', function (buf) {
 
 exports.default = crcjam;
 
-},{"./create_buffer":28,"./define_crc":29,"buffer":4}],28:[function(require,module,exports){
+},{"./create_buffer":27,"./define_crc":28,"buffer":3}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2950,7 +2944,7 @@ function (val) {
 
 exports.default = createBuffer;
 
-},{"buffer":4}],29:[function(require,module,exports){
+},{"buffer":3}],28:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2968,7 +2962,7 @@ exports.default = function (model, calc) {
   return fn;
 };
 
-},{}],30:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -2985,7 +2979,7 @@ module.exports = {
   crcjam: require('./crcjam')
 };
 
-},{"./crc1":6,"./crc16":7,"./crc16_ccitt":8,"./crc16_kermit":9,"./crc16_modbus":10,"./crc16_xmodem":11,"./crc24":12,"./crc32":13,"./crc8":14,"./crc8_1wire":15,"./crcjam":16}],31:[function(require,module,exports){
+},{"./crc1":5,"./crc16":6,"./crc16_ccitt":7,"./crc16_kermit":8,"./crc16_modbus":9,"./crc16_xmodem":10,"./crc24":11,"./crc32":12,"./crc8":13,"./crc8_1wire":14,"./crcjam":15}],30:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -3071,7 +3065,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],32:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 /*
  A JavaScript implementation of the SHA family of hashes, as
  defined in FIPS PUB 180-4 and FIPS PUB 202, as well as the corresponding
@@ -3102,7 +3096,7 @@ new m,new m,new m,new m,new m,new m];break;case "SHA-512":a=[new m,new m,new m,n
 2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,
 2756734187,3204031479,3329325298];"function"===typeof define&&define.amd?define(function(){return w}):"undefined"!==typeof exports?("undefined"!==typeof module&&module.exports&&(module.exports=w),exports=w):I.jsSHA=w})(this);
 
-},{}],33:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3288,7 +3282,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],34:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -3352,15 +3346,15 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":4}],35:[function(require,module,exports){
+},{"buffer":3}],34:[function(require,module,exports){
 var cbor = require('cbor-js');
-var bs58 = require('bs58');
 var CRC = require('crc');
+var base58 = require('./crypto/base58');
 
 
 function getDecoded(address) {
     try {
-        var decoded = bs58.decode(address);
+        var decoded = base58.decode(address);
         return cbor.decode(new Uint8Array(decoded).buffer);
     } catch (e) {
         // if decoding fails, assume invalid address
@@ -3389,7 +3383,7 @@ module.exports = {
     }
 };
 
-},{"bs58":3,"cbor-js":5,"crc":30}],36:[function(require,module,exports){
+},{"./crypto/base58":36,"cbor-js":4,"crc":29}],35:[function(require,module,exports){
 (function (Buffer){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -3479,7 +3473,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./crypto/base58":37,"./crypto/segwit_addr":43,"./crypto/utils":45,"buffer":4}],37:[function(require,module,exports){
+},{"./crypto/base58":36,"./crypto/segwit_addr":42,"./crypto/utils":44,"buffer":3}],36:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -3527,7 +3521,7 @@ module.exports = {
     }
 };
 
-},{}],38:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -3645,7 +3639,7 @@ function decode (bechString) {
   return {hrp: hrp, data: data.slice(0, data.length - 6)};
 }
 
-},{}],39:[function(require,module,exports){
+},{}],38:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -5096,7 +5090,7 @@ function decode (bechString) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],40:[function(require,module,exports){
+},{}],39:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -5287,7 +5281,7 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
-},{"buffer":4}],41:[function(require,module,exports){
+},{"buffer":3}],40:[function(require,module,exports){
 'use strict';
 
 /**
@@ -5565,7 +5559,7 @@ function toHex (n) {
 
 module.exports = Blake2b;
 
-},{}],42:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -5792,7 +5786,7 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":39}],43:[function(require,module,exports){
+},{"./biginteger":38}],42:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -5888,7 +5882,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":38}],44:[function(require,module,exports){
+},{"./bech32":37}],43:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -6532,7 +6526,7 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":33}],45:[function(require,module,exports){
+},{"_process":32}],44:[function(require,module,exports){
 (function (Buffer){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
@@ -6584,7 +6578,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./blake256":40,"./blake2b":41,"./sha3":44,"buffer":4,"jssha/src/sha256":32}],46:[function(require,module,exports){
+},{"./blake256":39,"./blake2b":40,"./sha3":43,"buffer":3,"jssha/src/sha256":31}],45:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -6960,7 +6954,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":35,"./bitcoin_validator":36,"./ethereum_validator":47,"./monero_validator":48,"./nano_validator":49,"./ripple_validator":50}],47:[function(require,module,exports){
+},{"./ada_validator":34,"./bitcoin_validator":35,"./ethereum_validator":46,"./monero_validator":47,"./nano_validator":48,"./ripple_validator":49}],46:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -6996,7 +6990,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":45}],48:[function(require,module,exports){
+},{"./crypto/utils":44}],47:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var cnBase58 = require('./crypto/cnBase58');
 
@@ -7058,7 +7052,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/cnBase58":42,"./crypto/utils":45}],49:[function(require,module,exports){
+},{"./crypto/cnBase58":41,"./crypto/utils":44}],48:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -7087,7 +7081,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":45,"base-x":1}],50:[function(require,module,exports){
+},{"./crypto/utils":44,"base-x":1}],49:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -7117,7 +7111,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":45,"base-x":1}],51:[function(require,module,exports){
+},{"./crypto/utils":44,"base-x":1}],50:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -7134,5 +7128,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":46}]},{},[51])(51)
+},{"./currencies":45}]},{},[50])(50)
 });
