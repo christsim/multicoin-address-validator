@@ -250,6 +250,13 @@ var CURRENCIES = [
     validator: XMRValidator
   },
   {
+    name: 'loki',
+    symbol: 'loki',
+    addressTypes: { prod: ['114', '116'], testnet: [] },
+    iAddressTypes: { prod: ['115'], testnet: [] },
+    validator: XMRValidator
+  },
+  {
     name: 'lbry',
     symbol: 'lbc',
     addressTypes: { prod: ['55'], testnet: [] },
