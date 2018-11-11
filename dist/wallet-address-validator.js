@@ -863,7 +863,7 @@ function typedArraySupport () {
   // Can typed array instances can be augmented?
   try {
     var arr = new Uint8Array(1)
-    arr.__proto__ = { __proto__: Uint8Array.prototype, foo: function () { return 42 } }
+    arr.__proto__ = {__proto__: Uint8Array.prototype, foo: function () { return 42 }}
     return arr.foo() === 42
   } catch (e) {
     return false
@@ -871,24 +871,26 @@ function typedArraySupport () {
 }
 
 Object.defineProperty(Buffer.prototype, 'parent', {
-  enumerable: true,
   get: function () {
-    if (!Buffer.isBuffer(this)) return undefined
+    if (!(this instanceof Buffer)) {
+      return undefined
+    }
     return this.buffer
   }
 })
 
 Object.defineProperty(Buffer.prototype, 'offset', {
-  enumerable: true,
   get: function () {
-    if (!Buffer.isBuffer(this)) return undefined
+    if (!(this instanceof Buffer)) {
+      return undefined
+    }
     return this.byteOffset
   }
 })
 
 function createBuffer (length) {
   if (length > K_MAX_LENGTH) {
-    throw new RangeError('The value "' + length + '" is invalid for option "size"')
+    throw new RangeError('Invalid typed array length')
   }
   // Return an augmented `Uint8Array` instance
   var buf = new Uint8Array(length)
@@ -910,8 +912,8 @@ function Buffer (arg, encodingOrOffset, length) {
   // Common case.
   if (typeof arg === 'number') {
     if (typeof encodingOrOffset === 'string') {
-      throw new TypeError(
-        'The "string" argument must be of type string. Received type number'
+      throw new Error(
+        'If encoding is specified then the first argument must be a string'
       )
     }
     return allocUnsafe(arg)
@@ -920,7 +922,7 @@ function Buffer (arg, encodingOrOffset, length) {
 }
 
 // Fix subarray() in ES2016. See: https://github.com/feross/buffer/pull/97
-if (typeof Symbol !== 'undefined' && Symbol.species != null &&
+if (typeof Symbol !== 'undefined' && Symbol.species &&
     Buffer[Symbol.species] === Buffer) {
   Object.defineProperty(Buffer, Symbol.species, {
     value: null,
@@ -933,51 +935,19 @@ if (typeof Symbol !== 'undefined' && Symbol.species != null &&
 Buffer.poolSize = 8192 // not used by this implementation
 
 function from (value, encodingOrOffset, length) {
+  if (typeof value === 'number') {
+    throw new TypeError('"value" argument must not be a number')
+  }
+
+  if (isArrayBuffer(value) || (value && isArrayBuffer(value.buffer))) {
+    return fromArrayBuffer(value, encodingOrOffset, length)
+  }
+
   if (typeof value === 'string') {
     return fromString(value, encodingOrOffset)
   }
 
-  if (ArrayBuffer.isView(value)) {
-    return fromArrayLike(value)
-  }
-
-  if (value == null) {
-    throw TypeError(
-      'The first argument must be one of type string, Buffer, ArrayBuffer, Array, ' +
-      'or Array-like Object. Received type ' + (typeof value)
-    )
-  }
-
-  if (isInstance(value, ArrayBuffer) ||
-      (value && isInstance(value.buffer, ArrayBuffer))) {
-    return fromArrayBuffer(value, encodingOrOffset, length)
-  }
-
-  if (typeof value === 'number') {
-    throw new TypeError(
-      'The "value" argument must not be of type number. Received type number'
-    )
-  }
-
-  var valueOf = value.valueOf && value.valueOf()
-  if (valueOf != null && valueOf !== value) {
-    return Buffer.from(valueOf, encodingOrOffset, length)
-  }
-
-  var b = fromObject(value)
-  if (b) return b
-
-  if (typeof Symbol !== 'undefined' && Symbol.toPrimitive != null &&
-      typeof value[Symbol.toPrimitive] === 'function') {
-    return Buffer.from(
-      value[Symbol.toPrimitive]('string'), encodingOrOffset, length
-    )
-  }
-
-  throw new TypeError(
-    'The first argument must be one of type string, Buffer, ArrayBuffer, Array, ' +
-    'or Array-like Object. Received type ' + (typeof value)
-  )
+  return fromObject(value)
 }
 
 /**
@@ -1001,7 +971,7 @@ function assertSize (size) {
   if (typeof size !== 'number') {
     throw new TypeError('"size" argument must be of type number')
   } else if (size < 0) {
-    throw new RangeError('The value "' + size + '" is invalid for option "size"')
+    throw new RangeError('"size" argument must not be negative')
   }
 }
 
@@ -1116,16 +1086,20 @@ function fromObject (obj) {
     return buf
   }
 
-  if (obj.length !== undefined) {
-    if (typeof obj.length !== 'number' || numberIsNaN(obj.length)) {
-      return createBuffer(0)
+  if (obj) {
+    if (ArrayBuffer.isView(obj) || 'length' in obj) {
+      if (typeof obj.length !== 'number' || numberIsNaN(obj.length)) {
+        return createBuffer(0)
+      }
+      return fromArrayLike(obj)
     }
-    return fromArrayLike(obj)
+
+    if (obj.type === 'Buffer' && Array.isArray(obj.data)) {
+      return fromArrayLike(obj.data)
+    }
   }
 
-  if (obj.type === 'Buffer' && Array.isArray(obj.data)) {
-    return fromArrayLike(obj.data)
-  }
+  throw new TypeError('The first argument must be one of type string, Buffer, ArrayBuffer, Array, or Array-like Object.')
 }
 
 function checked (length) {
@@ -1146,17 +1120,12 @@ function SlowBuffer (length) {
 }
 
 Buffer.isBuffer = function isBuffer (b) {
-  return b != null && b._isBuffer === true &&
-    b !== Buffer.prototype // so Buffer.isBuffer(Buffer.prototype) will be false
+  return b != null && b._isBuffer === true
 }
 
 Buffer.compare = function compare (a, b) {
-  if (isInstance(a, Uint8Array)) a = Buffer.from(a, a.offset, a.byteLength)
-  if (isInstance(b, Uint8Array)) b = Buffer.from(b, b.offset, b.byteLength)
   if (!Buffer.isBuffer(a) || !Buffer.isBuffer(b)) {
-    throw new TypeError(
-      'The "buf1", "buf2" arguments must be one of type Buffer or Uint8Array'
-    )
+    throw new TypeError('Arguments must be Buffers')
   }
 
   if (a === b) return 0
@@ -1217,7 +1186,7 @@ Buffer.concat = function concat (list, length) {
   var pos = 0
   for (i = 0; i < list.length; ++i) {
     var buf = list[i]
-    if (isInstance(buf, Uint8Array)) {
+    if (ArrayBuffer.isView(buf)) {
       buf = Buffer.from(buf)
     }
     if (!Buffer.isBuffer(buf)) {
@@ -1233,19 +1202,15 @@ function byteLength (string, encoding) {
   if (Buffer.isBuffer(string)) {
     return string.length
   }
-  if (ArrayBuffer.isView(string) || isInstance(string, ArrayBuffer)) {
+  if (ArrayBuffer.isView(string) || isArrayBuffer(string)) {
     return string.byteLength
   }
   if (typeof string !== 'string') {
-    throw new TypeError(
-      'The "string" argument must be one of type string, Buffer, or ArrayBuffer. ' +
-      'Received type ' + typeof string
-    )
+    string = '' + string
   }
 
   var len = string.length
-  var mustMatch = (arguments.length > 2 && arguments[2] === true)
-  if (!mustMatch && len === 0) return 0
+  if (len === 0) return 0
 
   // Use a for loop to avoid recursion
   var loweredCase = false
@@ -1257,6 +1222,7 @@ function byteLength (string, encoding) {
         return len
       case 'utf8':
       case 'utf-8':
+      case undefined:
         return utf8ToBytes(string).length
       case 'ucs2':
       case 'ucs-2':
@@ -1268,9 +1234,7 @@ function byteLength (string, encoding) {
       case 'base64':
         return base64ToBytes(string).length
       default:
-        if (loweredCase) {
-          return mustMatch ? -1 : utf8ToBytes(string).length // assume utf8
-        }
+        if (loweredCase) return utf8ToBytes(string).length // assume utf8
         encoding = ('' + encoding).toLowerCase()
         loweredCase = true
     }
@@ -1417,20 +1381,16 @@ Buffer.prototype.equals = function equals (b) {
 Buffer.prototype.inspect = function inspect () {
   var str = ''
   var max = exports.INSPECT_MAX_BYTES
-  str = this.toString('hex', 0, max).replace(/(.{2})/g, '$1 ').trim()
-  if (this.length > max) str += ' ... '
+  if (this.length > 0) {
+    str = this.toString('hex', 0, max).match(/.{2}/g).join(' ')
+    if (this.length > max) str += ' ... '
+  }
   return '<Buffer ' + str + '>'
 }
 
 Buffer.prototype.compare = function compare (target, start, end, thisStart, thisEnd) {
-  if (isInstance(target, Uint8Array)) {
-    target = Buffer.from(target, target.offset, target.byteLength)
-  }
   if (!Buffer.isBuffer(target)) {
-    throw new TypeError(
-      'The "target" argument must be one of type Buffer or Uint8Array. ' +
-      'Received type ' + (typeof target)
-    )
+    throw new TypeError('Argument must be a Buffer')
   }
 
   if (start === undefined) {
@@ -1509,7 +1469,7 @@ function bidirectionalIndexOf (buffer, val, byteOffset, encoding, dir) {
   } else if (byteOffset < -0x80000000) {
     byteOffset = -0x80000000
   }
-  byteOffset = +byteOffset // Coerce to Number.
+  byteOffset = +byteOffset  // Coerce to Number.
   if (numberIsNaN(byteOffset)) {
     // byteOffset: it it's undefined, null, NaN, "foo", etc, search whole buffer
     byteOffset = dir ? 0 : (buffer.length - 1)
@@ -1761,8 +1721,8 @@ function utf8Slice (buf, start, end) {
     var codePoint = null
     var bytesPerSequence = (firstByte > 0xEF) ? 4
       : (firstByte > 0xDF) ? 3
-        : (firstByte > 0xBF) ? 2
-          : 1
+      : (firstByte > 0xBF) ? 2
+      : 1
 
     if (i + bytesPerSequence <= end) {
       var secondByte, thirdByte, fourthByte, tempCodePoint
@@ -2425,7 +2385,7 @@ Buffer.prototype.fill = function fill (val, start, end, encoding) {
   } else {
     var bytes = Buffer.isBuffer(val)
       ? val
-      : Buffer.from(val, encoding)
+      : new Buffer(val, encoding)
     var len = bytes.length
     if (len === 0) {
       throw new TypeError('The value "' + val +
@@ -2580,16 +2540,15 @@ function blitBuffer (src, dst, offset, length) {
   return i
 }
 
-// ArrayBuffer or Uint8Array objects from other contexts (i.e. iframes) do not pass
-// the `instanceof` check but they should be treated as of that type.
-// See: https://github.com/feross/buffer/issues/166
-function isInstance (obj, type) {
-  return obj instanceof type ||
-    (obj != null && obj.constructor != null && obj.constructor.name != null &&
-      obj.constructor.name === type.name)
+// ArrayBuffers from another context (i.e. an iframe) do not pass the `instanceof` check
+// but they should be treated as valid. See: https://github.com/feross/buffer/issues/166
+function isArrayBuffer (obj) {
+  return obj instanceof ArrayBuffer ||
+    (obj != null && obj.constructor != null && obj.constructor.name === 'ArrayBuffer' &&
+      typeof obj.byteLength === 'number')
 }
+
 function numberIsNaN (obj) {
-  // For IE11 support
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
@@ -5513,13 +5472,7 @@ module.exports = {
     }
 };
 
-<<<<<<< HEAD
-},{"./crypto/base58":102,"./crypto/segwit_addr":105,"./crypto/utils":107}],102:[function(require,module,exports){
-||||||| merged common ancestors
-},{"./crypto/base58":9,"./crypto/segwit_addr":12,"./crypto/utils":14}],9:[function(require,module,exports){
-=======
-},{"./crypto/base58":9,"./crypto/segwit_addr":14,"./crypto/utils":16}],9:[function(require,module,exports){
->>>>>>> monero
+},{"./crypto/base58":102,"./crypto/segwit_addr":107,"./crypto/utils":109}],102:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -5685,12 +5638,7 @@ function decode (bechString) {
   return {hrp: hrp, data: data.slice(0, data.length - 6)};
 }
 
-<<<<<<< HEAD
 },{}],104:[function(require,module,exports){
-||||||| merged common ancestors
-},{}],11:[function(require,module,exports){
-=======
-},{}],11:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -7141,8 +7089,7 @@ function decode (bechString) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],12:[function(require,module,exports){
->>>>>>> monero
+},{}],105:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -7333,12 +7280,7 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
-<<<<<<< HEAD
-},{"buffer":7}],105:[function(require,module,exports){
-||||||| merged common ancestors
-},{"buffer":3}],12:[function(require,module,exports){
-=======
-},{"buffer":3}],13:[function(require,module,exports){
+},{"buffer":7}],106:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -7565,8 +7507,7 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":11}],14:[function(require,module,exports){
->>>>>>> monero
+},{"./biginteger":104}],107:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -7662,13 +7603,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-<<<<<<< HEAD
-},{"./bech32":103}],106:[function(require,module,exports){
-||||||| merged common ancestors
-},{"./bech32":10}],13:[function(require,module,exports){
-=======
-},{"./bech32":10}],15:[function(require,module,exports){
->>>>>>> monero
+},{"./bech32":103}],108:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -8312,81 +8247,59 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-<<<<<<< HEAD
-},{"_process":99}],107:[function(require,module,exports){
-||||||| merged common ancestors
-},{"_process":6}],14:[function(require,module,exports){
-=======
-},{"_process":6}],16:[function(require,module,exports){
->>>>>>> monero
-var jsSHA = require('jssha/src/sha256');
-var Blake256 = require('./blake256');
-var keccak256 = require('./sha3')['keccak256'];
+},{"_process":99}],109:[function(require,module,exports){
+var jsSHA = require('jssha/src/sha256')
+var Blake256 = require('./blake256')
+var keccak256 = require('./sha3')['keccak256']
 var blake = require('blakejs')
 
-function numberToHex (number) {
-    var hex = Math.round(number).toString(16);
-    if(hex.length === 1) {
-        hex = '0' + hex;
-    }
-    return hex;
+function numberToHex(number) {
+  var hex = Math.round(number).toString(16)
+  if (hex.length === 1) {
+    hex = '0' + hex
+  }
+  return hex
 }
 
 module.exports = {
-    toHex: function (arrayOfBytes) {
-        var hex = '';
-        for(var i = 0; i < arrayOfBytes.length; i++) {
-            hex += numberToHex(arrayOfBytes[i]);
-        }
-        return hex;
-    },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX');
-        sha.update(hexString);
-        return sha.getHash('HEX');
-    },
-    sha256Checksum: function (payload) {
-        return this.sha256(this.sha256(payload)).substr(0, 8);
-    },
-    blake256: function (hexString) {
-        return new Blake256().update(hexString, 'hex').digest('hex');
-    },
-    blake256Checksum: function (payload) {
-        return this.blake256(this.blake256(payload)).substr(0, 8);
-    },
-    keccak256: function (hexString) {
-        return keccak256(hexString);
-<<<<<<< HEAD
-    },
-    blake2b: blake.blake2b
-||||||| merged common ancestors
+  toHex: function(arrayOfBytes) {
+    var hex = ''
+    for (var i = 0; i < arrayOfBytes.length; i++) {
+      hex += numberToHex(arrayOfBytes[i])
     }
-=======
-    },
-    keccak256Checksum: function (payload) {
-        return keccak256(payload).toString().substr(0, 8);
-    }
->>>>>>> monero
-};
+    return hex
+  },
+  sha256: function(hexString) {
+    var sha = new jsSHA('SHA-256', 'HEX')
+    sha.update(hexString)
+    return sha.getHash('HEX')
+  },
+  sha256Checksum: function(payload) {
+    return this.sha256(this.sha256(payload)).substr(0, 8)
+  },
+  blake256: function(hexString) {
+    return new Blake256().update(hexString, 'hex').digest('hex')
+  },
+  blake256Checksum: function(payload) {
+    return this.blake256(this.blake256(payload)).substr(0, 8)
+  },
+  keccak256: function(hexString) {
+    return keccak256(hexString)
+  },
+  blake2b: blake.blake2b,
+  keccak256Checksum: function(payload) {
+    return keccak256(payload)
+      .toString()
+      .substr(0, 8)
+  }
+}
 
-<<<<<<< HEAD
-},{"./blake256":104,"./sha3":106,"blakejs":5,"jssha/src/sha256":9}],108:[function(require,module,exports){
+},{"./blake256":105,"./sha3":108,"blakejs":5,"jssha/src/sha256":9}],110:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator')
 var ETHValidator = require('./ethereum_validator')
 var BTCValidator = require('./bitcoin_validator')
 var SCValidator = require('./siacoin_validator')
-||||||| merged common ancestors
-},{"./blake256":11,"./sha3":13,"jssha/src/sha256":5}],15:[function(require,module,exports){
-var XRPValidator = require('./ripple_validator');
-var ETHValidator = require('./ethereum_validator');
-var BTCValidator = require('./bitcoin_validator');
-=======
-},{"./blake256":12,"./sha3":15,"jssha/src/sha256":5}],17:[function(require,module,exports){
-var XRPValidator = require('./ripple_validator');
-var ETHValidator = require('./ethereum_validator');
-var BTCValidator = require('./bitcoin_validator');
-var XMRValidator = require('./monero_validator');
->>>>>>> monero
+var XMRValidator = require('./monero_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [
@@ -8612,30 +8525,34 @@ var CURRENCIES = [
     validator: BTCValidator
   },
   {
+    name: 'bankex',
+    symbol: 'bkx',
+    validator: ETHValidator
+  },
+  {
     name: 'siacoin',
     symbol: 'sc',
     validator: SCValidator
   },
   {
-    name: 'bankex',
-    symbol: 'bkx',
-    validator: ETHValidator
-<<<<<<< HEAD
-  }
-]
-||||||| merged common ancestors
-}];
-
-=======
-},{
+    name: 'hyperspace',
+    symbol: 'xsc',
+    validator: SCValidator
+  },
+  {
     name: 'monero',
     symbol: 'xmr',
-    addressTypes: {prod: ['18'], testnet: ['53']},
-    iAddressTypes: {prod: ['19'], testnet: ['54']},
+    addressTypes: { prod: ['18'], testnet: ['53'] },
+    iAddressTypes: { prod: ['19'], testnet: ['54'] },
     validator: XMRValidator
-}];
-
->>>>>>> monero
+  },
+  {
+    name: 'lbry',
+    symbol: 'lbc',
+    addressTypes: { prod: ['55'], testnet: [] },
+    validator: BTCValidator
+  }
+]
 
 module.exports = {
   getByNameOrSymbol: function(currencyNameOrSymbol) {
@@ -8650,13 +8567,7 @@ module.exports = {
   }
 }
 
-<<<<<<< HEAD
-},{"./bitcoin_validator":101,"./ethereum_validator":109,"./ripple_validator":110,"./siacoin_validator":111}],109:[function(require,module,exports){
-||||||| merged common ancestors
-},{"./bitcoin_validator":8,"./ethereum_validator":16,"./ripple_validator":17}],16:[function(require,module,exports){
-=======
-},{"./bitcoin_validator":8,"./ethereum_validator":18,"./monero_validator":19,"./ripple_validator":20}],18:[function(require,module,exports){
->>>>>>> monero
+},{"./bitcoin_validator":101,"./ethereum_validator":111,"./monero_validator":112,"./ripple_validator":113,"./siacoin_validator":114}],111:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -8692,12 +8603,7 @@ module.exports = {
     }
 };
 
-<<<<<<< HEAD
-},{"./crypto/utils":107}],110:[function(require,module,exports){
-||||||| merged common ancestors
-},{"./crypto/utils":14}],17:[function(require,module,exports){
-=======
-},{"./crypto/utils":16}],19:[function(require,module,exports){
+},{"./crypto/utils":109}],112:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var cnBase58 = require('./crypto/cnBase58');
 
@@ -8759,8 +8665,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/cnBase58":13,"./crypto/utils":16}],20:[function(require,module,exports){
->>>>>>> monero
+},{"./crypto/cnBase58":106,"./crypto/utils":109}],113:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -8790,20 +8695,9 @@ module.exports = {
     }
 };
 
-<<<<<<< HEAD
-},{"./crypto/utils":107,"base-x":1}],111:[function(require,module,exports){
+},{"./crypto/utils":109,"base-x":1}],114:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
-
-// Convert a byte array to a hex string
-function bytesToHex(bytes) {
-  var hex = []
-  for (var b in bytes) {
-    hex.push((b >>> 4).toString(16))
-    hex.push((b & 0xf).toString(16))
-  }
-  return hex.join('')
-}
 
 function hexToBytes(hex) {
   var bytes = []
@@ -8828,16 +8722,11 @@ module.exports = {
     var checksumBytes = Uint8Array.from(aBytes.slice(0, 32))
     var check = Uint8Array.from(aBytes.slice(32, 38))
     var blakeHash = cryptoUtils.blake2b(checksumBytes, null, 32).slice(0, 6)
-    return isEqual(blakeHash, check)
+    return !!isEqual(blakeHash, check)
   }
 }
 
-},{"./crypto/utils":107,"lodash/isEqual":90}],112:[function(require,module,exports){
-||||||| merged common ancestors
-},{"./crypto/utils":14,"base-x":1}],18:[function(require,module,exports){
-=======
-},{"./crypto/utils":16,"base-x":1}],21:[function(require,module,exports){
->>>>>>> monero
+},{"./crypto/utils":109,"lodash/isEqual":90}],115:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -8854,11 +8743,5 @@ module.exports = {
     },
 };
 
-<<<<<<< HEAD
-},{"./currencies":108}]},{},[112])(112)
-||||||| merged common ancestors
-},{"./currencies":15}]},{},[18])(18)
-=======
-},{"./currencies":17}]},{},[21])(21)
->>>>>>> monero
+},{"./currencies":110}]},{},[115])(115)
 });

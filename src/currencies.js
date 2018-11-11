@@ -248,6 +248,12 @@ var CURRENCIES = [
     addressTypes: { prod: ['18'], testnet: ['53'] },
     iAddressTypes: { prod: ['19'], testnet: ['54'] },
     validator: XMRValidator
+  },
+  {
+    name: 'lbry',
+    symbol: 'lbc',
+    addressTypes: { prod: ['55'], testnet: [] },
+    validator: BTCValidator
   }
 ]
 

@@ -24,7 +24,6 @@ module.exports = {
     var checksumBytes = Uint8Array.from(aBytes.slice(0, 32))
     var check = Uint8Array.from(aBytes.slice(32, 38))
     var blakeHash = cryptoUtils.blake2b(checksumBytes, null, 32).slice(0, 6)
-    const isValid = !!isEqual(blakeHash, check)
-    return isValid
+    return !!isEqual(blakeHash, check)
   }
 }
