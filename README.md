@@ -62,9 +62,12 @@ npm install multicoin-address-validator
 * Gnosis/gno `'Gnosis'` or `'gno'`
 * Golem/gnt `'Golem'` or `'gnt'`
 * Hush/hush `'Hush'` or `'hush'`
+* hyperspace/xsc `'hyperspace'` or `'xsc'`
 * iExec RLC/rlc `'iExec RLC'` or `'rlc'`
 * Komodo/kmd `'Komodo'` or `'kmd'`
+* lbry/lbc `'lbry'` or `'lbc'`
 * LiteCoin/ltc `'LiteCoin'` or `'ltc'`
+* loki/loki `'loki'` or `'loki'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`
 * Melon/mln `'Melon'` or `'mln'`
@@ -87,6 +90,7 @@ npm install multicoin-address-validator
 * Ripio Credit Network/rcn `'Ripio Credit Network'` or `'rcn'`
 * Ripple/xrp `'Ripple'` or `'xrp'`
 * Salt/salt `'Salt'` or `'salt'`
+* siacoin/sc `'siacoin'` or `'sc'`
 * SnowGem/sng `'SnowGem'` or `'sng'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
 * Status/snt `'Status'` or `'snt'`

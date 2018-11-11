@@ -4,6 +4,7 @@ var BTCValidator = require('./bitcoin_validator');
 var ADAValidator = require('./ada_validator');
 var XMRValidator = require('./monero_validator');
 var NANOValidator = require('./nano_validator');
+var SCValidator = require('./siacoin_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -354,6 +355,25 @@ var CURRENCIES = [{
     name: 'RaiBlocks',
     symbol: 'xrb',
     validator: NANOValidator,
+}, {
+    name: 'siacoin',
+    symbol: 'sc',
+    validator: SCValidator
+}, {
+    name: 'hyperspace',
+    symbol: 'xsc',
+    validator: SCValidator
+}, {
+    name: 'loki',
+    symbol: 'loki',
+    addressTypes: { prod: ['114', '116'], testnet: [] },
+    iAddressTypes: { prod: ['115'], testnet: [] },
+    validator: XMRValidator
+}, {
+    name: 'lbry',
+    symbol: 'lbc',
+    addressTypes: { prod: ['55'], testnet: [] },
+    validator: BTCValidator
 }];
 
 
