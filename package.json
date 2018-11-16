@@ -30,7 +30,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.3.5",
+  "version": "0.3.6",
   "author": "Chris <chris.tsim@gmail.com>",
   "homepage": "https://github.com/christsim/multicoin-address-validator",
   "license": "MIT",
