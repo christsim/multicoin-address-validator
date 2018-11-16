@@ -199,7 +199,7 @@ var CURRENCIES = [{
 }, {
     name: 'Qtum',
     symbol: 'qtum',
-    addressTypes: { prod: ['3a', '32'], testnet: ['6f', 'c4'] },
+    addressTypes: { prod: ['3a', '32'], testnet: ['78', '6e'] },
     validator: BTCValidator
 }, {
     name: 'Waves',

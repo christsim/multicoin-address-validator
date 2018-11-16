@@ -25,6 +25,10 @@ describe('WAValidator.validate()', function () {
       valid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'btc');
       valid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'btc', 'prod');
       valid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'btc', 'both');
+      valid('15uwigGExiNQxTNr1QSZYPXJMp9Px2YnVU', 'btc', 'prod');
+      valid('3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn', 'btc', 'prod');
+      valid('38mKdURe1zcQyrFqRLzR8PRao3iLGEPVsU', 'btc', 'prod');
+      valid('mptPo5AvLzJXi4T82vR6g82fT5uJ6HsQCu', 'btc', 'both');
       valid('1oNLrsHnBcR6dpaBpwz3LSwutbUNkNSjs', 'bitcoin');
       valid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'bitcoin', 'testnet');
       valid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'bitcoin', 'both');
@@ -293,7 +297,13 @@ describe('WAValidator.validate()', function () {
     it('should return true for correct qtum addresses', function () {
       valid('QNjUiD3bVVZwYTc5AhpeQbS1mfb2guyWhe', 'qtum');
       valid('QVZnSrMwKp6AL4FjUPPnfFgsma6j1DXQXu', 'QTUM');
-      valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'qtum', 'testnet');
+      valid('MCgyroQse81wuv5RwPpY5DXDNxeafzLFJ8', 'QTUM');
+      valid('QQYySVc5WEe3g6PnNFYmspqG5CfSG8rnma', 'QTUM');
+      valid('MSvJQBJMZs1dhxz7UAWa2si4iyMD2FHQd5', 'QTUM');
+      
+      valid('qcSLSxN1sngCWSrKFZ6UC7ri4hhVSdq9SU', 'qtum', 'testnet');
+      valid('qJnbEdrm9ybjVqDCaX5SWNBHmZy2X7YbPT', 'qtum', 'testnet');
+      valid('qchBPDUYswobzpDmY5DsTStt74sTYQtaQv', 'qtum', 'testnet');
     });
 
     it('should return true for correct votecoin addresses', function () {
