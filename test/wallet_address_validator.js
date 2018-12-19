@@ -41,6 +41,9 @@ describe('WAValidator.validate()', function () {
       valid('3NJZLcZEEYBpxYEUGewU4knsQRn1WM5Fkt', 'bitcoin');
       valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'bitcoin', 'testnet');
 
+      // regtest
+      valid('GSa5espVLNseXEfKt46zEdS6jrPkmFghBU', 'bitcoin', 'testnet');
+
       // segwit addresses
       valid('BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4', 'bitcoin');
       valid('tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7', 'bitcoin');

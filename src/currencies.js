@@ -10,7 +10,7 @@ var SCValidator = require('./siacoin_validator')
 var CURRENCIES = [{
     name: 'Bitcoin',
     symbol: 'btc',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26']},
     validator: BTCValidator
 }, {
     name: 'BitcoinCash',
