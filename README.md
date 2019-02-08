@@ -67,6 +67,7 @@ npm install multicoin-address-validator
 * Komodo/kmd `'Komodo'` or `'kmd'`
 * lbry/lbc `'lbry'` or `'lbc'`
 * LiteCoin/ltc `'LiteCoin'` or `'ltc'`
+* Lisk/lsk `'Lisk'` or `'lsk'`
 * loki/loki `'loki'` or `'loki'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`

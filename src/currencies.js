@@ -7,6 +7,7 @@ var NANOValidator = require('./nano_validator');
 var SCValidator = require('./siacoin_validator')
 var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
+var LSKValidator = require('./lisk_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -385,6 +386,10 @@ var CURRENCIES = [{
     name: 'nem',
     symbol: 'xem',
     validator: NEMValidator
+}, {
+    name: 'lisk',
+    symbol: 'lsk',
+    validator: LSKValidator
 }];
 
 

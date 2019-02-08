@@ -505,6 +505,15 @@ describe('WAValidator.validate()', function () {
       valid('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'xem');
       valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
     });
+
+    it('should return true for correct lsk addresses', function () {
+      valid('469226551L', 'lsk');
+      valid('15823701926930889868L', 'lsk');
+      valid('1657699692452120239L', 'lsk');
+      valid('555666666999992L', 'lsk');
+      valid('6853061742992593192L', 'lsk');
+      valid('530464791801L', 'lsk');
+    });
   });
 
   describe('invalid results', function () {
@@ -780,6 +789,18 @@ describe('WAValidator.validate()', function () {
       commonTests('nem');
       invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'nem');
       invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'nem');
+
+      invalid('3Myrq5QDgRq3nBVRSSv9UYRP36xTtpJND5y', 'nem', 'testnet');
+      invalid('3My3KZgFQ3CrVHgz6vGRt8787sH4oAA1qp8', 'nem', 'testnet');
+    });
+    //15823701926930889868L
+    it('should return false for incorrect lsk addresses', function () {
+      commonTests('nem');
+      invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'lsk');
+      invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'lsk');
+
+      invalid('158237019269308898689L', 'lsk');
+      invalid('158237A192B930C898689L', 'lsk');
     });
   });
 });
