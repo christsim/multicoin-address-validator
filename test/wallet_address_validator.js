@@ -500,6 +500,11 @@ describe('WAValidator.validate()', function () {
       valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
       valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
     });
+
+    it('should return true for correct nem addresses', function () {
+      valid('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'xem');
+      valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
+    });
   });
 
   describe('invalid results', function () {
@@ -769,6 +774,12 @@ describe('WAValidator.validate()', function () {
       commonTests('trx');
       invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'trx');
       invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx');
+    });
+
+    it('should return false for incorrect nem addresses', function () {
+      commonTests('nem');
+      invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'nem');
+      invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'nem');
     });
   });
 });

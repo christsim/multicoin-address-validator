@@ -6,6 +6,7 @@ var XMRValidator = require('./monero_validator');
 var NANOValidator = require('./nano_validator');
 var SCValidator = require('./siacoin_validator')
 var TRXValidator = require('./tron_validator');
+var NEMValidator = require('./nem_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -380,6 +381,10 @@ var CURRENCIES = [{
     symbol: 'trx',
     addressTypes: {prod: [0x41], testnet: [0xa0]},
     validator: TRXValidator
+}, {
+    name: 'nem',
+    symbol: 'xem',
+    validator: NEMValidator
 }];
 
 
