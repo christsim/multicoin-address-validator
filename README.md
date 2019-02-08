@@ -75,6 +75,7 @@ npm install multicoin-address-validator
 * Monero/xmr `'Monero'` or `'xmr'`
 * NameCoin/nmc `'NameCoin'` or `'nmc'`
 * Nano/nano `'Nano'` or `'nano'`
+* Nem/nem `'Nem'` or `'xem'`
 * Neo/neo `'Neo'` or `'neo'`
 * NeoGas/gas `'NeoGas'` or `'gas'`
 * Numeraire/nmr `'Numeraire'` or `'nmr'`
@@ -99,6 +100,7 @@ npm install multicoin-address-validator
 * Swarm City/swt `'Swarm City'` or `'swt'`
 * TenX/pay `'TenX'` or `'pay'`
 * Tether/usdt `'Tether'` or `'usdt'`
+* Tron/trono `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
 * Viberate/vib `'Viberate'` or `'vib'`
