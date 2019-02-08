@@ -495,6 +495,11 @@ describe('WAValidator.validate()', function () {
       valid('bTFXPcV3a8iVDezogvHTHezWZ1mZGWpPDc', 'lbc')
       valid('bK2uEVn6UuwjCTUZ1Dfj5HhWYi9BtqZDDm', 'lbry')
     })
+
+    it('should return true for correct trx addresses', function () {
+      valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
+      valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+    });
   });
 
   describe('invalid results', function () {
@@ -760,5 +765,10 @@ describe('WAValidator.validate()', function () {
       invalid('ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372')
     })
 
+    it('should return false for incorrect tron addresses', function () {
+      commonTests('trx');
+      invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'trx');
+      invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx');
+    });
   });
 });

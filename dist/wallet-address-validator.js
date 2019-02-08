@@ -9008,6 +9008,7 @@ var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
+var base58 = require('./base58');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -9015,6 +9016,70 @@ function numberToHex(number) {
         hex = '0' + hex
     }
     return hex
+}
+
+function isHexChar(c) {
+    if ((c >= 'A' && c <= 'F') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= '0' && c <= '9')) {
+        return 1;
+    }
+    return 0;
+}
+
+/* Convert a hex char to value */
+function hexChar2byte(c) {
+    var d = 0;
+    if (c >= 'A' && c <= 'F') {
+        d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+    }
+    else if (c >= 'a' && c <= 'f') {
+        d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
+    }
+    else if (c >= '0' && c <= '9') {
+        d = c.charCodeAt(0) - '0'.charCodeAt(0);
+    }
+    return d;
+}
+
+/* Convert a byte to string */
+function byte2hexStr(byte) {
+    var hexByteMap = "0123456789ABCDEF";
+    var str = "";
+    str += hexByteMap.charAt(byte >> 4);
+    str += hexByteMap.charAt(byte & 0x0f);
+    return str;
+}
+
+function byteArray2hexStr(byteArray) {
+    var str = "";
+    for (var i = 0; i < (byteArray.length - 1); i++) {
+        str += byte2hexStr(byteArray[i]);
+    }
+    str += byte2hexStr(byteArray[i]);
+    return str;
+}
+
+function hexStr2byteArray(str) {
+    var byteArray = Array();
+    var d = 0;
+    var i = 0;
+    var j = 0;
+    var k = 0;
+
+     for (i = 0; i < str.length; i++) {
+        var c = str.charAt(i);
+        if (isHexChar(c)) {
+            d <<= 4;
+            d += hexChar2byte(c);
+            j++;
+            if (0 === (j % 2)) {
+                byteArray[k++] = d;
+                d = 0;
+            }
+        }
+    }
+    return byteArray;
 }
 
 module.exports = {
@@ -9072,11 +9137,14 @@ module.exports = {
         return keccak256(payload)
             .toString()
             .substr(0, 8)
-    }
+    },
+    base58: base58.decode,
+    byteArray2hexStr: byteArray2hexStr,
+    hexStr2byteArray: hexStr2byteArray
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./blake256":128,"./blake2b":129,"./sha3":132,"buffer":3,"jssha/src/sha256":31}],134:[function(require,module,exports){
+},{"./base58":125,"./blake256":128,"./blake2b":129,"./sha3":132,"buffer":3,"jssha/src/sha256":31}],134:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -9084,12 +9152,13 @@ var ADAValidator = require('./ada_validator');
 var XMRValidator = require('./monero_validator');
 var NANOValidator = require('./nano_validator');
 var SCValidator = require('./siacoin_validator')
+var TRXValidator = require('./tron_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
     name: 'Bitcoin',
     symbol: 'btc',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26']},
     validator: BTCValidator
 }, {
     name: 'BitcoinCash',
@@ -9453,6 +9522,11 @@ var CURRENCIES = [{
     symbol: 'lbc',
     addressTypes: { prod: ['55'], testnet: [] },
     validator: BTCValidator
+}, {
+    name: 'tron',
+    symbol: 'trx',
+    addressTypes: {prod: [0x41], testnet: [0xa0]},
+    validator: TRXValidator
 }];
 
 
@@ -9472,7 +9546,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":123,"./bitcoin_validator":124,"./ethereum_validator":135,"./monero_validator":136,"./nano_validator":137,"./ripple_validator":138,"./siacoin_validator":139}],135:[function(require,module,exports){
+},{"./ada_validator":123,"./bitcoin_validator":124,"./ethereum_validator":135,"./monero_validator":136,"./nano_validator":137,"./ripple_validator":138,"./siacoin_validator":139,"./tron_validator":140}],135:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -9662,6 +9736,68 @@ module.exports = {
 }
 
 },{"./crypto/utils":133,"lodash/isEqual":112}],140:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+
+function decodeBase58Address(base58Sting) {
+    if (typeof (base58Sting) !== 'string') {
+        return false;
+    }
+    if (base58Sting.length <= 4) {
+        return false;
+    }
+
+    try {
+        var address = cryptoUtils.base58(base58Sting);
+    } catch (e) {
+        return false
+    }
+
+    /*if (base58Sting.length <= 4) {
+        return false;
+    }*/
+    var len = address.length;
+    var offset = len - 4;
+    var checkSum = address.slice(offset);
+    address = address.slice(0, offset);
+    var hash0 = cryptoUtils.sha256(cryptoUtils.byteArray2hexStr(address));
+    var hash1 = cryptoUtils.hexStr2byteArray(cryptoUtils.sha256(hash0));
+    var checkSum1 = hash1.slice(0, 4);
+    if (checkSum[0] === checkSum1[0] && checkSum[1] === checkSum1[1] && checkSum[2]
+        === checkSum1[2] && checkSum[3] === checkSum1[3]
+    ) {
+        return address;
+    }
+
+    return false;
+}
+
+function getEnv(currency, networkType) {
+    var evn = networkType || 'prod';
+
+    if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
+
+    return currency.addressTypes[evn][0]
+}
+
+module.exports = {
+    /**
+     * tron address validation
+     */
+    isValidAddress: function (mainAddress, currency, networkType) {
+        var address = decodeBase58Address(mainAddress);
+
+        if (!address) {
+            return false;
+        }
+
+        if (address.length !== 21) {
+            return false;
+        }
+
+        return getEnv(currency, networkType) === address[0];
+    }
+};
+},{"./crypto/utils":133}],141:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -9678,5 +9814,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":134}]},{},[140])(140)
+},{"./currencies":134}]},{},[141])(141)
 });
