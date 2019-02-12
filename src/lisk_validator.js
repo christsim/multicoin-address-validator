@@ -1,4 +1,4 @@
-var lisk_cryptography = require('@liskhq/lisk-cryptography');
+var cryptoUtils = require('./crypto/utils');
 
 var regexp = new RegExp('^[0-9]{1,20}L$');
 
@@ -13,7 +13,7 @@ module.exports = {
     verifyAddress: function(address) {
         var BUFFER_SIZE = 8;
         var bigNumber = address.substring(0, address.length - 1);
-        var addressBuffer = lisk_cryptography.bigNumberToBuffer(bigNumber);
+        var addressBuffer = cryptoUtils.bigNumberToBuffer(bigNumber);
         return Buffer.from(addressBuffer).slice(0, BUFFER_SIZE).equals(addressBuffer);
     }
 };

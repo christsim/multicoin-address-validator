@@ -3,6 +3,7 @@ var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
+var BigNum = require('browserify-bignum');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -134,5 +135,8 @@ module.exports = {
     },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
-    hexStr2byteArray: hexStr2byteArray
+    hexStr2byteArray: hexStr2byteArray,
+    bigNumberToBuffer: function(bignumber, size){
+        return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
+    }
 }
