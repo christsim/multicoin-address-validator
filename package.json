@@ -17,6 +17,8 @@
     "komodo",
     "zcash",
     "qtum",
+    "trx",
+    "nem",
     "waves",
     "altcoin",
     "bankex",
@@ -52,6 +54,7 @@
   },
   "dependencies": {
     "base-x": "^3.0.4",
+    "browserify-bignum": "^1.3.0-2",
     "cbor-js": "^0.1.0",
     "crc": "^3.8.0",
     "jssha": "2.3.1"
@@ -64,6 +67,6 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "mocha": "^5.2.0",
-    "uglify-js": "^3.4.9"
+    "uglify-es": "^3.3.9"
   }
 }

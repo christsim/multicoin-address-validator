@@ -92,7 +92,7 @@ module.exports = function base (ALPHABET) {
   }
 }
 
-},{"safe-buffer":122}],2:[function(require,module,exports){
+},{"safe-buffer":123}],2:[function(require,module,exports){
 'use strict'
 
 exports.byteLength = byteLength
@@ -246,6 +246,2124 @@ function fromByteArray (uint8) {
 }
 
 },{}],3:[function(require,module,exports){
+(function (Buffer){
+/* bignumber.js v1.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
+
+/*jslint bitwise: true, eqeq: true, plusplus: true, sub: true, white: true, maxerr: 500 */
+/*global module */
+
+/*
+  bignumber.js v1.3.0
+  A JavaScript library for arbitrary-precision arithmetic.
+  https://github.com/MikeMcl/bignumber.js
+  Copyright (c) 2012 Michael Mclaughlin <M8ch88l@gmail.com>
+  MIT Expat Licence
+*/
+
+/*********************************** DEFAULTS ************************************/
+
+/*
+ * The default values below must be integers within the stated ranges (inclusive).
+ * Most of these values can be changed during run-time using BigNumber.config().
+ */
+
+/*
+ * The limit on the value of DECIMAL_PLACES, TO_EXP_NEG, TO_EXP_POS, MIN_EXP,
+ * MAX_EXP, and the argument to toFixed, toPrecision and toExponential, beyond
+ * which an exception is thrown (if ERRORS is true).
+ */
+var MAX = 1E9,                                   // 0 to 1e+9
+
+    // Limit of magnitude of exponent argument to toPower.
+    MAX_POWER = 1E6,                             // 1 to 1e+6
+
+    // The maximum number of decimal places for operations involving division.
+    DECIMAL_PLACES = 20,                         // 0 to MAX
+
+    /*
+     * The rounding mode used when rounding to the above decimal places, and when
+     * using toFixed, toPrecision and toExponential, and round (default value).
+     * UP         0 Away from zero.
+     * DOWN       1 Towards zero.
+     * CEIL       2 Towards +Infinity.
+     * FLOOR      3 Towards -Infinity.
+     * HALF_UP    4 Towards nearest neighbour. If equidistant, up.
+     * HALF_DOWN  5 Towards nearest neighbour. If equidistant, down.
+     * HALF_EVEN  6 Towards nearest neighbour. If equidistant, towards even neighbour.
+     * HALF_CEIL  7 Towards nearest neighbour. If equidistant, towards +Infinity.
+     * HALF_FLOOR 8 Towards nearest neighbour. If equidistant, towards -Infinity.
+     */
+    ROUNDING_MODE = 4,                           // 0 to 8
+
+    // EXPONENTIAL_AT : [TO_EXP_NEG , TO_EXP_POS]
+
+    // The exponent value at and beneath which toString returns exponential notation.
+    // Number type: -7
+    TO_EXP_NEG = -7,                             // 0 to -MAX
+
+    // The exponent value at and above which toString returns exponential notation.
+    // Number type: 21
+    TO_EXP_POS = 21,                             // 0 to MAX
+
+    // RANGE : [MIN_EXP, MAX_EXP]
+
+    // The minimum exponent value, beneath which underflow to zero occurs.
+    // Number type: -324  (5e-324)
+    MIN_EXP = -MAX,                              // -1 to -MAX
+
+    // The maximum exponent value, above which overflow to Infinity occurs.
+    // Number type:  308  (1.7976931348623157e+308)
+    MAX_EXP = MAX,                               // 1 to MAX
+
+    // Whether BigNumber Errors are ever thrown.
+    // CHANGE parseInt to parseFloat if changing ERRORS to false.
+    ERRORS = true,                               // true or false
+    parse = parseInt,                            // parseInt or parseFloat
+
+/***********************************************************************************/
+
+    P = BigNumber.prototype,
+    DIGITS = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ$_',
+    outOfRange,
+    id = 0,
+    isValid = /^-?(\d+(\.\d*)?|\.\d+)(e[+-]?\d+)?$/i,
+    trim = String.prototype.trim || function () {return this.replace(/^\s+|\s+$/g, '')},
+    ONE = BigNumber(1);
+
+
+// CONSTRUCTOR
+
+
+/*
+ * The exported function.
+ * Create and return a new instance of a BigNumber object.
+ *
+ * n {number|string|BigNumber} A numeric value.
+ * [b] {number} The base of n. Integer, 2 to 64 inclusive.
+ */
+function BigNumber( n, b ) {
+    var e, i, isNum, digits, valid, orig,
+        x = this;
+
+    // Enable constructor usage without new.
+    if ( !(x instanceof BigNumber) ) {
+        return new BigNumber( n, b )
+    }
+
+    // Duplicate.
+    if ( n instanceof BigNumber ) {
+        id = 0;
+
+        // e is undefined.
+        if ( b !== e ) {
+            n += ''
+        } else {
+            x['s'] = n['s'];
+            x['e'] = n['e'];
+            x['c'] = ( n = n['c'] ) ? n.slice() : n;
+            return;
+        }
+    }
+
+    // If number, check if minus zero.
+    if ( typeof n != 'string' ) {
+        n = ( isNum = typeof n == 'number' ||
+            Object.prototype.toString.call(n) == '[object Number]' ) &&
+                n === 0 && 1 / n < 0 ? '-0' : n + '';
+    }
+
+    orig = n;
+
+    if ( b === e && isValid.test(n) ) {
+
+        // Determine sign.
+        x['s'] = n.charAt(0) == '-' ? ( n = n.slice(1), -1 ) : 1;
+
+    // Either n is not a valid BigNumber or a base has been specified.
+    } else {
+
+        // Enable exponential notation to be used with base 10 argument.
+        // Ensure return value is rounded to DECIMAL_PLACES as with other bases.
+        if ( b == 10 ) {
+
+            return setMode( n, DECIMAL_PLACES, ROUNDING_MODE );
+        }
+
+        n = trim.call(n).replace( /^\+(?!-)/, '' );
+
+        x['s'] = n.charAt(0) == '-' ? ( n = n.replace( /^-(?!-)/, '' ), -1 ) : 1;
+
+        if ( b != null ) {
+
+            if ( ( b == (b | 0) || !ERRORS ) &&
+              !( outOfRange = !( b >= 2 && b < 65 ) ) ) {
+
+                digits = '[' + DIGITS.slice( 0, b = b | 0 ) + ']+';
+
+                // Before non-decimal number validity test and base conversion
+                // remove the `.` from e.g. '1.', and replace e.g. '.1' with '0.1'.
+                n = n.replace( /\.$/, '' ).replace( /^\./, '0.' );
+
+                // Any number in exponential form will fail due to the e+/-.
+                if ( valid = new RegExp(
+                  '^' + digits + '(?:\\.' + digits + ')?$', b < 37 ? 'i' : '' ).test(n) ) {
+
+                    if ( isNum ) {
+
+                        if ( n.replace( /^0\.0*|\./, '' ).length > 15 ) {
+
+                            // 'new BigNumber() number type has more than 15 significant digits: {n}'
+                            ifExceptionsThrow( orig, 0 );
+                        }
+
+                        // Prevent later check for length on converted number.
+                        isNum = !isNum;
+                    }
+                    n = convert( n, 10, b, x['s'] );
+
+                } else if ( n != 'Infinity' && n != 'NaN' ) {
+
+                    // 'new BigNumber() not a base {b} number: {n}'
+                    ifExceptionsThrow( orig, 1, b );
+                    n = 'NaN';
+                }
+            } else {
+
+                // 'new BigNumber() base not an integer: {b}'
+                // 'new BigNumber() base out of range: {b}'
+                ifExceptionsThrow( b, 2 );
+
+                // Ignore base.
+                valid = isValid.test(n);
+            }
+        } else {
+            valid = isValid.test(n);
+        }
+
+        if ( !valid ) {
+
+            // Infinity/NaN
+            x['c'] = x['e'] = null;
+
+            // NaN
+            if ( n != 'Infinity' ) {
+
+                // No exception on NaN.
+                if ( n != 'NaN' ) {
+
+                    // 'new BigNumber() not a number: {n}'
+                    ifExceptionsThrow( orig, 3 );
+                }
+                x['s'] = null;
+            }
+            id = 0;
+
+            return;
+        }
+    }
+
+    // Decimal point?
+    if ( ( e = n.indexOf('.') ) > -1 ) {
+        n = n.replace( '.', '' );
+    }
+
+    // Exponential form?
+    if ( ( i = n.search( /e/i ) ) > 0 ) {
+
+        // Determine exponent.
+        if ( e < 0 ) {
+            e = i;
+        }
+        e += +n.slice( i + 1 );
+        n = n.substring( 0, i );
+
+    } else if ( e < 0 ) {
+
+        // Integer.
+        e = n.length;
+    }
+
+    // Determine leading zeros.
+    for ( i = 0; n.charAt(i) == '0'; i++ ) {
+    }
+
+    b = n.length;
+
+    // Disallow numbers with over 15 significant digits if number type.
+    if ( isNum && b > 15 && n.slice(i).length > 15 ) {
+
+        // 'new BigNumber() number type has more than 15 significant digits: {n}'
+        ifExceptionsThrow( orig, 0 );
+    }
+    id = 0;
+
+    // Overflow?
+    if ( ( e -= i + 1 ) > MAX_EXP ) {
+
+        // Infinity.
+        x['c'] = x['e'] = null;
+
+    // Zero or underflow?
+    } else if ( i == b || e < MIN_EXP ) {
+
+        // Zero.
+        x['c'] = [ x['e'] = 0 ];
+    } else {
+
+        // Determine trailing zeros.
+        for ( ; n.charAt(--b) == '0'; ) {
+        }
+
+        x['e'] = e;
+        x['c'] = [];
+
+        // Convert string to array of digits (without leading and trailing zeros).
+        for ( e = 0; i <= b; x['c'][e++] = +n.charAt(i++) ) {
+        }
+    }
+}
+
+
+// CONSTRUCTOR PROPERTIES/METHODS
+
+
+BigNumber['ROUND_UP'] = 0;
+BigNumber['ROUND_DOWN'] = 1;
+BigNumber['ROUND_CEIL'] = 2;
+BigNumber['ROUND_FLOOR'] = 3;
+BigNumber['ROUND_HALF_UP'] = 4;
+BigNumber['ROUND_HALF_DOWN'] = 5;
+BigNumber['ROUND_HALF_EVEN'] = 6;
+BigNumber['ROUND_HALF_CEIL'] = 7;
+BigNumber['ROUND_HALF_FLOOR'] = 8;
+
+/*
+ * Create an instance from a Buffer
+ */
+BigNumber['fromBuffer'] = function (buf, opts) {
+
+    if (!opts) opts = {};
+
+    var endian = { 1 : 'big', '-1' : 'little' }[opts.endian]
+        || opts.endian || 'big'
+    ;
+
+    var size = opts.size === 'auto' ? Math.ceil(buf.length) : (opts.size || 1);
+
+    if (buf.length % size !== 0) {
+        throw new RangeError('Buffer length (' + buf.length + ')'
+            + ' must be a multiple of size (' + size + ')'
+        );
+    }
+
+    var hex = [];
+    for (var i = 0; i < buf.length; i += size) {
+        var chunk = [];
+        for (var j = 0; j < size; j++) {
+            chunk.push(buf[
+                i + (endian === 'big' ? j : (size - j - 1))
+            ]);
+        }
+
+        hex.push(chunk
+            .map(function (c) {
+                return (c < 16 ? '0' : '') + c.toString(16);
+            })
+            .join('')
+        );
+    }
+
+    return BigNumber(hex.join(''), 16);
+
+};
+
+/*
+ * Configure infrequently-changing library-wide settings.
+ *
+ * Accept an object or an argument list, with one or many of the following
+ * properties or parameters respectively:
+ * [ DECIMAL_PLACES [, ROUNDING_MODE [, EXPONENTIAL_AT [, RANGE [, ERRORS ]]]]]
+ *
+ * E.g.
+ * BigNumber.config(20, 4) is equivalent to
+ * BigNumber.config({ DECIMAL_PLACES : 20, ROUNDING_MODE : 4 })
+ * Ignore properties/parameters set to null or undefined.
+ *
+ * Return an object with the properties current values.
+ */
+BigNumber['config'] = function () {
+    var v, p,
+        i = 0,
+        r = {},
+        a = arguments,
+        o = a[0],
+        c = 'config',
+        inRange = function ( n, lo, hi ) {
+          return !( ( outOfRange = n < lo || n > hi ) ||
+            parse(n) != n && n !== 0 );
+        },
+        has = o && typeof o == 'object'
+          ? function () {if ( o.hasOwnProperty(p) ) return ( v = o[p] ) != null}
+          : function () {if ( a.length > i ) return ( v = a[i++] ) != null};
+
+    // [DECIMAL_PLACES] {number} Integer, 0 to MAX inclusive.
+    if ( has( p = 'DECIMAL_PLACES' ) ) {
+
+        if ( inRange( v, 0, MAX ) ) {
+            DECIMAL_PLACES = v | 0;
+        } else {
+
+            // 'config() DECIMAL_PLACES not an integer: {v}'
+            // 'config() DECIMAL_PLACES out of range: {v}'
+            ifExceptionsThrow( v, p, c );
+        }
+    }
+    r[p] = DECIMAL_PLACES;
+
+    // [ROUNDING_MODE] {number} Integer, 0 to 8 inclusive.
+    if ( has( p = 'ROUNDING_MODE' ) ) {
+
+        if ( inRange( v, 0, 8 ) ) {
+            ROUNDING_MODE = v | 0;
+        } else {
+
+            // 'config() ROUNDING_MODE not an integer: {v}'
+            // 'config() ROUNDING_MODE out of range: {v}'
+            ifExceptionsThrow( v, p, c );
+        }
+    }
+    r[p] = ROUNDING_MODE;
+
+    /*
+     * [EXPONENTIAL_AT] {number|number[]} Integer, -MAX to MAX inclusive or
+     * [ integer -MAX to 0 inclusive, 0 to MAX inclusive ].
+     */
+    if ( has( p = 'EXPONENTIAL_AT' ) ) {
+
+        if ( inRange( v, -MAX, MAX ) ) {
+            TO_EXP_NEG = -( TO_EXP_POS = ~~( v < 0 ? -v : +v ) );
+        } else if ( !outOfRange && v && inRange( v[0], -MAX, 0 ) &&
+          inRange( v[1], 0, MAX ) ) {
+            TO_EXP_NEG = ~~v[0];
+            TO_EXP_POS = ~~v[1];
+        } else {
+
+            // 'config() EXPONENTIAL_AT not an integer or not [integer, integer]: {v}'
+            // 'config() EXPONENTIAL_AT out of range or not [negative, positive: {v}'
+            ifExceptionsThrow( v, p, c, 1 );
+        }
+    }
+    r[p] = [ TO_EXP_NEG, TO_EXP_POS ];
+
+    /*
+     * [RANGE][ {number|number[]} Non-zero integer, -MAX to MAX inclusive or
+     * [ integer -MAX to -1 inclusive, integer 1 to MAX inclusive ].
+     */
+    if ( has( p = 'RANGE' ) ) {
+
+        if ( inRange( v, -MAX, MAX ) && ~~v ) {
+            MIN_EXP = -( MAX_EXP = ~~( v < 0 ? -v : +v ) );
+        } else if ( !outOfRange && v && inRange( v[0], -MAX, -1 ) &&
+          inRange( v[1], 1, MAX ) ) {
+            MIN_EXP = ~~v[0], MAX_EXP = ~~v[1];
+        } else {
+
+            // 'config() RANGE not a non-zero integer or not [integer, integer]: {v}'
+            // 'config() RANGE out of range or not [negative, positive: {v}'
+            ifExceptionsThrow( v, p, c, 1, 1 );
+        }
+    }
+    r[p] = [ MIN_EXP, MAX_EXP ];
+
+    // [ERRORS] {boolean|number} true, false, 1 or 0.
+    if ( has( p = 'ERRORS' ) ) {
+
+        if ( v === !!v || v === 1 || v === 0 ) {
+            parse = ( outOfRange = id = 0, ERRORS = !!v )
+              ? parseInt
+              : parseFloat;
+        } else {
+
+            // 'config() ERRORS not a boolean or binary digit: {v}'
+            ifExceptionsThrow( v, p, c, 0, 0, 1 );
+        }
+    }
+    r[p] = ERRORS;
+
+    return r;
+};
+
+
+// PRIVATE FUNCTIONS
+
+
+// Assemble error messages. Throw BigNumber Errors.
+function ifExceptionsThrow( arg, i, j, isArray, isRange, isErrors) {
+
+    if ( ERRORS ) {
+        var error,
+            method = ['new BigNumber', 'cmp', 'div', 'eq', 'gt', 'gte', 'lt',
+                 'lte', 'minus', 'mod', 'plus', 'times', 'toFr'
+                ][ id ? id < 0 ? -id : id : 1 / id < 0 ? 1 : 0 ] + '()',
+            message = outOfRange ? ' out of range' : ' not a' +
+              ( isRange ? ' non-zero' : 'n' ) + ' integer';
+
+        message = ( [
+            method + ' number type has more than 15 significant digits',
+            method + ' not a base ' + j + ' number',
+            method + ' base' + message,
+            method + ' not a number' ][i] ||
+              j + '() ' + i + ( isErrors
+                ? ' not a boolean or binary digit'
+                : message + ( isArray
+                  ? ' or not [' + ( outOfRange
+                    ? ' negative, positive'
+                    : ' integer, integer' ) + ' ]'
+                  : '' ) ) ) + ': ' + arg;
+
+        outOfRange = id = 0;
+        error = new Error(message);
+        error['name'] = 'BigNumber Error';
+
+        throw error;
+    }
+}
+
+
+/*
+ * Convert a numeric string of baseIn to a numeric string of baseOut.
+ */
+function convert( nStr, baseOut, baseIn, sign ) {
+    var e, dvs, dvd, nArr, fracArr, fracBN;
+
+    // Convert string of base bIn to an array of numbers of baseOut.
+    // Eg. strToArr('255', 10) where baseOut is 16, returns [15, 15].
+    // Eg. strToArr('ff', 16)  where baseOut is 10, returns [2, 5, 5].
+    function strToArr( str, bIn ) {
+        var j,
+            i = 0,
+            strL = str.length,
+            arrL,
+            arr = [0];
+
+        for ( bIn = bIn || baseIn; i < strL; i++ ) {
+
+            for ( arrL = arr.length, j = 0; j < arrL; arr[j] *= bIn, j++ ) {
+            }
+
+            for ( arr[0] += DIGITS.indexOf( str.charAt(i) ), j = 0;
+                  j < arr.length;
+                  j++ ) {
+
+                if ( arr[j] > baseOut - 1 ) {
+
+                    if ( arr[j + 1] == null ) {
+                        arr[j + 1] = 0;
+                    }
+                    arr[j + 1] += arr[j] / baseOut ^ 0;
+                    arr[j] %= baseOut;
+                }
+            }
+        }
+
+        return arr.reverse();
+    }
+
+    // Convert array to string.
+    // E.g. arrToStr( [9, 10, 11] ) becomes '9ab' (in bases above 11).
+    function arrToStr( arr ) {
+        var i = 0,
+            arrL = arr.length,
+            str = '';
+
+        for ( ; i < arrL; str += DIGITS.charAt( arr[i++] ) ) {
+        }
+
+        return str;
+    }
+
+    if ( baseIn < 37 ) {
+        nStr = nStr.toLowerCase();
+    }
+
+    /*
+     * If non-integer convert integer part and fraction part separately.
+     * Convert the fraction part as if it is an integer than use division to
+     * reduce it down again to a value less than one.
+     */
+    if ( ( e = nStr.indexOf( '.' ) ) > -1 ) {
+
+        /*
+         * Calculate the power to which to raise the base to get the number
+         * to divide the fraction part by after it has been converted as an
+         * integer to the required base.
+         */
+        e = nStr.length - e - 1;
+
+        // Use toFixed to avoid possible exponential notation.
+        dvs = strToArr( new BigNumber(baseIn)['pow'](e)['toF'](), 10 );
+
+        nArr = nStr.split('.');
+
+        // Convert the base of the fraction part (as integer).
+        dvd = strToArr( nArr[1] );
+
+        // Convert the base of the integer part.
+        nArr = strToArr( nArr[0] );
+
+        // Result will be a BigNumber with a value less than 1.
+        fracBN = divide( dvd, dvs, dvd.length - dvs.length, sign, baseOut,
+          // Is least significant digit of integer part an odd number?
+          nArr[nArr.length - 1] & 1 );
+
+        fracArr = fracBN['c'];
+
+        // e can be <= 0  ( if e == 0, fracArr is [0] or [1] ).
+        if ( e = fracBN['e'] ) {
+
+            // Append zeros according to the exponent of the result.
+            for ( ; ++e; fracArr.unshift(0) ) {
+            }
+
+            // Append the fraction part to the converted integer part.
+            nStr = arrToStr(nArr) + '.' + arrToStr(fracArr);
+
+        // fracArr is [1].
+        // Fraction digits rounded up, so increment last digit of integer part.
+        } else if ( fracArr[0] ) {
+
+            if ( nArr[ e = nArr.length - 1 ] < baseOut - 1 ) {
+                ++nArr[e];
+                nStr = arrToStr(nArr);
+            } else {
+                nStr = new BigNumber( arrToStr(nArr),
+                  baseOut )['plus'](ONE)['toS'](baseOut);
+            }
+
+        // fracArr is [0]. No fraction digits.
+        } else {
+            nStr = arrToStr(nArr);
+        }
+    } else {
+
+        // Simple integer. Convert base.
+        nStr = arrToStr( strToArr(nStr) );
+    }
+
+    return nStr;
+}
+
+
+// Perform division in the specified base. Called by div and convert.
+function divide( dvd, dvs, exp, s, base, isOdd ) {
+    var dvsL, dvsT, next, cmp, remI,
+        dvsZ = dvs.slice(),
+        dvdI = dvsL = dvs.length,
+        dvdL = dvd.length,
+        rem = dvd.slice( 0, dvsL ),
+        remL = rem.length,
+        quo = new BigNumber(ONE),
+        qc = quo['c'] = [],
+        qi = 0,
+        dig = DECIMAL_PLACES + ( quo['e'] = exp ) + 1;
+
+    quo['s'] = s;
+    s = dig < 0 ? 0 : dig;
+
+    // Add zeros to make remainder as long as divisor.
+    for ( ; remL++ < dvsL; rem.push(0) ) {
+    }
+
+    // Create version of divisor with leading zero.
+    dvsZ.unshift(0);
+
+    do {
+
+        // 'next' is how many times the divisor goes into the current remainder.
+        for ( next = 0; next < base; next++ ) {
+
+            // Compare divisor and remainder.
+            if ( dvsL != ( remL = rem.length ) ) {
+                cmp = dvsL > remL ? 1 : -1;
+            } else {
+                for ( remI = -1, cmp = 0; ++remI < dvsL; ) {
+
+                    if ( dvs[remI] != rem[remI] ) {
+                        cmp = dvs[remI] > rem[remI] ? 1 : -1;
+                        break;
+                    }
+                }
+            }
+
+            // Subtract divisor from remainder (if divisor < remainder).
+            if ( cmp < 0 ) {
+
+                // Remainder cannot be more than one digit longer than divisor.
+                // Equalise lengths using divisor with extra leading zero?
+                for ( dvsT = remL == dvsL ? dvs : dvsZ; remL; ) {
+
+                    if ( rem[--remL] < dvsT[remL] ) {
+
+                        for ( remI = remL;
+                          remI && !rem[--remI];
+                            rem[remI] = base - 1 ) {
+                        }
+                        --rem[remI];
+                        rem[remL] += base;
+                    }
+                    rem[remL] -= dvsT[remL];
+                }
+                for ( ; !rem[0]; rem.shift() ) {
+                }
+            } else {
+                break;
+            }
+        }
+
+        // Add the 'next' digit to the result array.
+        qc[qi++] = cmp ? next : ++next;
+
+        // Update the remainder.
+        rem[0] && cmp
+          ? ( rem[remL] = dvd[dvdI] || 0 )
+          : ( rem = [ dvd[dvdI] ] );
+
+    } while ( ( dvdI++ < dvdL || rem[0] != null ) && s-- );
+
+    // Leading zero? Do not remove if result is simply zero (qi == 1).
+    if ( !qc[0] && qi != 1 ) {
+
+        // There can't be more than one zero.
+        --quo['e'];
+        qc.shift();
+    }
+
+    // Round?
+    if ( qi > dig ) {
+        rnd( quo, DECIMAL_PLACES, base, isOdd, rem[0] != null );
+    }
+
+    // Overflow?
+    if ( quo['e'] > MAX_EXP ) {
+
+        // Infinity.
+        quo['c'] = quo['e'] = null;
+
+    // Underflow?
+    } else if ( quo['e'] < MIN_EXP ) {
+
+        // Zero.
+        quo['c'] = [quo['e'] = 0];
+    }
+
+    return quo;
+}
+
+
+/*
+ * Return a string representing the value of BigNumber n in normal or
+ * exponential notation rounded to the specified decimal places or
+ * significant digits.
+ * Called by toString, toExponential (exp 1), toFixed, and toPrecision (exp 2).
+ * d is the index (with the value in normal notation) of the digit that may be
+ * rounded up.
+ */
+function format( n, d, exp ) {
+
+    // Initially, i is the number of decimal places required.
+    var i = d - (n = new BigNumber(n))['e'],
+        c = n['c'];
+
+    // +-Infinity or NaN?
+    if ( !c ) {
+        return n['toS']();
+    }
+
+    // Round?
+    if ( c.length > ++d ) {
+        rnd( n, i, 10 );
+    }
+
+    // Recalculate d if toFixed as n['e'] may have changed if value rounded up.
+    i = c[0] == 0 ? i + 1 : exp ? d : n['e'] + i + 1;
+
+    // Append zeros?
+    for ( ; c.length < i; c.push(0) ) {
+    }
+    i = n['e'];
+
+    /*
+     * toPrecision returns exponential notation if the number of significant
+     * digits specified is less than the number of digits necessary to
+     * represent the integer part of the value in normal notation.
+     */
+    return exp == 1 || exp == 2 && ( --d < i || i <= TO_EXP_NEG )
+
+      // Exponential notation.
+      ? ( n['s'] < 0 && c[0] ? '-' : '' ) + ( c.length > 1
+        ? ( c.splice( 1, 0, '.' ), c.join('') )
+        : c[0] ) + ( i < 0 ? 'e' : 'e+' ) + i
+
+      // Normal notation.
+      : n['toS']();
+}
+
+
+// Round if necessary.
+// Called by divide, format, setMode and sqrt.
+function rnd( x, dp, base, isOdd, r ) {
+    var xc = x['c'],
+        isNeg = x['s'] < 0,
+        half = base / 2,
+        i = x['e'] + dp + 1,
+
+        // 'next' is the digit after the digit that may be rounded up.
+        next = xc[i],
+
+        /*
+         * 'more' is whether there are digits after 'next'.
+         * E.g.
+         * 0.005 (e = -3) to be rounded to 0 decimal places (dp = 0) gives i = -2
+         * The 'next' digit is zero, and there ARE 'more' digits after it.
+         * 0.5 (e = -1) dp = 0 gives i = 0
+         * The 'next' digit is 5 and there are no 'more' digits after it.
+         */
+        more = r || i < 0 || xc[i + 1] != null;
+
+    r = ROUNDING_MODE < 4
+      ? ( next != null || more ) &&
+        ( ROUNDING_MODE == 0 ||
+           ROUNDING_MODE == 2 && !isNeg ||
+             ROUNDING_MODE == 3 && isNeg )
+      : next > half || next == half &&
+        ( ROUNDING_MODE == 4 || more ||
+
+          /*
+           * isOdd is used in base conversion and refers to the least significant
+           * digit of the integer part of the value to be converted. The fraction
+           * part is rounded by this method separately from the integer part.
+           */
+          ROUNDING_MODE == 6 && ( xc[i - 1] & 1 || !dp && isOdd ) ||
+            ROUNDING_MODE == 7 && !isNeg ||
+              ROUNDING_MODE == 8 && isNeg );
+
+    if ( i < 1 || !xc[0] ) {
+        xc.length = 0;
+        xc.push(0);
+
+        if ( r ) {
+
+            // 1, 0.1, 0.01, 0.001, 0.0001 etc.
+            xc[0] = 1;
+            x['e'] = -dp;
+        } else {
+
+            // Zero.
+            x['e'] = 0;
+        }
+
+        return x;
+    }
+
+    // Remove any digits after the required decimal places.
+    xc.length = i--;
+
+    // Round up?
+    if ( r ) {
+
+        // Rounding up may mean the previous digit has to be rounded up and so on.
+        for ( --base; ++xc[i] > base; ) {
+            xc[i] = 0;
+
+            if ( !i-- ) {
+                ++x['e'];
+                xc.unshift(1);
+            }
+        }
+    }
+
+    // Remove trailing zeros.
+    for ( i = xc.length; !xc[--i]; xc.pop() ) {
+    }
+
+    return x;
+}
+
+
+// Round after setting the appropriate rounding mode.
+// Handles ceil, floor and round.
+function setMode( x, dp, rm ) {
+    var r = ROUNDING_MODE;
+
+    ROUNDING_MODE = rm;
+    x = new BigNumber(x);
+    x['c'] && rnd( x, dp, 10 );
+    ROUNDING_MODE = r;
+
+    return x;
+}
+
+
+// PROTOTYPE/INSTANCE METHODS
+
+
+/*
+ * Return a new BigNumber whose value is the absolute value of this BigNumber.
+ */
+P['abs'] = P['absoluteValue'] = function () {
+    var x = new BigNumber(this);
+
+    if ( x['s'] < 0 ) {
+        x['s'] = 1;
+    }
+
+    return x;
+};
+
+/*
+ * Return the bit length of the number.
+ */
+P['bitLength'] = function () {
+    return this.toString(2).length;
+};
+
+
+/*
+ * Return a new BigNumber whose value is the value of this BigNumber
+ * rounded to a whole number in the direction of Infinity.
+ */
+P['ceil'] = function () {
+    return setMode( this, 0, 2 );
+};
+
+
+/*
+ * Return
+ * 1 if the value of this BigNumber is greater than the value of BigNumber(y, b),
+ * -1 if the value of this BigNumber is less than the value of BigNumber(y, b),
+ * 0 if they have the same value,
+ * or null if the value of either is NaN.
+ */
+P['comparedTo'] = P['cmp'] = function ( y, b ) {
+    var a,
+        x = this,
+        xc = x['c'],
+        yc = ( id = -id, y = new BigNumber( y, b ) )['c'],
+        i = x['s'],
+        j = y['s'],
+        k = x['e'],
+        l = y['e'];
+
+    // Either NaN?
+    if ( !i || !j ) {
+        return null;
+    }
+
+    a = xc && !xc[0], b = yc && !yc[0];
+
+    // Either zero?
+    if ( a || b ) {
+        return a ? b ? 0 : -j : i;
+    }
+
+    // Signs differ?
+    if ( i != j ) {
+        return i;
+    }
+
+    // Either Infinity?
+    if ( a = i < 0, b = k == l, !xc || !yc ) {
+        return b ? 0 : !xc ^ a ? 1 : -1;
+    }
+
+    // Compare exponents.
+    if ( !b ) {
+        return k > l ^ a ? 1 : -1;
+    }
+
+    // Compare digit by digit.
+    for ( i = -1,
+          j = ( k = xc.length ) < ( l = yc.length ) ? k : l;
+          ++i < j; ) {
+
+        if ( xc[i] != yc[i] ) {
+            return xc[i] > yc[i] ^ a ? 1 : -1;
+        }
+    }
+    // Compare lengths.
+    return k == l ? 0 : k > l ^ a ? 1 : -1;
+};
+
+
+/*
+ *  n / 0 = I
+ *  n / N = N
+ *  n / I = 0
+ *  0 / n = 0
+ *  0 / 0 = N
+ *  0 / N = N
+ *  0 / I = 0
+ *  N / n = N
+ *  N / 0 = N
+ *  N / N = N
+ *  N / I = N
+ *  I / n = I
+ *  I / 0 = I
+ *  I / N = N
+ *  I / I = N
+ *
+ * Return a new BigNumber whose value is the value of this BigNumber
+ * divided by the value of BigNumber(y, b), rounded according to
+ * DECIMAL_PLACES and ROUNDING_MODE.
+ */
+P['dividedBy'] = P['div'] = function ( y, b ) {
+    var xc = this['c'],
+        xe = this['e'],
+        xs = this['s'],
+        yc = ( id = 2, y = new BigNumber( y, b ) )['c'],
+        ye = y['e'],
+        ys = y['s'],
+        s = xs == ys ? 1 : -1;
+
+    // Either NaN/Infinity/0?
+    return !xe && ( !xc || !xc[0] ) || !ye && ( !yc || !yc[0] )
+
+      // Either NaN?
+      ? new BigNumber( !xs || !ys ||
+
+        // Both 0 or both Infinity?
+        ( xc ? yc && xc[0] == yc[0] : !yc )
+
+          // Return NaN.
+          ? NaN
+
+          // x is 0 or y is Infinity?
+          : xc && xc[0] == 0 || !yc
+
+            // Return +-0.
+            ? s * 0
+
+            // y is 0. Return +-Infinity.
+            : s / 0 )
+
+      : divide( xc, yc, xe - ye, s, 10 );
+};
+
+
+/*
+ * Return true if the value of this BigNumber is equal to the value of
+ * BigNumber(n, b), otherwise returns false.
+ */
+P['equals'] = P['eq'] = function ( n, b ) {
+    id = 3;
+    return this['cmp']( n, b ) === 0;
+};
+
+
+/*
+ * Return a new BigNumber whose value is the value of this BigNumber
+ * rounded to a whole number in the direction of -Infinity.
+ */
+P['floor'] = function () {
+    return setMode( this, 0, 3 );
+};
+
+
+/*
+ * Return true if the value of this BigNumber is greater than the value of
+ * BigNumber(n, b), otherwise returns false.
+ */
+P['greaterThan'] = P['gt'] = function ( n, b ) {
+    id = 4;
+    return this['cmp']( n, b ) > 0;
+};
+
+
+/*
+ * Return true if the value of this BigNumber is greater than or equal to
+ * the value of BigNumber(n, b), otherwise returns false.
+ */
+P['greaterThanOrEqualTo'] = P['gte'] = P['gt'] = function ( n, b ) {
+    id = 5;
+    return ( b = this['cmp']( n, b ) ) == 1 || b === 0;
+};
+
+
+/*
+ * Return true if the value of this BigNumber is a finite number, otherwise
+ * returns false.
+ */
+P['isFinite'] = P['isF'] = function () {
+    return !!this['c'];
+};
+
+
+/*
+ * Return true if the value of this BigNumber is NaN, otherwise returns
+ * false.
+ */
+P['isNaN'] = function () {
+    return !this['s'];
+};
+
+
+/*
+ * Return true if the value of this BigNumber is negative, otherwise
+ * returns false.
+ */
+P['isNegative'] = P['isNeg'] = function () {
+    return this['s'] < 0;
+};
+
+
+/*
+ * Return true if the value of this BigNumber is 0 or -0, otherwise returns
+ * false.
+ */
+P['isZero'] = P['isZ'] = function () {
+    return !!this['c'] && this['c'][0] == 0;
+};
+
+
+/*
+ * Return true if the value of this BigNumber is less than the value of
+ * BigNumber(n, b), otherwise returns false.
+ */
+P['lessThan'] = P['lt'] = function ( n, b ) {
+    id = 6;
+    return this['cmp']( n, b ) < 0;
+};
+
+
+/*
+ * Return true if the value of this BigNumber is less than or equal to the
+ * value of BigNumber(n, b), otherwise returns false.
+ */
+P['lessThanOrEqualTo'] = P['lte'] = P['le'] = function ( n, b ) {
+    id = 7;
+    return ( b = this['cmp']( n, b ) ) == -1 || b === 0;
+};
+
+
+/*
+ *  n - 0 = n
+ *  n - N = N
+ *  n - I = -I
+ *  0 - n = -n
+ *  0 - 0 = 0
+ *  0 - N = N
+ *  0 - I = -I
+ *  N - n = N
+ *  N - 0 = N
+ *  N - N = N
+ *  N - I = N
+ *  I - n = I
+ *  I - 0 = I
+ *  I - N = N
+ *  I - I = N
+ *
+ * Return a new BigNumber whose value is the value of this BigNumber minus
+ * the value of BigNumber(y, b).
+ */
+P['minus'] = P['sub'] = function ( y, b ) {
+    var d, i, j, xLTy,
+        x = this,
+        a = x['s'];
+
+    b = ( id = 8, y = new BigNumber( y, b ) )['s'];
+
+    // Either NaN?
+    if ( !a || !b ) {
+        return new BigNumber(NaN);
+    }
+
+    // Signs differ?
+    if ( a != b ) {
+        return y['s'] = -b, x['plus'](y);
+    }
+
+    var xc = x['c'],
+        xe = x['e'],
+        yc = y['c'],
+        ye = y['e'];
+
+    if ( !xe || !ye ) {
+
+        // Either Infinity?
+        if ( !xc || !yc ) {
+            return xc ? ( y['s'] = -b, y ) : new BigNumber( yc ? x : NaN );
+        }
+
+        // Either zero?
+        if ( !xc[0] || !yc[0] ) {
+
+            // y is non-zero?
+            return yc[0]
+              ? ( y['s'] = -b, y )
+
+              // x is non-zero?
+              : new BigNumber( xc[0]
+                ? x
+
+                // Both are zero.
+                // IEEE 754 (2008) 6.3: n - n = -0 when rounding to -Infinity
+                : ROUNDING_MODE == 3 ? -0 : 0 );
+        }
+    }
+
+    // Determine which is the bigger number.
+    // Prepend zeros to equalise exponents.
+    if ( xc = xc.slice(), a = xe - ye ) {
+        d = ( xLTy = a < 0 ) ? ( a = -a, xc ) : ( ye = xe, yc );
+
+        for ( d.reverse(), b = a; b--; d.push(0) ) {
+        }
+        d.reverse();
+    } else {
+
+        // Exponents equal. Check digit by digit.
+        j = ( ( xLTy = xc.length < yc.length ) ? xc : yc ).length;
+
+        for ( a = b = 0; b < j; b++ ) {
+
+            if ( xc[b] != yc[b] ) {
+                xLTy = xc[b] < yc[b];
+                break;
+            }
+        }
+    }
+
+    // x < y? Point xc to the array of the bigger number.
+    if ( xLTy ) {
+        d = xc, xc = yc, yc = d;
+        y['s'] = -y['s'];
+    }
+
+    /*
+     * Append zeros to xc if shorter. No need to add zeros to yc if shorter
+     * as subtraction only needs to start at yc.length.
+     */
+    if ( ( b = -( ( j = xc.length ) - yc.length ) ) > 0 ) {
+
+        for ( ; b--; xc[j++] = 0 ) {
+        }
+    }
+
+    // Subtract yc from xc.
+    for ( b = yc.length; b > a; ){
+
+        if ( xc[--b] < yc[b] ) {
+
+            for ( i = b; i && !xc[--i]; xc[i] = 9 ) {
+            }
+            --xc[i];
+            xc[b] += 10;
+        }
+        xc[b] -= yc[b];
+    }
+
+    // Remove trailing zeros.
+    for ( ; xc[--j] == 0; xc.pop() ) {
+    }
+
+    // Remove leading zeros and adjust exponent accordingly.
+    for ( ; xc[0] == 0; xc.shift(), --ye ) {
+    }
+
+    /*
+     * No need to check for Infinity as +x - +y != Infinity && -x - -y != Infinity
+     * when neither x or y are Infinity.
+     */
+
+    // Underflow?
+    if ( ye < MIN_EXP || !xc[0] ) {
+
+        /*
+         * Following IEEE 754 (2008) 6.3,
+         * n - n = +0  but  n - n = -0 when rounding towards -Infinity.
+         */
+        if ( !xc[0] ) {
+            y['s'] = ROUNDING_MODE == 3 ? -1 : 1;
+        }
+
+        // Result is zero.
+        xc = [ye = 0];
+    }
+
+    return y['c'] = xc, y['e'] = ye, y;
+};
+
+
+/*
+ *   n % 0 =  N
+ *   n % N =  N
+ *   0 % n =  0
+ *  -0 % n = -0
+ *   0 % 0 =  N
+ *   0 % N =  N
+ *   N % n =  N
+ *   N % 0 =  N
+ *   N % N =  N
+ *
+ * Return a new BigNumber whose value is the value of this BigNumber modulo
+ * the value of BigNumber(y, b).
+ */
+P['modulo'] = P['mod'] = function ( y, b ) {
+    var x = this,
+        xc = x['c'],
+        yc = ( id = 9, y = new BigNumber( y, b ) )['c'],
+        i = x['s'],
+        j = y['s'];
+
+    // Is x or y NaN, or y zero?
+    b = !i || !j || yc && !yc[0];
+
+    if ( b || xc && !xc[0] ) {
+        return new BigNumber( b ? NaN : x );
+    }
+
+    x['s'] = y['s'] = 1;
+    b = y['cmp'](x) == 1;
+    x['s'] = i, y['s'] = j;
+
+    return b
+      ? new BigNumber(x)
+      : ( i = DECIMAL_PLACES, j = ROUNDING_MODE,
+        DECIMAL_PLACES = 0, ROUNDING_MODE = 1,
+          x = x['div'](y),
+            DECIMAL_PLACES = i, ROUNDING_MODE = j,
+              this['minus']( x['times'](y) ) );
+};
+
+
+/*
+ * Return a new BigNumber whose value is the value of this BigNumber
+ * negated, i.e. multiplied by -1.
+ */
+P['negated'] = P['neg'] = function () {
+    var x = new BigNumber(this);
+
+    return x['s'] = -x['s'] || null, x;
+};
+
+
+/*
+ *  n + 0 = n
+ *  n + N = N
+ *  n + I = I
+ *  0 + n = n
+ *  0 + 0 = 0
+ *  0 + N = N
+ *  0 + I = I
+ *  N + n = N
+ *  N + 0 = N
+ *  N + N = N
+ *  N + I = N
+ *  I + n = I
+ *  I + 0 = I
+ *  I + N = N
+ *  I + I = I
+ *
+ * Return a new BigNumber whose value is the value of this BigNumber plus
+ * the value of BigNumber(y, b).
+ */
+P['plus'] = P['add'] = function ( y, b ) {
+    var d,
+        x = this,
+        a = x['s'];
+
+    b = ( id = 10, y = new BigNumber( y, b ) )['s'];
+
+    // Either NaN?
+    if ( !a || !b ) {
+        return new BigNumber(NaN);
+    }
+
+    // Signs differ?
+    if ( a != b ) {
+        return y['s'] = -b, x['minus'](y);
+    }
+
+    var xe = x['e'],
+        xc = x['c'],
+        ye = y['e'],
+        yc = y['c'];
+
+    if ( !xe || !ye ) {
+
+        // Either Infinity?
+        if ( !xc || !yc ) {
+
+            // Return +-Infinity.
+            return new BigNumber( a / 0 );
+        }
+
+        // Either zero?
+        if ( !xc[0] || !yc[0] ) {
+
+            // y is non-zero?
+            return yc[0]
+              ? y
+
+              // x is non-zero?
+              : new BigNumber( xc[0]
+                ? x
+
+                // Both are zero. Return zero.
+                : a * 0 );
+        }
+    }
+
+    // Prepend zeros to equalise exponents.
+    // Note: Faster to use reverse then do unshifts.
+    if ( xc = xc.slice(), a = xe - ye ) {
+        d = a > 0 ? ( ye = xe, yc ) : ( a = -a, xc );
+
+        for ( d.reverse(); a--; d.push(0) ) {
+        }
+        d.reverse();
+    }
+
+    // Point xc to the longer array.
+    if ( xc.length - yc.length < 0 ) {
+        d = yc, yc = xc, xc = d;
+    }
+
+    /*
+     * Only start adding at yc.length - 1 as the
+     * further digits of xc can be left as they are.
+     */
+    for ( a = yc.length, b = 0; a;
+         b = ( xc[--a] = xc[a] + yc[a] + b ) / 10 ^ 0, xc[a] %= 10 ) {
+    }
+
+    // No need to check for zero, as +x + +y != 0 && -x + -y != 0
+
+    if ( b ) {
+        xc.unshift(b);
+
+        // Overflow? (MAX_EXP + 1 possible)
+        if ( ++ye > MAX_EXP ) {
+
+            // Infinity.
+            xc = ye = null;
+        }
+    }
+
+     // Remove trailing zeros.
+    for ( a = xc.length; xc[--a] == 0; xc.pop() ) {
+    }
+
+    return y['c'] = xc, y['e'] = ye, y;
+};
+
+
+/*
+ * Return a BigNumber whose value is the value of this BigNumber raised to
+ * the power e. If e is negative round according to DECIMAL_PLACES and
+ * ROUNDING_MODE.
+ *
+ * e {number} Integer, -MAX_POWER to MAX_POWER inclusive.
+ */
+P['toPower'] = P['pow'] = function ( e ) {
+
+    // e to integer, avoiding NaN or Infinity becoming 0.
+    var i = e * 0 == 0 ? e | 0 : e,
+        x = new BigNumber(this),
+        y = new BigNumber(ONE);
+
+    // Use Math.pow?
+    // Pass +-Infinity for out of range exponents.
+    if ( ( ( ( outOfRange = e < -MAX_POWER || e > MAX_POWER ) &&
+      (i = e * 1 / 0) ) ||
+
+         /*
+          * Any exponent that fails the parse becomes NaN.
+          *
+          * Include 'e !== 0' because on Opera -0 == parseFloat(-0) is false,
+          * despite -0 === parseFloat(-0) && -0 == parseFloat('-0') is true.
+          */
+         parse(e) != e && e !== 0 && !(i = NaN) ) &&
+
+          // 'pow() exponent not an integer: {e}'
+          // 'pow() exponent out of range: {e}'
+          !ifExceptionsThrow( e, 'exponent', 'pow' ) ||
+
+            // Pass zero to Math.pow, as any value to the power zero is 1.
+            !i ) {
+
+        // i is +-Infinity, NaN or 0.
+        return new BigNumber( Math.pow( x['toS'](), i ) );
+    }
+
+    for ( i = i < 0 ? -i : i; ; ) {
+
+        if ( i & 1 ) {
+            y = y['times'](x);
+        }
+        i >>= 1;
+
+        if ( !i ) {
+            break;
+        }
+        x = x['times'](x);
+    }
+
+    return e < 0 ? ONE['div'](y) : y;
+};
+
+
+/*
+ * Return a BigNumber whose value is the value of this BigNumber raised to
+ * the power m modulo n.
+ *
+ * m {BigNumber} the value to take the power of
+ * n {BigNumber} the value to modulo by
+ */
+P['powm'] = function ( m, n ) {
+    return this.pow(m).mod(n);
+};
+
+
+/*
+ * Return a new BigNumber whose value is the value of this BigNumber
+ * rounded to a maximum of dp decimal places using rounding mode rm, or to
+ * 0 and ROUNDING_MODE respectively if omitted.
+ *
+ * [dp] {number} Integer, 0 to MAX inclusive.
+ * [rm] {number} Integer, 0 to 8 inclusive.
+ */
+P['round'] = function ( dp, rm ) {
+
+    dp = dp == null || ( ( ( outOfRange = dp < 0 || dp > MAX ) ||
+      parse(dp) != dp ) &&
+
+        // 'round() decimal places out of range: {dp}'
+        // 'round() decimal places not an integer: {dp}'
+        !ifExceptionsThrow( dp, 'decimal places', 'round' ) )
+          ? 0
+          : dp | 0;
+
+    rm = rm == null || ( ( ( outOfRange = rm < 0 || rm > 8 ) ||
+
+      // Include '&& rm !== 0' because with Opera -0 == parseFloat(-0) is false.
+      parse(rm) != rm && rm !== 0 ) &&
+
+        // 'round() mode not an integer: {rm}'
+        // 'round() mode out of range: {rm}'
+        !ifExceptionsThrow( rm, 'mode', 'round' ) )
+          ? ROUNDING_MODE
+          : rm | 0;
+
+    return setMode( this, dp, rm );
+};
+
+
+/*
+ *  sqrt(-n) =  N
+ *  sqrt( N) =  N
+ *  sqrt(-I) =  N
+ *  sqrt( I) =  I
+ *  sqrt( 0) =  0
+ *  sqrt(-0) = -0
+ *
+ * Return a new BigNumber whose value is the square root of the value of
+ * this BigNumber, rounded according to DECIMAL_PLACES and ROUNDING_MODE.
+ */
+P['squareRoot'] = P['sqrt'] = function () {
+    var n, r, re, t,
+        x = this,
+        c = x['c'],
+        s = x['s'],
+        e = x['e'],
+        dp = DECIMAL_PLACES,
+        rm = ROUNDING_MODE,
+        half = new BigNumber('0.5');
+
+    // Negative/NaN/Infinity/zero?
+    if ( s !== 1 || !c || !c[0] ) {
+
+        return new BigNumber( !s || s < 0 && ( !c || c[0] )
+          ? NaN
+          : c ? x : 1 / 0 );
+    }
+
+    // Initial estimate.
+    s = Math.sqrt( x['toS']() );
+    ROUNDING_MODE = 1;
+
+    /*
+      Math.sqrt underflow/overflow?
+      Pass x to Math.sqrt as integer, then adjust the exponent of the result.
+     */
+    if ( s == 0 || s == 1 / 0 ) {
+        n = c.join('');
+
+        if ( !( n.length + e & 1 ) ) {
+            n += '0';
+        }
+        r = new BigNumber( Math.sqrt(n) + '' );
+
+        // r may still not be finite.
+        if ( !r['c'] ) {
+            r['c'] = [1];
+        }
+        r['e'] = ( ( ( e + 1 ) / 2 ) | 0 ) - ( e < 0 || e & 1 );
+    } else {
+        r = new BigNumber( n = s.toString() );
+    }
+    re = r['e'];
+    s = re + ( DECIMAL_PLACES += 4 );
+
+    if ( s < 3 ) {
+        s = 0;
+    }
+    e = s;
+
+    // Newton-Raphson iteration.
+    for ( ; ; ) {
+        t = r;
+        r = half['times']( t['plus']( x['div'](t) ) );
+
+        if ( t['c'].slice( 0, s ).join('') === r['c'].slice( 0, s ).join('') ) {
+            c = r['c'];
+
+            /*
+              The exponent of r may here be one less than the final result
+              exponent (re), e.g 0.0009999 (e-4) --> 0.001 (e-3), so adjust
+              s so the rounding digits are indexed correctly.
+             */
+            s = s - ( n && r['e'] < re );
+
+            /*
+              The 4th rounding digit may be in error by -1 so if the 4 rounding
+              digits are 9999 or 4999 (i.e. approaching a rounding boundary)
+              continue the iteration.
+             */
+            if ( c[s] == 9 && c[s - 1] == 9 && c[s - 2] == 9 &&
+                    ( c[s - 3] == 9 || n && c[s - 3] == 4 ) ) {
+
+                /*
+                  If 9999 on first run through, check to see if rounding up
+                  gives the exact result as the nines may infinitely repeat.
+                 */
+                if ( n && c[s - 3] == 9 ) {
+                    t = r['round']( dp, 0 );
+
+                    if ( t['times'](t)['eq'](x) ) {
+                        ROUNDING_MODE = rm;
+                        DECIMAL_PLACES = dp;
+
+                        return t;
+                    }
+                }
+                DECIMAL_PLACES += 4;
+                s += 4;
+                n = '';
+            } else {
+
+                /*
+                  If the rounding digits are null, 0000 or 5000, check for an
+                  exact result. If not, then there are further digits so
+                  increment the 1st rounding digit to ensure correct rounding.
+                 */
+                if ( !c[e] && !c[e - 1] && !c[e - 2] &&
+                        ( !c[e - 3] || c[e - 3] == 5 ) ) {
+
+                    // Truncate to the first rounding digit.
+                    if ( c.length > e - 2 ) {
+                        c.length = e - 2;
+                    }
+
+                    if ( !r['times'](r)['eq'](x) ) {
+
+                        while ( c.length < e - 3 ) {
+                            c.push(0);
+                        }
+                        c[e - 3]++;
+                    }
+                }
+                ROUNDING_MODE = rm;
+                rnd( r, DECIMAL_PLACES = dp, 10 );
+
+                return r;
+            }
+        }
+    }
+};
+
+
+/*
+ *  n * 0 = 0
+ *  n * N = N
+ *  n * I = I
+ *  0 * n = 0
+ *  0 * 0 = 0
+ *  0 * N = N
+ *  0 * I = N
+ *  N * n = N
+ *  N * 0 = N
+ *  N * N = N
+ *  N * I = N
+ *  I * n = I
+ *  I * 0 = N
+ *  I * N = N
+ *  I * I = I
+ *
+ * Return a new BigNumber whose value is the value of this BigNumber times
+ * the value of BigNumber(y, b).
+ */
+P['times'] = P['mul'] = function ( y, b ) {
+    var c,
+        x = this,
+        xc = x['c'],
+        yc = ( id = 11, y = new BigNumber( y, b ) )['c'],
+        i = x['e'],
+        j = y['e'],
+        a = x['s'];
+
+    y['s'] = a == ( b = y['s'] ) ? 1 : -1;
+
+    // Either NaN/Infinity/0?
+    if ( !i && ( !xc || !xc[0] ) || !j && ( !yc || !yc[0] ) ) {
+
+        // Either NaN?
+        return new BigNumber( !a || !b ||
+
+          // x is 0 and y is Infinity  or  y is 0 and x is Infinity?
+          xc && !xc[0] && !yc || yc && !yc[0] && !xc
+
+            // Return NaN.
+            ? NaN
+
+            // Either Infinity?
+            : !xc || !yc
+
+              // Return +-Infinity.
+              ? y['s'] / 0
+
+              // x or y is 0. Return +-0.
+              : y['s'] * 0 );
+    }
+    y['e'] = i + j;
+
+    if ( ( a = xc.length ) < ( b = yc.length ) ) {
+        c = xc, xc = yc, yc = c, j = a, a = b, b = j;
+    }
+
+    for ( j = a + b, c = []; j--; c.push(0) ) {
+    }
+
+    // Multiply!
+    for ( i = b - 1; i > -1; i-- ) {
+
+        for ( b = 0, j = a + i;
+              j > i;
+              b = c[j] + yc[i] * xc[j - i - 1] + b,
+              c[j--] = b % 10 | 0,
+              b = b / 10 | 0 ) {
+        }
+
+        if ( b ) {
+            c[j] = ( c[j] + b ) % 10;
+        }
+    }
+
+    b && ++y['e'];
+
+    // Remove any leading zero.
+    !c[0] && c.shift();
+
+    // Remove trailing zeros.
+    for ( j = c.length; !c[--j]; c.pop() ) {
+    }
+
+    // No zero check needed as only x * 0 == 0 etc.
+
+    // Overflow?
+    y['c'] = y['e'] > MAX_EXP
+
+      // Infinity.
+      ? ( y['e'] = null )
+
+      // Underflow?
+      : y['e'] < MIN_EXP
+
+        // Zero.
+        ? [ y['e'] = 0 ]
+
+        // Neither.
+        : c;
+
+    return y;
+};
+
+/*
+ * Return a buffer containing the 
+ */
+P['toBuffer'] = function ( opts ) {
+
+    if (typeof opts === 'string') {
+        if (opts !== 'mpint') return 'Unsupported Buffer representation';
+
+        var abs = this.abs();
+        var buf = abs.toBuffer({ size : 1, endian : 'big' });
+        var len = buf.length === 1 && buf[0] === 0 ? 0 : buf.length;
+        if (buf[0] & 0x80) len ++;
+
+        var ret = new Buffer(4 + len);
+        if (len > 0) buf.copy(ret, 4 + (buf[0] & 0x80 ? 1 : 0));
+        if (buf[0] & 0x80) ret[4] = 0;
+
+        ret[0] = len & (0xff << 24);
+        ret[1] = len & (0xff << 16);
+        ret[2] = len & (0xff << 8);
+        ret[3] = len & (0xff << 0);
+
+        // two's compliment for negative integers:
+        var isNeg = this.lt(0);
+        if (isNeg) {
+            for (var i = 4; i < ret.length; i++) {
+                ret[i] = 0xff - ret[i];
+            }
+        }
+        ret[4] = (ret[4] & 0x7f) | (isNeg ? 0x80 : 0);
+        if (isNeg) ret[ret.length - 1] ++;
+
+        return ret;
+    }
+
+    if (!opts) opts = {};
+
+    var endian = { 1 : 'big', '-1' : 'little' }[opts.endian]
+        || opts.endian || 'big'
+    ;
+
+    var hex = this.toString(16);
+    if (hex.charAt(0) === '-') throw new Error(
+        'converting negative numbers to Buffers not supported yet'
+    );
+
+    var size = opts.size === 'auto' ? Math.ceil(hex.length / 2) : (opts.size || 1);
+
+    var len = Math.ceil(hex.length / (2 * size)) * size;
+    var buf = new Buffer(len);
+
+    // zero-pad the hex string so the chunks are all `size` long
+    while (hex.length < 2 * len) hex = '0' + hex;
+
+    var hx = hex
+        .split(new RegExp('(.{' + (2 * size) + '})'))
+        .filter(function (s) { return s.length > 0 })
+    ;
+
+    hx.forEach(function (chunk, i) {
+        for (var j = 0; j < size; j++) {
+            var ix = i * size + (endian === 'big' ? j : size - j - 1);
+            buf[ix] = parseInt(chunk.slice(j*2,j*2+2), 16);
+        }
+    });
+
+    return buf;
+};
+
+/*
+ * Return a string representing the value of this BigNumber in exponential
+ * notation to dp fixed decimal places and rounded using ROUNDING_MODE if
+ * necessary.
+ *
+ * [dp] {number} Integer, 0 to MAX inclusive.
+ */
+P['toExponential'] = P['toE'] = function ( dp ) {
+
+    return format( this,
+      ( dp == null || ( ( outOfRange = dp < 0 || dp > MAX ) ||
+
+        /*
+         * Include '&& dp !== 0' because with Opera -0 == parseFloat(-0) is
+         * false, despite -0 == parseFloat('-0') && 0 == -0 being true.
+         */
+        parse(dp) != dp && dp !== 0 ) &&
+
+          // 'toE() decimal places not an integer: {dp}'
+          // 'toE() decimal places out of range: {dp}'
+          !ifExceptionsThrow( dp, 'decimal places', 'toE' ) ) && this['c']
+            ? this['c'].length - 1
+            : dp | 0, 1 );
+};
+
+
+/*
+ * Return a string representing the value of this BigNumber in normal
+ * notation to dp fixed decimal places and rounded using ROUNDING_MODE if
+ * necessary.
+ *
+ * Note: as with JavaScript's number type, (-0).toFixed(0) is '0',
+ * but e.g. (-0.00001).toFixed(0) is '-0'.
+ *
+ * [dp] {number} Integer, 0 to MAX inclusive.
+ */
+P['toFixed'] = P['toF'] = function ( dp ) {
+    var n, str, d,
+        x = this;
+
+    if ( !( dp == null || ( ( outOfRange = dp < 0 || dp > MAX ) ||
+        parse(dp) != dp && dp !== 0 ) &&
+
+        // 'toF() decimal places not an integer: {dp}'
+        // 'toF() decimal places out of range: {dp}'
+        !ifExceptionsThrow( dp, 'decimal places', 'toF' ) ) ) {
+          d = x['e'] + ( dp | 0 );
+    }
+
+    n = TO_EXP_NEG, dp = TO_EXP_POS;
+    TO_EXP_NEG = -( TO_EXP_POS = 1 / 0 );
+
+    // Note: str is initially undefined.
+    if ( d == str ) {
+        str = x['toS']();
+    } else {
+        str = format( x, d );
+
+        // (-0).toFixed() is '0', but (-0.1).toFixed() is '-0'.
+        // (-0).toFixed(1) is '0.0', but (-0.01).toFixed(1) is '-0.0'.
+        if ( x['s'] < 0 && x['c'] ) {
+
+            // As e.g. -0 toFixed(3), will wrongly be returned as -0.000 from toString.
+            if ( !x['c'][0] ) {
+                str = str.replace(/^-/, '');
+
+            // As e.g. -0.5 if rounded to -0 will cause toString to omit the minus sign.
+            } else if ( str.indexOf('-') < 0 ) {
+                str = '-' + str;
+            }
+        }
+    }
+    TO_EXP_NEG = n, TO_EXP_POS = dp;
+
+    return str;
+};
+
+
+/*
+ * Return a string array representing the value of this BigNumber as a
+ * simple fraction with an integer numerator and an integer denominator.
+ * The denominator will be a positive non-zero value less than or equal to
+ * the specified maximum denominator. If a maximum denominator is not
+ * specified, the denominator will be the lowest value necessary to
+ * represent the number exactly.
+ *
+ * [maxD] {number|string|BigNumber} Integer >= 1 and < Infinity.
+ */
+P['toFraction'] = P['toFr'] = function ( maxD ) {
+    var q, frac, n0, d0, d2, n, e,
+        n1 = d0 = new BigNumber(ONE),
+        d1 = n0 = new BigNumber('0'),
+        x = this,
+        xc = x['c'],
+        exp = MAX_EXP,
+        dp = DECIMAL_PLACES,
+        rm = ROUNDING_MODE,
+        d = new BigNumber(ONE);
+
+    // NaN, Infinity.
+    if ( !xc ) {
+        return x['toS']();
+    }
+
+    e = d['e'] = xc.length - x['e'] - 1;
+
+    // If max denominator is undefined or null...
+    if ( maxD == null ||
+
+         // or NaN...
+         ( !( id = 12, n = new BigNumber(maxD) )['s'] ||
+
+           // or less than 1, or Infinity...
+           ( outOfRange = n['cmp'](n1) < 0 || !n['c'] ) ||
+
+             // or not an integer...
+             ( ERRORS && n['e'] < n['c'].length - 1 ) ) &&
+
+               // 'toFr() max denominator not an integer: {maxD}'
+               // 'toFr() max denominator out of range: {maxD}'
+               !ifExceptionsThrow( maxD, 'max denominator', 'toFr' ) ||
+
+                 // or greater than the maxD needed to specify the value exactly...
+                 ( maxD = n )['cmp'](d) > 0 ) {
+
+        // d is e.g. 10, 100, 1000, 10000... , n1 is 1.
+        maxD = e > 0 ? d : n1;
+    }
+
+    MAX_EXP = 1 / 0;
+    n = new BigNumber( xc.join('') );
+
+    for ( DECIMAL_PLACES = 0, ROUNDING_MODE = 1; ; )  {
+        q = n['div'](d);
+        d2 = d0['plus']( q['times'](d1) );
+
+        if ( d2['cmp'](maxD) == 1 ) {
+            break;
+        }
+
+        d0 = d1, d1 = d2;
+
+        n1 = n0['plus']( q['times']( d2 = n1 ) );
+        n0 = d2;
+
+        d = n['minus']( q['times']( d2 = d ) );
+        n = d2;
+    }
+
+    d2 = maxD['minus'](d0)['div'](d1);
+    n0 = n0['plus']( d2['times'](n1) );
+    d0 = d0['plus']( d2['times'](d1) );
+
+    n0['s'] = n1['s'] = x['s'];
+
+    DECIMAL_PLACES = e * 2;
+    ROUNDING_MODE = rm;
+
+    // Determine which fraction is closer to x, n0 / d0 or n1 / d1?
+    frac = n1['div'](d1)['minus'](x)['abs']()['cmp'](
+      n0['div'](d0)['minus'](x)['abs']() ) < 1
+      ? [ n1['toS'](), d1['toS']() ]
+      : [ n0['toS'](), d0['toS']() ];
+
+    return MAX_EXP = exp, DECIMAL_PLACES = dp, frac;
+};
+
+
+/*
+ * Return a string representing the value of this BigNumber to sd significant
+ * digits and rounded using ROUNDING_MODE if necessary.
+ * If sd is less than the number of digits necessary to represent the integer
+ * part of the value in normal notation, then use exponential notation.
+ *
+ * sd {number} Integer, 1 to MAX inclusive.
+ */
+P['toPrecision'] = P['toP'] = function ( sd ) {
+
+    /*
+     * ERRORS true: Throw if sd not undefined, null or an integer in range.
+     * ERRORS false: Ignore sd if not a number or not in range.
+     * Truncate non-integers.
+     */
+    return sd == null || ( ( ( outOfRange = sd < 1 || sd > MAX ) ||
+      parse(sd) != sd ) &&
+
+        // 'toP() precision not an integer: {sd}'
+        // 'toP() precision out of range: {sd}'
+        !ifExceptionsThrow( sd, 'precision', 'toP' ) )
+          ? this['toS']()
+          : format( this, --sd | 0, 2 );
+};
+
+
+/*
+ * Return a string representing the value of this BigNumber in base b, or
+ * base 10 if b is omitted. If a base is specified, including base 10,
+ * round according to DECIMAL_PLACES and ROUNDING_MODE.
+ * If a base is not specified, and this BigNumber has a positive exponent
+ * that is equal to or greater than TO_EXP_POS, or a negative exponent equal
+ * to or less than TO_EXP_NEG, return exponential notation.
+ *
+ * [b] {number} Integer, 2 to 64 inclusive.
+ */
+P['toString'] = P['toS'] = function ( b ) {
+    var u, str, strL,
+        x = this,
+        xe = x['e'];
+
+    // Infinity or NaN?
+    if ( xe === null ) {
+        str = x['s'] ? 'Infinity' : 'NaN';
+
+    // Exponential format?
+    } else if ( b === u && ( xe <= TO_EXP_NEG || xe >= TO_EXP_POS ) ) {
+        return format( x, x['c'].length - 1, 1 );
+    } else {
+        str = x['c'].join('');
+
+        // Negative exponent?
+        if ( xe < 0 ) {
+
+            // Prepend zeros.
+            for ( ; ++xe; str = '0' + str ) {
+            }
+            str = '0.' + str;
+
+        // Positive exponent?
+        } else if ( strL = str.length, xe > 0 ) {
+
+            if ( ++xe > strL ) {
+
+                // Append zeros.
+                for ( xe -= strL; xe-- ; str += '0' ) {
+                }
+            } else if ( xe < strL ) {
+                str = str.slice( 0, xe ) + '.' + str.slice(xe);
+            }
+
+        // Exponent zero.
+        } else {
+            if ( u = str.charAt(0), strL > 1 ) {
+                str = u + '.' + str.slice(1);
+
+            // Avoid '-0'
+            } else if ( u == '0' ) {
+                return u;
+            }
+        }
+
+        if ( b != null ) {
+
+            if ( !( outOfRange = !( b >= 2 && b < 65 ) ) &&
+              ( b == (b | 0) || !ERRORS ) ) {
+                str = convert( str, b | 0, 10, x['s'] );
+
+                // Avoid '-0'
+                if ( str == '0' ) {
+                    return str;
+                }
+            } else {
+
+                // 'toS() base not an integer: {b}'
+                // 'toS() base out of range: {b}'
+                ifExceptionsThrow( b, 'base', 'toS' );
+            }
+        }
+
+    }
+
+    return x['s'] < 0 ? '-' + str : str;
+};
+
+
+/*
+ * Return as toString, but do not accept a base argument.
+ */
+P['valueOf'] = function () {
+    return this['toS']();
+};
+
+
+// Add aliases for BigDecimal methods.
+//P['add'] = P['plus'];
+//P['subtract'] = P['minus'];
+//P['multiply'] = P['times'];
+//P['divide'] = P['div'];
+//P['remainder'] = P['mod'];
+//P['compareTo'] = P['cmp'];
+//P['negate'] = P['neg'];
+
+
+// EXPORT
+module.exports = BigNumber;
+
+}).call(this,require("buffer").Buffer)
+},{"buffer":4}],4:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -2024,7 +4142,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":30}],4:[function(require,module,exports){
+},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -2432,62 +4550,62 @@ else if (!global.CBOR)
 
 })(this);
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc1').default;
 
-},{"./es6/crc1":16}],6:[function(require,module,exports){
+},{"./es6/crc1":17}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16').default;
 
-},{"./es6/crc16":17}],7:[function(require,module,exports){
+},{"./es6/crc16":18}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16ccitt').default;
 
-},{"./es6/crc16ccitt":18}],8:[function(require,module,exports){
+},{"./es6/crc16ccitt":19}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16kermit').default;
 
-},{"./es6/crc16kermit":19}],9:[function(require,module,exports){
+},{"./es6/crc16kermit":20}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16modbus').default;
 
-},{"./es6/crc16modbus":20}],10:[function(require,module,exports){
+},{"./es6/crc16modbus":21}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16xmodem').default;
 
-},{"./es6/crc16xmodem":21}],11:[function(require,module,exports){
+},{"./es6/crc16xmodem":22}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc24').default;
 
-},{"./es6/crc24":22}],12:[function(require,module,exports){
+},{"./es6/crc24":23}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc32').default;
 
-},{"./es6/crc32":23}],13:[function(require,module,exports){
+},{"./es6/crc32":24}],14:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc8').default;
 
-},{"./es6/crc8":24}],14:[function(require,module,exports){
+},{"./es6/crc8":25}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc81wire').default;
 
-},{"./es6/crc81wire":25}],15:[function(require,module,exports){
+},{"./es6/crc81wire":26}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crcjam').default;
 
-},{"./es6/crcjam":26}],16:[function(require,module,exports){
+},{"./es6/crcjam":27}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2523,7 +4641,7 @@ var crc1 = (0, _define_crc2.default)('crc1', function (buf, previous) {
 
 exports.default = crc1;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],17:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2563,7 +4681,7 @@ var crc16 = (0, _define_crc2.default)('crc-16', function (buf, previous) {
 
 exports.default = crc16;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],18:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2603,7 +4721,7 @@ var crc16ccitt = (0, _define_crc2.default)('ccitt', function (buf, previous) {
 
 exports.default = crc16ccitt;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],19:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2643,7 +4761,7 @@ var crc16kermit = (0, _define_crc2.default)('kermit', function (buf, previous) {
 
 exports.default = crc16kermit;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],20:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2683,7 +4801,7 @@ var crc16modbus = (0, _define_crc2.default)('crc-16-modbus', function (buf, prev
 
 exports.default = crc16modbus;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],21:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2726,7 +4844,7 @@ var crc16xmodem = (0, _define_crc2.default)('xmodem', function (buf, previous) {
 
 exports.default = crc16xmodem;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],22:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2766,7 +4884,7 @@ var crc24 = (0, _define_crc2.default)('crc-24', function (buf, previous) {
 
 exports.default = crc24;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],23:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2806,7 +4924,7 @@ var crc32 = (0, _define_crc2.default)('crc-32', function (buf, previous) {
 
 exports.default = crc32;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],24:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2846,7 +4964,7 @@ var crc8 = (0, _define_crc2.default)('crc-8', function (buf, previous) {
 
 exports.default = crc8;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],25:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2886,7 +5004,7 @@ var crc81wire = (0, _define_crc2.default)('dallas-1-wire', function (buf, previo
 
 exports.default = crc81wire;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],26:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2928,7 +5046,7 @@ var crcjam = (0, _define_crc2.default)('jam', function (buf) {
 
 exports.default = crcjam;
 
-},{"./create_buffer":27,"./define_crc":28,"buffer":3}],27:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -2944,7 +5062,7 @@ function (val) {
 
 exports.default = createBuffer;
 
-},{"buffer":3}],28:[function(require,module,exports){
+},{"buffer":4}],29:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2962,7 +5080,7 @@ exports.default = function (model, calc) {
   return fn;
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -2979,7 +5097,7 @@ module.exports = {
   crcjam: require('./crcjam')
 };
 
-},{"./crc1":5,"./crc16":6,"./crc16_ccitt":7,"./crc16_kermit":8,"./crc16_modbus":9,"./crc16_xmodem":10,"./crc24":11,"./crc32":12,"./crc8":13,"./crc8_1wire":14,"./crcjam":15}],30:[function(require,module,exports){
+},{"./crc1":6,"./crc16":7,"./crc16_ccitt":8,"./crc16_kermit":9,"./crc16_modbus":10,"./crc16_xmodem":11,"./crc24":12,"./crc32":13,"./crc8":14,"./crc8_1wire":15,"./crcjam":16}],31:[function(require,module,exports){
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
   var e, m
   var eLen = (nBytes * 8) - mLen - 1
@@ -3065,7 +5183,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
   buffer[offset + i - d] |= s * 128
 }
 
-},{}],31:[function(require,module,exports){
+},{}],32:[function(require,module,exports){
 /*
  A JavaScript implementation of the SHA family of hashes, as
  defined in FIPS PUB 180-4 and FIPS PUB 202, as well as the corresponding
@@ -3096,7 +5214,7 @@ new m,new m,new m,new m,new m,new m];break;case "SHA-512":a=[new m,new m,new m,n
 2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,
 2756734187,3204031479,3329325298];"function"===typeof define&&define.amd?define(function(){return w}):"undefined"!==typeof exports?("undefined"!==typeof module&&module.exports&&(module.exports=w),exports=w):I.jsSHA=w})(this);
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 var getNative = require('./_getNative'),
     root = require('./_root');
 
@@ -3105,7 +5223,7 @@ var DataView = getNative(root, 'DataView');
 
 module.exports = DataView;
 
-},{"./_getNative":67,"./_root":97}],33:[function(require,module,exports){
+},{"./_getNative":68,"./_root":98}],34:[function(require,module,exports){
 var hashClear = require('./_hashClear'),
     hashDelete = require('./_hashDelete'),
     hashGet = require('./_hashGet'),
@@ -3139,7 +5257,7 @@ Hash.prototype.set = hashSet;
 
 module.exports = Hash;
 
-},{"./_hashClear":72,"./_hashDelete":73,"./_hashGet":74,"./_hashHas":75,"./_hashSet":76}],34:[function(require,module,exports){
+},{"./_hashClear":73,"./_hashDelete":74,"./_hashGet":75,"./_hashHas":76,"./_hashSet":77}],35:[function(require,module,exports){
 var listCacheClear = require('./_listCacheClear'),
     listCacheDelete = require('./_listCacheDelete'),
     listCacheGet = require('./_listCacheGet'),
@@ -3173,7 +5291,7 @@ ListCache.prototype.set = listCacheSet;
 
 module.exports = ListCache;
 
-},{"./_listCacheClear":81,"./_listCacheDelete":82,"./_listCacheGet":83,"./_listCacheHas":84,"./_listCacheSet":85}],35:[function(require,module,exports){
+},{"./_listCacheClear":82,"./_listCacheDelete":83,"./_listCacheGet":84,"./_listCacheHas":85,"./_listCacheSet":86}],36:[function(require,module,exports){
 var getNative = require('./_getNative'),
     root = require('./_root');
 
@@ -3182,7 +5300,7 @@ var Map = getNative(root, 'Map');
 
 module.exports = Map;
 
-},{"./_getNative":67,"./_root":97}],36:[function(require,module,exports){
+},{"./_getNative":68,"./_root":98}],37:[function(require,module,exports){
 var mapCacheClear = require('./_mapCacheClear'),
     mapCacheDelete = require('./_mapCacheDelete'),
     mapCacheGet = require('./_mapCacheGet'),
@@ -3216,7 +5334,7 @@ MapCache.prototype.set = mapCacheSet;
 
 module.exports = MapCache;
 
-},{"./_mapCacheClear":86,"./_mapCacheDelete":87,"./_mapCacheGet":88,"./_mapCacheHas":89,"./_mapCacheSet":90}],37:[function(require,module,exports){
+},{"./_mapCacheClear":87,"./_mapCacheDelete":88,"./_mapCacheGet":89,"./_mapCacheHas":90,"./_mapCacheSet":91}],38:[function(require,module,exports){
 var getNative = require('./_getNative'),
     root = require('./_root');
 
@@ -3225,7 +5343,7 @@ var Promise = getNative(root, 'Promise');
 
 module.exports = Promise;
 
-},{"./_getNative":67,"./_root":97}],38:[function(require,module,exports){
+},{"./_getNative":68,"./_root":98}],39:[function(require,module,exports){
 var getNative = require('./_getNative'),
     root = require('./_root');
 
@@ -3234,7 +5352,7 @@ var Set = getNative(root, 'Set');
 
 module.exports = Set;
 
-},{"./_getNative":67,"./_root":97}],39:[function(require,module,exports){
+},{"./_getNative":68,"./_root":98}],40:[function(require,module,exports){
 var MapCache = require('./_MapCache'),
     setCacheAdd = require('./_setCacheAdd'),
     setCacheHas = require('./_setCacheHas');
@@ -3263,7 +5381,7 @@ SetCache.prototype.has = setCacheHas;
 
 module.exports = SetCache;
 
-},{"./_MapCache":36,"./_setCacheAdd":98,"./_setCacheHas":99}],40:[function(require,module,exports){
+},{"./_MapCache":37,"./_setCacheAdd":99,"./_setCacheHas":100}],41:[function(require,module,exports){
 var ListCache = require('./_ListCache'),
     stackClear = require('./_stackClear'),
     stackDelete = require('./_stackDelete'),
@@ -3292,7 +5410,7 @@ Stack.prototype.set = stackSet;
 
 module.exports = Stack;
 
-},{"./_ListCache":34,"./_stackClear":101,"./_stackDelete":102,"./_stackGet":103,"./_stackHas":104,"./_stackSet":105}],41:[function(require,module,exports){
+},{"./_ListCache":35,"./_stackClear":102,"./_stackDelete":103,"./_stackGet":104,"./_stackHas":105,"./_stackSet":106}],42:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -3300,7 +5418,7 @@ var Symbol = root.Symbol;
 
 module.exports = Symbol;
 
-},{"./_root":97}],42:[function(require,module,exports){
+},{"./_root":98}],43:[function(require,module,exports){
 var root = require('./_root');
 
 /** Built-in value references. */
@@ -3308,7 +5426,7 @@ var Uint8Array = root.Uint8Array;
 
 module.exports = Uint8Array;
 
-},{"./_root":97}],43:[function(require,module,exports){
+},{"./_root":98}],44:[function(require,module,exports){
 var getNative = require('./_getNative'),
     root = require('./_root');
 
@@ -3317,7 +5435,7 @@ var WeakMap = getNative(root, 'WeakMap');
 
 module.exports = WeakMap;
 
-},{"./_getNative":67,"./_root":97}],44:[function(require,module,exports){
+},{"./_getNative":68,"./_root":98}],45:[function(require,module,exports){
 /**
  * A specialized version of `_.filter` for arrays without support for
  * iteratee shorthands.
@@ -3344,7 +5462,7 @@ function arrayFilter(array, predicate) {
 
 module.exports = arrayFilter;
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 var baseTimes = require('./_baseTimes'),
     isArguments = require('./isArguments'),
     isArray = require('./isArray'),
@@ -3395,7 +5513,7 @@ function arrayLikeKeys(value, inherited) {
 
 module.exports = arrayLikeKeys;
 
-},{"./_baseTimes":57,"./_isIndex":77,"./isArguments":108,"./isArray":109,"./isBuffer":111,"./isTypedArray":117}],46:[function(require,module,exports){
+},{"./_baseTimes":58,"./_isIndex":78,"./isArguments":109,"./isArray":110,"./isBuffer":112,"./isTypedArray":118}],47:[function(require,module,exports){
 /**
  * Appends the elements of `values` to `array`.
  *
@@ -3417,7 +5535,7 @@ function arrayPush(array, values) {
 
 module.exports = arrayPush;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 /**
  * A specialized version of `_.some` for arrays without support for iteratee
  * shorthands.
@@ -3442,7 +5560,7 @@ function arraySome(array, predicate) {
 
 module.exports = arraySome;
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var eq = require('./eq');
 
 /**
@@ -3465,7 +5583,7 @@ function assocIndexOf(array, key) {
 
 module.exports = assocIndexOf;
 
-},{"./eq":107}],49:[function(require,module,exports){
+},{"./eq":108}],50:[function(require,module,exports){
 var arrayPush = require('./_arrayPush'),
     isArray = require('./isArray');
 
@@ -3487,7 +5605,7 @@ function baseGetAllKeys(object, keysFunc, symbolsFunc) {
 
 module.exports = baseGetAllKeys;
 
-},{"./_arrayPush":46,"./isArray":109}],50:[function(require,module,exports){
+},{"./_arrayPush":47,"./isArray":110}],51:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     getRawTag = require('./_getRawTag'),
     objectToString = require('./_objectToString');
@@ -3517,7 +5635,7 @@ function baseGetTag(value) {
 
 module.exports = baseGetTag;
 
-},{"./_Symbol":41,"./_getRawTag":68,"./_objectToString":95}],51:[function(require,module,exports){
+},{"./_Symbol":42,"./_getRawTag":69,"./_objectToString":96}],52:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     isObjectLike = require('./isObjectLike');
 
@@ -3537,7 +5655,7 @@ function baseIsArguments(value) {
 
 module.exports = baseIsArguments;
 
-},{"./_baseGetTag":50,"./isObjectLike":116}],52:[function(require,module,exports){
+},{"./_baseGetTag":51,"./isObjectLike":117}],53:[function(require,module,exports){
 var baseIsEqualDeep = require('./_baseIsEqualDeep'),
     isObjectLike = require('./isObjectLike');
 
@@ -3567,7 +5685,7 @@ function baseIsEqual(value, other, bitmask, customizer, stack) {
 
 module.exports = baseIsEqual;
 
-},{"./_baseIsEqualDeep":53,"./isObjectLike":116}],53:[function(require,module,exports){
+},{"./_baseIsEqualDeep":54,"./isObjectLike":117}],54:[function(require,module,exports){
 var Stack = require('./_Stack'),
     equalArrays = require('./_equalArrays'),
     equalByTag = require('./_equalByTag'),
@@ -3652,7 +5770,7 @@ function baseIsEqualDeep(object, other, bitmask, customizer, equalFunc, stack) {
 
 module.exports = baseIsEqualDeep;
 
-},{"./_Stack":40,"./_equalArrays":61,"./_equalByTag":62,"./_equalObjects":63,"./_getTag":70,"./isArray":109,"./isBuffer":111,"./isTypedArray":117}],54:[function(require,module,exports){
+},{"./_Stack":41,"./_equalArrays":62,"./_equalByTag":63,"./_equalObjects":64,"./_getTag":71,"./isArray":110,"./isBuffer":112,"./isTypedArray":118}],55:[function(require,module,exports){
 var isFunction = require('./isFunction'),
     isMasked = require('./_isMasked'),
     isObject = require('./isObject'),
@@ -3701,7 +5819,7 @@ function baseIsNative(value) {
 
 module.exports = baseIsNative;
 
-},{"./_isMasked":79,"./_toSource":106,"./isFunction":113,"./isObject":115}],55:[function(require,module,exports){
+},{"./_isMasked":80,"./_toSource":107,"./isFunction":114,"./isObject":116}],56:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     isLength = require('./isLength'),
     isObjectLike = require('./isObjectLike');
@@ -3763,7 +5881,7 @@ function baseIsTypedArray(value) {
 
 module.exports = baseIsTypedArray;
 
-},{"./_baseGetTag":50,"./isLength":114,"./isObjectLike":116}],56:[function(require,module,exports){
+},{"./_baseGetTag":51,"./isLength":115,"./isObjectLike":117}],57:[function(require,module,exports){
 var isPrototype = require('./_isPrototype'),
     nativeKeys = require('./_nativeKeys');
 
@@ -3795,7 +5913,7 @@ function baseKeys(object) {
 
 module.exports = baseKeys;
 
-},{"./_isPrototype":80,"./_nativeKeys":93}],57:[function(require,module,exports){
+},{"./_isPrototype":81,"./_nativeKeys":94}],58:[function(require,module,exports){
 /**
  * The base implementation of `_.times` without support for iteratee shorthands
  * or max array length checks.
@@ -3817,7 +5935,7 @@ function baseTimes(n, iteratee) {
 
 module.exports = baseTimes;
 
-},{}],58:[function(require,module,exports){
+},{}],59:[function(require,module,exports){
 /**
  * The base implementation of `_.unary` without support for storing metadata.
  *
@@ -3833,7 +5951,7 @@ function baseUnary(func) {
 
 module.exports = baseUnary;
 
-},{}],59:[function(require,module,exports){
+},{}],60:[function(require,module,exports){
 /**
  * Checks if a `cache` value for `key` exists.
  *
@@ -3848,7 +5966,7 @@ function cacheHas(cache, key) {
 
 module.exports = cacheHas;
 
-},{}],60:[function(require,module,exports){
+},{}],61:[function(require,module,exports){
 var root = require('./_root');
 
 /** Used to detect overreaching core-js shims. */
@@ -3856,7 +5974,7 @@ var coreJsData = root['__core-js_shared__'];
 
 module.exports = coreJsData;
 
-},{"./_root":97}],61:[function(require,module,exports){
+},{"./_root":98}],62:[function(require,module,exports){
 var SetCache = require('./_SetCache'),
     arraySome = require('./_arraySome'),
     cacheHas = require('./_cacheHas');
@@ -3941,7 +6059,7 @@ function equalArrays(array, other, bitmask, customizer, equalFunc, stack) {
 
 module.exports = equalArrays;
 
-},{"./_SetCache":39,"./_arraySome":47,"./_cacheHas":59}],62:[function(require,module,exports){
+},{"./_SetCache":40,"./_arraySome":48,"./_cacheHas":60}],63:[function(require,module,exports){
 var Symbol = require('./_Symbol'),
     Uint8Array = require('./_Uint8Array'),
     eq = require('./eq'),
@@ -4055,7 +6173,7 @@ function equalByTag(object, other, tag, bitmask, customizer, equalFunc, stack) {
 
 module.exports = equalByTag;
 
-},{"./_Symbol":41,"./_Uint8Array":42,"./_equalArrays":61,"./_mapToArray":91,"./_setToArray":100,"./eq":107}],63:[function(require,module,exports){
+},{"./_Symbol":42,"./_Uint8Array":43,"./_equalArrays":62,"./_mapToArray":92,"./_setToArray":101,"./eq":108}],64:[function(require,module,exports){
 var getAllKeys = require('./_getAllKeys');
 
 /** Used to compose bitmasks for value comparisons. */
@@ -4146,7 +6264,7 @@ function equalObjects(object, other, bitmask, customizer, equalFunc, stack) {
 
 module.exports = equalObjects;
 
-},{"./_getAllKeys":65}],64:[function(require,module,exports){
+},{"./_getAllKeys":66}],65:[function(require,module,exports){
 (function (global){
 /** Detect free variable `global` from Node.js. */
 var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -4154,7 +6272,7 @@ var freeGlobal = typeof global == 'object' && global && global.Object === Object
 module.exports = freeGlobal;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],65:[function(require,module,exports){
+},{}],66:[function(require,module,exports){
 var baseGetAllKeys = require('./_baseGetAllKeys'),
     getSymbols = require('./_getSymbols'),
     keys = require('./keys');
@@ -4172,7 +6290,7 @@ function getAllKeys(object) {
 
 module.exports = getAllKeys;
 
-},{"./_baseGetAllKeys":49,"./_getSymbols":69,"./keys":118}],66:[function(require,module,exports){
+},{"./_baseGetAllKeys":50,"./_getSymbols":70,"./keys":119}],67:[function(require,module,exports){
 var isKeyable = require('./_isKeyable');
 
 /**
@@ -4192,7 +6310,7 @@ function getMapData(map, key) {
 
 module.exports = getMapData;
 
-},{"./_isKeyable":78}],67:[function(require,module,exports){
+},{"./_isKeyable":79}],68:[function(require,module,exports){
 var baseIsNative = require('./_baseIsNative'),
     getValue = require('./_getValue');
 
@@ -4211,7 +6329,7 @@ function getNative(object, key) {
 
 module.exports = getNative;
 
-},{"./_baseIsNative":54,"./_getValue":71}],68:[function(require,module,exports){
+},{"./_baseIsNative":55,"./_getValue":72}],69:[function(require,module,exports){
 var Symbol = require('./_Symbol');
 
 /** Used for built-in method references. */
@@ -4259,7 +6377,7 @@ function getRawTag(value) {
 
 module.exports = getRawTag;
 
-},{"./_Symbol":41}],69:[function(require,module,exports){
+},{"./_Symbol":42}],70:[function(require,module,exports){
 var arrayFilter = require('./_arrayFilter'),
     stubArray = require('./stubArray');
 
@@ -4291,7 +6409,7 @@ var getSymbols = !nativeGetSymbols ? stubArray : function(object) {
 
 module.exports = getSymbols;
 
-},{"./_arrayFilter":44,"./stubArray":119}],70:[function(require,module,exports){
+},{"./_arrayFilter":45,"./stubArray":120}],71:[function(require,module,exports){
 var DataView = require('./_DataView'),
     Map = require('./_Map'),
     Promise = require('./_Promise'),
@@ -4351,7 +6469,7 @@ if ((DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag) ||
 
 module.exports = getTag;
 
-},{"./_DataView":32,"./_Map":35,"./_Promise":37,"./_Set":38,"./_WeakMap":43,"./_baseGetTag":50,"./_toSource":106}],71:[function(require,module,exports){
+},{"./_DataView":33,"./_Map":36,"./_Promise":38,"./_Set":39,"./_WeakMap":44,"./_baseGetTag":51,"./_toSource":107}],72:[function(require,module,exports){
 /**
  * Gets the value at `key` of `object`.
  *
@@ -4366,7 +6484,7 @@ function getValue(object, key) {
 
 module.exports = getValue;
 
-},{}],72:[function(require,module,exports){
+},{}],73:[function(require,module,exports){
 var nativeCreate = require('./_nativeCreate');
 
 /**
@@ -4383,7 +6501,7 @@ function hashClear() {
 
 module.exports = hashClear;
 
-},{"./_nativeCreate":92}],73:[function(require,module,exports){
+},{"./_nativeCreate":93}],74:[function(require,module,exports){
 /**
  * Removes `key` and its value from the hash.
  *
@@ -4402,7 +6520,7 @@ function hashDelete(key) {
 
 module.exports = hashDelete;
 
-},{}],74:[function(require,module,exports){
+},{}],75:[function(require,module,exports){
 var nativeCreate = require('./_nativeCreate');
 
 /** Used to stand-in for `undefined` hash values. */
@@ -4434,7 +6552,7 @@ function hashGet(key) {
 
 module.exports = hashGet;
 
-},{"./_nativeCreate":92}],75:[function(require,module,exports){
+},{"./_nativeCreate":93}],76:[function(require,module,exports){
 var nativeCreate = require('./_nativeCreate');
 
 /** Used for built-in method references. */
@@ -4459,7 +6577,7 @@ function hashHas(key) {
 
 module.exports = hashHas;
 
-},{"./_nativeCreate":92}],76:[function(require,module,exports){
+},{"./_nativeCreate":93}],77:[function(require,module,exports){
 var nativeCreate = require('./_nativeCreate');
 
 /** Used to stand-in for `undefined` hash values. */
@@ -4484,7 +6602,7 @@ function hashSet(key, value) {
 
 module.exports = hashSet;
 
-},{"./_nativeCreate":92}],77:[function(require,module,exports){
+},{"./_nativeCreate":93}],78:[function(require,module,exports){
 /** Used as references for various `Number` constants. */
 var MAX_SAFE_INTEGER = 9007199254740991;
 
@@ -4511,7 +6629,7 @@ function isIndex(value, length) {
 
 module.exports = isIndex;
 
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 /**
  * Checks if `value` is suitable for use as unique object key.
  *
@@ -4528,7 +6646,7 @@ function isKeyable(value) {
 
 module.exports = isKeyable;
 
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var coreJsData = require('./_coreJsData');
 
 /** Used to detect methods masquerading as native. */
@@ -4550,7 +6668,7 @@ function isMasked(func) {
 
 module.exports = isMasked;
 
-},{"./_coreJsData":60}],80:[function(require,module,exports){
+},{"./_coreJsData":61}],81:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -4570,7 +6688,7 @@ function isPrototype(value) {
 
 module.exports = isPrototype;
 
-},{}],81:[function(require,module,exports){
+},{}],82:[function(require,module,exports){
 /**
  * Removes all key-value entries from the list cache.
  *
@@ -4585,7 +6703,7 @@ function listCacheClear() {
 
 module.exports = listCacheClear;
 
-},{}],82:[function(require,module,exports){
+},{}],83:[function(require,module,exports){
 var assocIndexOf = require('./_assocIndexOf');
 
 /** Used for built-in method references. */
@@ -4622,7 +6740,7 @@ function listCacheDelete(key) {
 
 module.exports = listCacheDelete;
 
-},{"./_assocIndexOf":48}],83:[function(require,module,exports){
+},{"./_assocIndexOf":49}],84:[function(require,module,exports){
 var assocIndexOf = require('./_assocIndexOf');
 
 /**
@@ -4643,7 +6761,7 @@ function listCacheGet(key) {
 
 module.exports = listCacheGet;
 
-},{"./_assocIndexOf":48}],84:[function(require,module,exports){
+},{"./_assocIndexOf":49}],85:[function(require,module,exports){
 var assocIndexOf = require('./_assocIndexOf');
 
 /**
@@ -4661,7 +6779,7 @@ function listCacheHas(key) {
 
 module.exports = listCacheHas;
 
-},{"./_assocIndexOf":48}],85:[function(require,module,exports){
+},{"./_assocIndexOf":49}],86:[function(require,module,exports){
 var assocIndexOf = require('./_assocIndexOf');
 
 /**
@@ -4689,7 +6807,7 @@ function listCacheSet(key, value) {
 
 module.exports = listCacheSet;
 
-},{"./_assocIndexOf":48}],86:[function(require,module,exports){
+},{"./_assocIndexOf":49}],87:[function(require,module,exports){
 var Hash = require('./_Hash'),
     ListCache = require('./_ListCache'),
     Map = require('./_Map');
@@ -4712,7 +6830,7 @@ function mapCacheClear() {
 
 module.exports = mapCacheClear;
 
-},{"./_Hash":33,"./_ListCache":34,"./_Map":35}],87:[function(require,module,exports){
+},{"./_Hash":34,"./_ListCache":35,"./_Map":36}],88:[function(require,module,exports){
 var getMapData = require('./_getMapData');
 
 /**
@@ -4732,7 +6850,7 @@ function mapCacheDelete(key) {
 
 module.exports = mapCacheDelete;
 
-},{"./_getMapData":66}],88:[function(require,module,exports){
+},{"./_getMapData":67}],89:[function(require,module,exports){
 var getMapData = require('./_getMapData');
 
 /**
@@ -4750,7 +6868,7 @@ function mapCacheGet(key) {
 
 module.exports = mapCacheGet;
 
-},{"./_getMapData":66}],89:[function(require,module,exports){
+},{"./_getMapData":67}],90:[function(require,module,exports){
 var getMapData = require('./_getMapData');
 
 /**
@@ -4768,7 +6886,7 @@ function mapCacheHas(key) {
 
 module.exports = mapCacheHas;
 
-},{"./_getMapData":66}],90:[function(require,module,exports){
+},{"./_getMapData":67}],91:[function(require,module,exports){
 var getMapData = require('./_getMapData');
 
 /**
@@ -4792,7 +6910,7 @@ function mapCacheSet(key, value) {
 
 module.exports = mapCacheSet;
 
-},{"./_getMapData":66}],91:[function(require,module,exports){
+},{"./_getMapData":67}],92:[function(require,module,exports){
 /**
  * Converts `map` to its key-value pairs.
  *
@@ -4812,7 +6930,7 @@ function mapToArray(map) {
 
 module.exports = mapToArray;
 
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 var getNative = require('./_getNative');
 
 /* Built-in method references that are verified to be native. */
@@ -4820,7 +6938,7 @@ var nativeCreate = getNative(Object, 'create');
 
 module.exports = nativeCreate;
 
-},{"./_getNative":67}],93:[function(require,module,exports){
+},{"./_getNative":68}],94:[function(require,module,exports){
 var overArg = require('./_overArg');
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
@@ -4828,7 +6946,7 @@ var nativeKeys = overArg(Object.keys, Object);
 
 module.exports = nativeKeys;
 
-},{"./_overArg":96}],94:[function(require,module,exports){
+},{"./_overArg":97}],95:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `exports`. */
@@ -4860,7 +6978,7 @@ var nodeUtil = (function() {
 
 module.exports = nodeUtil;
 
-},{"./_freeGlobal":64}],95:[function(require,module,exports){
+},{"./_freeGlobal":65}],96:[function(require,module,exports){
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
 
@@ -4884,7 +7002,7 @@ function objectToString(value) {
 
 module.exports = objectToString;
 
-},{}],96:[function(require,module,exports){
+},{}],97:[function(require,module,exports){
 /**
  * Creates a unary function that invokes `func` with its argument transformed.
  *
@@ -4901,7 +7019,7 @@ function overArg(func, transform) {
 
 module.exports = overArg;
 
-},{}],97:[function(require,module,exports){
+},{}],98:[function(require,module,exports){
 var freeGlobal = require('./_freeGlobal');
 
 /** Detect free variable `self`. */
@@ -4912,7 +7030,7 @@ var root = freeGlobal || freeSelf || Function('return this')();
 
 module.exports = root;
 
-},{"./_freeGlobal":64}],98:[function(require,module,exports){
+},{"./_freeGlobal":65}],99:[function(require,module,exports){
 /** Used to stand-in for `undefined` hash values. */
 var HASH_UNDEFINED = '__lodash_hash_undefined__';
 
@@ -4933,7 +7051,7 @@ function setCacheAdd(value) {
 
 module.exports = setCacheAdd;
 
-},{}],99:[function(require,module,exports){
+},{}],100:[function(require,module,exports){
 /**
  * Checks if `value` is in the array cache.
  *
@@ -4949,7 +7067,7 @@ function setCacheHas(value) {
 
 module.exports = setCacheHas;
 
-},{}],100:[function(require,module,exports){
+},{}],101:[function(require,module,exports){
 /**
  * Converts `set` to an array of its values.
  *
@@ -4969,7 +7087,7 @@ function setToArray(set) {
 
 module.exports = setToArray;
 
-},{}],101:[function(require,module,exports){
+},{}],102:[function(require,module,exports){
 var ListCache = require('./_ListCache');
 
 /**
@@ -4986,7 +7104,7 @@ function stackClear() {
 
 module.exports = stackClear;
 
-},{"./_ListCache":34}],102:[function(require,module,exports){
+},{"./_ListCache":35}],103:[function(require,module,exports){
 /**
  * Removes `key` and its value from the stack.
  *
@@ -5006,7 +7124,7 @@ function stackDelete(key) {
 
 module.exports = stackDelete;
 
-},{}],103:[function(require,module,exports){
+},{}],104:[function(require,module,exports){
 /**
  * Gets the stack value for `key`.
  *
@@ -5022,7 +7140,7 @@ function stackGet(key) {
 
 module.exports = stackGet;
 
-},{}],104:[function(require,module,exports){
+},{}],105:[function(require,module,exports){
 /**
  * Checks if a stack value for `key` exists.
  *
@@ -5038,7 +7156,7 @@ function stackHas(key) {
 
 module.exports = stackHas;
 
-},{}],105:[function(require,module,exports){
+},{}],106:[function(require,module,exports){
 var ListCache = require('./_ListCache'),
     Map = require('./_Map'),
     MapCache = require('./_MapCache');
@@ -5074,7 +7192,7 @@ function stackSet(key, value) {
 
 module.exports = stackSet;
 
-},{"./_ListCache":34,"./_Map":35,"./_MapCache":36}],106:[function(require,module,exports){
+},{"./_ListCache":35,"./_Map":36,"./_MapCache":37}],107:[function(require,module,exports){
 /** Used for built-in method references. */
 var funcProto = Function.prototype;
 
@@ -5102,7 +7220,7 @@ function toSource(func) {
 
 module.exports = toSource;
 
-},{}],107:[function(require,module,exports){
+},{}],108:[function(require,module,exports){
 /**
  * Performs a
  * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
@@ -5141,7 +7259,7 @@ function eq(value, other) {
 
 module.exports = eq;
 
-},{}],108:[function(require,module,exports){
+},{}],109:[function(require,module,exports){
 var baseIsArguments = require('./_baseIsArguments'),
     isObjectLike = require('./isObjectLike');
 
@@ -5179,7 +7297,7 @@ var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsAr
 
 module.exports = isArguments;
 
-},{"./_baseIsArguments":51,"./isObjectLike":116}],109:[function(require,module,exports){
+},{"./_baseIsArguments":52,"./isObjectLike":117}],110:[function(require,module,exports){
 /**
  * Checks if `value` is classified as an `Array` object.
  *
@@ -5207,7 +7325,7 @@ var isArray = Array.isArray;
 
 module.exports = isArray;
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 var isFunction = require('./isFunction'),
     isLength = require('./isLength');
 
@@ -5242,7 +7360,7 @@ function isArrayLike(value) {
 
 module.exports = isArrayLike;
 
-},{"./isFunction":113,"./isLength":114}],111:[function(require,module,exports){
+},{"./isFunction":114,"./isLength":115}],112:[function(require,module,exports){
 var root = require('./_root'),
     stubFalse = require('./stubFalse');
 
@@ -5282,7 +7400,7 @@ var isBuffer = nativeIsBuffer || stubFalse;
 
 module.exports = isBuffer;
 
-},{"./_root":97,"./stubFalse":120}],112:[function(require,module,exports){
+},{"./_root":98,"./stubFalse":121}],113:[function(require,module,exports){
 var baseIsEqual = require('./_baseIsEqual');
 
 /**
@@ -5319,7 +7437,7 @@ function isEqual(value, other) {
 
 module.exports = isEqual;
 
-},{"./_baseIsEqual":52}],113:[function(require,module,exports){
+},{"./_baseIsEqual":53}],114:[function(require,module,exports){
 var baseGetTag = require('./_baseGetTag'),
     isObject = require('./isObject');
 
@@ -5358,7 +7476,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{"./_baseGetTag":50,"./isObject":115}],114:[function(require,module,exports){
+},{"./_baseGetTag":51,"./isObject":116}],115:[function(require,module,exports){
 /** Used as references for various `Number` constants. */
 var MAX_SAFE_INTEGER = 9007199254740991;
 
@@ -5395,7 +7513,7 @@ function isLength(value) {
 
 module.exports = isLength;
 
-},{}],115:[function(require,module,exports){
+},{}],116:[function(require,module,exports){
 /**
  * Checks if `value` is the
  * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
@@ -5428,7 +7546,7 @@ function isObject(value) {
 
 module.exports = isObject;
 
-},{}],116:[function(require,module,exports){
+},{}],117:[function(require,module,exports){
 /**
  * Checks if `value` is object-like. A value is object-like if it's not `null`
  * and has a `typeof` result of "object".
@@ -5459,7 +7577,7 @@ function isObjectLike(value) {
 
 module.exports = isObjectLike;
 
-},{}],117:[function(require,module,exports){
+},{}],118:[function(require,module,exports){
 var baseIsTypedArray = require('./_baseIsTypedArray'),
     baseUnary = require('./_baseUnary'),
     nodeUtil = require('./_nodeUtil');
@@ -5488,7 +7606,7 @@ var isTypedArray = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedA
 
 module.exports = isTypedArray;
 
-},{"./_baseIsTypedArray":55,"./_baseUnary":58,"./_nodeUtil":94}],118:[function(require,module,exports){
+},{"./_baseIsTypedArray":56,"./_baseUnary":59,"./_nodeUtil":95}],119:[function(require,module,exports){
 var arrayLikeKeys = require('./_arrayLikeKeys'),
     baseKeys = require('./_baseKeys'),
     isArrayLike = require('./isArrayLike');
@@ -5527,7 +7645,7 @@ function keys(object) {
 
 module.exports = keys;
 
-},{"./_arrayLikeKeys":45,"./_baseKeys":56,"./isArrayLike":110}],119:[function(require,module,exports){
+},{"./_arrayLikeKeys":46,"./_baseKeys":57,"./isArrayLike":111}],120:[function(require,module,exports){
 /**
  * This method returns a new empty array.
  *
@@ -5552,7 +7670,7 @@ function stubArray() {
 
 module.exports = stubArray;
 
-},{}],120:[function(require,module,exports){
+},{}],121:[function(require,module,exports){
 /**
  * This method returns `false`.
  *
@@ -5572,7 +7690,7 @@ function stubFalse() {
 
 module.exports = stubFalse;
 
-},{}],121:[function(require,module,exports){
+},{}],122:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -5758,7 +7876,7 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],122:[function(require,module,exports){
+},{}],123:[function(require,module,exports){
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -5822,7 +7940,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
   return buffer.SlowBuffer(size)
 }
 
-},{"buffer":3}],123:[function(require,module,exports){
+},{"buffer":4}],124:[function(require,module,exports){
 var cbor = require('cbor-js');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
@@ -5859,7 +7977,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/base58":125,"cbor-js":4,"crc":29}],124:[function(require,module,exports){
+},{"./crypto/base58":127,"cbor-js":5,"crc":30}],125:[function(require,module,exports){
 (function (Buffer){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -5949,7 +8067,74 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./crypto/base58":125,"./crypto/segwit_addr":131,"./crypto/utils":133,"buffer":3}],125:[function(require,module,exports){
+},{"./crypto/base58":127,"./crypto/segwit_addr":133,"./crypto/utils":135,"buffer":4}],126:[function(require,module,exports){
+var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+ /**
+* Encode a string to base32
+*/
+var b32encode = function(s) {
+    var parts = [];
+    var quanta = Math.floor((s.length / 5));
+    var leftover = s.length % 5;
+
+     if (leftover != 0) {
+        for (var i = 0; i < (5 - leftover); i++) {
+            s += '\x00';
+        }
+        quanta += 1;
+    }
+
+     for (var i = 0; i < quanta; i++) {
+        parts.push(alphabet.charAt(s.charCodeAt(i * 5) >> 3));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5) & 0x07) << 2) | (s.charCodeAt(i * 5 + 1) >> 6)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x3F) >> 1)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x01) << 4) | (s.charCodeAt(i * 5 + 2) >> 4)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 2) & 0x0F) << 1) | (s.charCodeAt(i * 5 + 3) >> 7)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x7F) >> 2)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x03) << 3) | (s.charCodeAt(i * 5 + 4) >> 5)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 4) & 0x1F))));
+    }
+
+     var replace = 0;
+    if (leftover == 1) replace = 6;
+    else if (leftover == 2) replace = 4;
+    else if (leftover == 3) replace = 3;
+    else if (leftover == 4) replace = 1;
+
+     for (var i = 0; i < replace; i++) parts.pop();
+    for (var i = 0; i < replace; i++) parts.push("=");
+
+     return parts.join("");
+}
+
+/**
+* Decode a base32 string.
+* This is made specifically for our use, deals only with proper strings
+*/
+var b32decode = function(s) {
+    var r = new ArrayBuffer(s.length * 5 / 8);
+    var b = new Uint8Array(r);
+    for (var j = 0; j < s.length / 8; j++) {
+        var v = [0, 0, 0, 0, 0, 0, 0, 0];
+        for (var i = 0; i < 8; ++i) {
+            v[i] = alphabet.indexOf(s[j * 8 + i]);
+        }
+        var i = 0;
+        b[j * 5 + 0] = (v[i + 0] << 3) | (v[i + 1] >> 2);
+        b[j * 5 + 1] = ((v[i + 1] & 0x3) << 6) | (v[i + 2] << 1) | (v[i + 3] >> 4);
+        b[j * 5 + 2] = ((v[i + 3] & 0xf) << 4) | (v[i + 4] >> 1);
+        b[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
+        b[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | (v[i + 7]);
+    }
+    return b;
+}
+
+module.exports = {
+    b32decode: b32decode,
+    b32encode: b32encode
+};
+},{}],127:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -5997,7 +8182,7 @@ module.exports = {
     }
 };
 
-},{}],126:[function(require,module,exports){
+},{}],128:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -6115,7 +8300,7 @@ function decode (bechString) {
   return {hrp: hrp, data: data.slice(0, data.length - 6)};
 }
 
-},{}],127:[function(require,module,exports){
+},{}],129:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -7566,7 +9751,7 @@ function decode (bechString) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],128:[function(require,module,exports){
+},{}],130:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -7757,7 +9942,7 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
-},{"buffer":3}],129:[function(require,module,exports){
+},{"buffer":4}],131:[function(require,module,exports){
 'use strict';
 
 /**
@@ -8035,7 +10220,7 @@ function toHex (n) {
 
 module.exports = Blake2b;
 
-},{}],130:[function(require,module,exports){
+},{}],132:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -8262,7 +10447,7 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":127}],131:[function(require,module,exports){
+},{"./biginteger":129}],133:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8358,7 +10543,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":126}],132:[function(require,module,exports){
+},{"./bech32":128}],134:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -9002,12 +11187,15 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":121}],133:[function(require,module,exports){
+},{"_process":122}],135:[function(require,module,exports){
 (function (Buffer){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
+var base58 = require('./base58');
+var base32 = require('./base32');
+var BigNum = require('browserify-bignum');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -9015,6 +11203,70 @@ function numberToHex(number) {
         hex = '0' + hex
     }
     return hex
+}
+
+function isHexChar(c) {
+    if ((c >= 'A' && c <= 'F') ||
+        (c >= 'a' && c <= 'f') ||
+        (c >= '0' && c <= '9')) {
+        return 1;
+    }
+    return 0;
+}
+
+/* Convert a hex char to value */
+function hexChar2byte(c) {
+    var d = 0;
+    if (c >= 'A' && c <= 'F') {
+        d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
+    }
+    else if (c >= 'a' && c <= 'f') {
+        d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
+    }
+    else if (c >= '0' && c <= '9') {
+        d = c.charCodeAt(0) - '0'.charCodeAt(0);
+    }
+    return d;
+}
+
+/* Convert a byte to string */
+function byte2hexStr(byte) {
+    var hexByteMap = "0123456789ABCDEF";
+    var str = "";
+    str += hexByteMap.charAt(byte >> 4);
+    str += hexByteMap.charAt(byte & 0x0f);
+    return str;
+}
+
+function byteArray2hexStr(byteArray) {
+    var str = "";
+    for (var i = 0; i < (byteArray.length - 1); i++) {
+        str += byte2hexStr(byteArray[i]);
+    }
+    str += byte2hexStr(byteArray[i]);
+    return str;
+}
+
+function hexStr2byteArray(str) {
+    var byteArray = Array();
+    var d = 0;
+    var i = 0;
+    var j = 0;
+    var k = 0;
+
+     for (i = 0; i < str.length; i++) {
+        var c = str.charAt(i);
+        if (isHexChar(c)) {
+            d <<= 4;
+            d += hexChar2byte(c);
+            j++;
+            if (0 === (j % 2)) {
+                byteArray[k++] = d;
+                d = 0;
+            }
+        }
+    }
+    return byteArray;
 }
 
 module.exports = {
@@ -9051,32 +11303,17 @@ module.exports = {
     blake2b256: function (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX')
-        sha.update(hexString)
-        return sha.getHash('HEX')
+    base58: base58.decode,
+    byteArray2hexStr: byteArray2hexStr,
+    hexStr2byteArray: hexStr2byteArray,
+    bigNumberToBuffer: function(bignumber, size){
+        return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
-    sha256Checksum: function (payload) {
-        return this.sha256(this.sha256(payload)).substr(0, 8)
-    },
-    blake256: function (hexString) {
-        return new Blake256().update(hexString, 'hex').digest('hex')
-    },
-    blake256Checksum: function (payload) {
-        return this.blake256(this.blake256(payload)).substr(0, 8)
-    },
-    keccak256: function (hexString) {
-        return keccak256(hexString)
-    },
-    keccak256Checksum: function (payload) {
-        return keccak256(payload)
-            .toString()
-            .substr(0, 8)
-    }
+    base32: base32
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./blake256":128,"./blake2b":129,"./sha3":132,"buffer":3,"jssha/src/sha256":31}],134:[function(require,module,exports){
+},{"./base32":126,"./base58":127,"./blake256":130,"./blake2b":131,"./sha3":134,"browserify-bignum":3,"buffer":4,"jssha/src/sha256":32}],136:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -9084,12 +11321,15 @@ var ADAValidator = require('./ada_validator');
 var XMRValidator = require('./monero_validator');
 var NANOValidator = require('./nano_validator');
 var SCValidator = require('./siacoin_validator')
+var TRXValidator = require('./tron_validator');
+var NEMValidator = require('./nem_validator');
+var LSKValidator = require('./lisk_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
     name: 'Bitcoin',
     symbol: 'btc',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26']},
     validator: BTCValidator
 }, {
     name: 'BitcoinCash',
@@ -9453,6 +11693,19 @@ var CURRENCIES = [{
     symbol: 'lbc',
     addressTypes: { prod: ['55'], testnet: [] },
     validator: BTCValidator
+}, {
+    name: 'tron',
+    symbol: 'trx',
+    addressTypes: {prod: [0x41], testnet: [0xa0]},
+    validator: TRXValidator
+}, {
+    name: 'nem',
+    symbol: 'xem',
+    validator: NEMValidator
+}, {
+    name: 'lisk',
+    symbol: 'lsk',
+    validator: LSKValidator
 }];
 
 
@@ -9472,7 +11725,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":123,"./bitcoin_validator":124,"./ethereum_validator":135,"./monero_validator":136,"./nano_validator":137,"./ripple_validator":138,"./siacoin_validator":139}],135:[function(require,module,exports){
+},{"./ada_validator":124,"./bitcoin_validator":125,"./ethereum_validator":137,"./lisk_validator":138,"./monero_validator":139,"./nano_validator":140,"./nem_validator":141,"./ripple_validator":142,"./siacoin_validator":143,"./tron_validator":144}],137:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -9508,7 +11761,29 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":133}],136:[function(require,module,exports){
+},{"./crypto/utils":135}],138:[function(require,module,exports){
+(function (Buffer){
+var cryptoUtils = require('./crypto/utils');
+
+var regexp = new RegExp('^[0-9]{1,20}L$');
+
+module.exports = {
+    isValidAddress: function(address) {
+        if (!regexp.test(address)) {
+            return false;
+        }
+        return this.verifyAddress(address)
+    },
+
+    verifyAddress: function(address) {
+        var BUFFER_SIZE = 8;
+        var bigNumber = address.substring(0, address.length - 1);
+        var addressBuffer = cryptoUtils.bigNumberToBuffer(bigNumber);
+        return Buffer.from(addressBuffer).slice(0, BUFFER_SIZE).equals(addressBuffer);
+    }
+};
+}).call(this,require("buffer").Buffer)
+},{"./crypto/utils":135,"buffer":4}],139:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -9572,7 +11847,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":130,"./crypto/utils":133}],137:[function(require,module,exports){
+},{"./crypto/cnBase58":132,"./crypto/utils":135}],140:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -9601,7 +11876,33 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":133,"base-x":1}],138:[function(require,module,exports){
+},{"./crypto/utils":135,"base-x":1}],141:[function(require,module,exports){
+(function (Buffer){
+var cryptoUtils = require('./crypto/utils');
+
+ /**
+* Check if an address is valid
+*
+* @param {string} _address - An address
+*
+* @return {boolean} - True if address is valid, false otherwise
+*/
+var isValidAddress = function(_address) {
+    var address = _address.toString().toUpperCase().replace(/-/g, '');
+    if (!address || address.length !== 40) {
+        return false;
+    }
+    var decoded = cryptoUtils.toHex(cryptoUtils.base32.b32decode(address));
+    var stepThreeChecksum = cryptoUtils.keccak256Checksum(Buffer.from(decoded.slice(0, 42), 'hex'));
+
+    return stepThreeChecksum === decoded.slice(42);
+};
+
+module.exports = {
+    isValidAddress: isValidAddress,
+}
+}).call(this,require("buffer").Buffer)
+},{"./crypto/utils":135,"buffer":4}],142:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -9631,7 +11932,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":133,"base-x":1}],139:[function(require,module,exports){
+},{"./crypto/utils":135,"base-x":1}],143:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
 
@@ -9661,7 +11962,69 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":133,"lodash/isEqual":112}],140:[function(require,module,exports){
+},{"./crypto/utils":135,"lodash/isEqual":113}],144:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+
+function decodeBase58Address(base58Sting) {
+    if (typeof (base58Sting) !== 'string') {
+        return false;
+    }
+    if (base58Sting.length <= 4) {
+        return false;
+    }
+
+    try {
+        var address = cryptoUtils.base58(base58Sting);
+    } catch (e) {
+        return false
+    }
+
+    /*if (base58Sting.length <= 4) {
+        return false;
+    }*/
+    var len = address.length;
+    var offset = len - 4;
+    var checkSum = address.slice(offset);
+    address = address.slice(0, offset);
+    var hash0 = cryptoUtils.sha256(cryptoUtils.byteArray2hexStr(address));
+    var hash1 = cryptoUtils.hexStr2byteArray(cryptoUtils.sha256(hash0));
+    var checkSum1 = hash1.slice(0, 4);
+    if (checkSum[0] === checkSum1[0] && checkSum[1] === checkSum1[1] && checkSum[2]
+        === checkSum1[2] && checkSum[3] === checkSum1[3]
+    ) {
+        return address;
+    }
+
+    return false;
+}
+
+function getEnv(currency, networkType) {
+    var evn = networkType || 'prod';
+
+    if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
+
+    return currency.addressTypes[evn][0]
+}
+
+module.exports = {
+    /**
+     * tron address validation
+     */
+    isValidAddress: function (mainAddress, currency, networkType) {
+        var address = decodeBase58Address(mainAddress);
+
+        if (!address) {
+            return false;
+        }
+
+        if (address.length !== 21) {
+            return false;
+        }
+
+        return getEnv(currency, networkType) === address[0];
+    }
+};
+},{"./crypto/utils":135}],145:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -9678,5 +12041,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":134}]},{},[140])(140)
+},{"./currencies":136}]},{},[145])(145)
 });
