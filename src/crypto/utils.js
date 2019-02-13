@@ -1,13 +1,10 @@
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
-var sha3 = require('./sha3')['sha3'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
 var base32 = require('./base32');
-var convert = require('./convert');
 var BigNum = require('browserify-bignum');
-var WordArray = require('./wordArray');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -115,51 +112,11 @@ module.exports = {
     blake2b256: function (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     },
-    sha3: function(hexString) {
-        return sha3(hexString);
-    },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
     hexStr2byteArray: hexStr2byteArray,
     bigNumberToBuffer: function(bignumber, size){
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
-    hex2ua_reversed: convert.hex2ua_reversed,
-    hex2ua: convert.hex2ua,
-    ua2hex: convert.ua2hex,
-    hex2a: convert.hex2a,
-    utf8ToHex: convert.utf8ToHex,
-    ua2words: convert.ua2words,
-    words2ua: convert.words2ua,
-    rstr2utf8: convert.rstr2utf8,
-    utf82rstr: convert.utf82rstr,
-    base32: base32,
-    wordArray: WordArray,
-    enc_hex_parse: function(hexStr) {
-        // Shortcut
-        var hexStrLength = hexStr.length;
-
-        // Convert
-        var words = [];
-        for (var i = 0; i < hexStrLength; i += 2) {
-            words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
-        }
-
-        return new WordArray.init(words, hexStrLength / 2);
-    },
-    env_hex_stringify: function(wordArray) {
-        // Shortcuts
-        var words = wordArray.words;
-        var sigBytes = wordArray.sigBytes;
-
-        // Convert
-        var hexChars = [];
-        for (var i = 0; i < sigBytes; i++) {
-            var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-            hexChars.push((bite >>> 4).toString(16));
-            hexChars.push((bite & 0x0f).toString(16));
-        }
-
-        return hexChars.join('');
-    }
+    base32: base32
 }

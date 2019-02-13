@@ -8067,7 +8067,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./crypto/base58":127,"./crypto/segwit_addr":134,"./crypto/utils":136,"buffer":4}],126:[function(require,module,exports){
+},{"./crypto/base58":127,"./crypto/segwit_addr":133,"./crypto/utils":135,"buffer":4}],126:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
  /**
@@ -10448,201 +10448,6 @@ var cnBase58 = (function () {
 })();
 module.exports = cnBase58;
 },{"./biginteger":129}],133:[function(require,module,exports){
-var WordArray = require('./wordArray');
-
-var _hexEncodeArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
-
- /**
-* Reversed convertion of hex to Uint8Array
-*
-* @param {string} hexx - An hex string
-*
-* @return {Uint8Array}
-*/
-var hex2ua_reversed = function(hexx) {
-    var hex = hexx.toString(); //force conversion
-    var ua = new Uint8Array(hex.length / 2);
-    for (var i = 0; i < hex.length; i += 2) {
-        ua[ua.length - 1 - (i / 2)] = parseInt(hex.substr(i, 2), 16);
-    }
-    return ua;
-};
-
- /**
-* Convert hex to Uint8Array
-*
-* @param {string} hexx - An hex string
-*
-* @return {Uint8Array}
-*/
-var hex2ua = function(hexx) {
-    var hex = hexx.toString(); //force conversion
-    var ua = new Uint8Array(hex.length / 2);
-    for (var i = 0; i < hex.length; i += 2) {
-        ua[i / 2] = parseInt(hex.substr(i, 2), 16);
-    }
-    return ua;
-};
-
- /**
-* Convert an Uint8Array to hex
-*
-* @param {Uint8Array} ua - An Uint8Array
-*
-* @return {string}
-*/
-var ua2hex = function(ua) {
-    var s = '';
-    for (var i = 0; i < ua.length; i++) {
-        var code = ua[i];
-        s += _hexEncodeArray[code >>> 4];
-        s += _hexEncodeArray[code & 0x0F];
-    }
-    return s;
-};
-
- /**
-* Convert hex to string
-*
-* @param {string} hexx - An hex string
-*
-* @return {string}
-*/
-var hex2a = function(hexx) {
-    var hex = hexx.toString();
-    var str = '';
-    for (var i = 0; i < hex.length; i += 2)
-        str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
-    return str;
-};
-
- /**
-* Convert UTF-8 to hex
-*
-* @param {string} str - An UTF-8 string
-*
-* @return {string}
-*/
-var utf8ToHex = function(str) {
-    var rawString = rstr2utf8(str);
-    var hex = "";
-    for (var i = 0; i < rawString.length; i++) {
-        hex += strlpad(rawString.charCodeAt(i).toString(16), "0", 2)
-    }
-    return hex;
-};
-
- // Padding helper for above function
-var strlpad = function(str, pad, len) {
-    while (str.length < len) {
-        str = pad + str;
-    }
-    return str;
-}
-
- /**
-* Convert an Uint8Array to WordArray
-*
-* @param {Uint8Array} ua - An Uint8Array
-* @param {number} uaLength - The Uint8Array length
-*
-* @return {WordArray}
-*/
-var ua2words = function(ua, uaLength) {
-    var temp = [];
-    for (var i = 0; i < uaLength; i += 4) {
-        var x = ua[i] * 0x1000000 + (ua[i + 1] || 0) * 0x10000 + (ua[i + 2] || 0) * 0x100 + (ua[i + 3] || 0);
-        temp.push((x > 0x7fffffff) ? x - 0x100000000 : x);
-    }
-    return WordArray.create(temp, uaLength);
-}
-
- /**
-* Convert a wordArray to Uint8Array
-*
-* @param {Uint8Array} destUa - A destination Uint8Array
-* @param {WordArray} cryptowords - A wordArray
-*
-* @return {Uint8Array}
-*/
-var words2ua = function(destUa, cryptowords) {
-    for (var i = 0; i < destUa.length; i += 4) {
-        var v = cryptowords.words[i / 4];
-        if (v < 0) v += 0x100000000;
-        destUa[i] = (v >>> 24);
-        destUa[i + 1] = (v >>> 16) & 0xff;
-        destUa[i + 2] = (v >>> 8) & 0xff;
-        destUa[i + 3] = v & 0xff;
-    }
-    return destUa;
-}
-
- /**
-* Converts a raw javascript string into a string of single byte characters using utf8 encoding.
-* This makes it easier to perform other encoding operations on the string.
-*
-* @param {string} input - A raw string
-*
-* @return {string} - UTF-8 string
-*/
-var rstr2utf8 = function (input) {
-    var output = "";
-
-     for (var n = 0; n < input.length; n++) {
-        var c = input.charCodeAt(n);
-
-         if (c < 128) {
-            output += String.fromCharCode(c);
-        } else if ((c > 127) && (c < 2048)) {
-            output += String.fromCharCode((c >> 6) | 192);
-            output += String.fromCharCode((c & 63) | 128);
-        } else {
-            output += String.fromCharCode((c >> 12) | 224);
-            output += String.fromCharCode(((c >> 6) & 63) | 128);
-            output += String.fromCharCode((c & 63) | 128);
-        }
-    }
-
-     return output;
-}
-
- // Does the reverse of rstr2utf8.
-var utf82rstr = function (input) {
-    var output = "", i = 0, c = 0, c1 = 0, c2 = 0, c3 = 0;
-
-     while (i < input.length) {
-        c = input.charCodeAt(i);
-
-         if (c < 128) {
-            output += String.fromCharCode(c);
-            i++;
-        } else if ((c > 191) && (c < 224)) {
-            c2 = input.charCodeAt(i + 1);
-            output += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-            i += 2;
-        } else {
-            c2 = input.charCodeAt(i + 1);
-            c3 = input.charCodeAt(i + 2);
-            output += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-            i += 3;
-        }
-    }
-
-     return output;
-}
-
- module.exports = {
-    hex2ua_reversed: hex2ua_reversed,
-    hex2ua: hex2ua,
-    ua2hex: ua2hex,
-    hex2a: hex2a,
-    utf8ToHex: utf8ToHex,
-    ua2words: ua2words,
-    words2ua: words2ua,
-    rstr2utf8: rstr2utf8,
-    utf82rstr: utf82rstr
-}
-},{"./wordArray":137}],134:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -10738,7 +10543,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":128}],135:[function(require,module,exports){
+},{"./bech32":128}],134:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -11382,18 +11187,15 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":122}],136:[function(require,module,exports){
+},{"_process":122}],135:[function(require,module,exports){
 (function (Buffer){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
-var sha3 = require('./sha3')['sha3'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
 var base32 = require('./base32');
-var convert = require('./convert');
 var BigNum = require('browserify-bignum');
-var WordArray = require('./wordArray');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -11501,213 +11303,17 @@ module.exports = {
     blake2b256: function (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     },
-    sha3: function(hexString) {
-        return sha3(hexString);
-    },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
     hexStr2byteArray: hexStr2byteArray,
     bigNumberToBuffer: function(bignumber, size){
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
-    hex2ua_reversed: convert.hex2ua_reversed,
-    hex2ua: convert.hex2ua,
-    ua2hex: convert.ua2hex,
-    hex2a: convert.hex2a,
-    utf8ToHex: convert.utf8ToHex,
-    ua2words: convert.ua2words,
-    words2ua: convert.words2ua,
-    rstr2utf8: convert.rstr2utf8,
-    utf82rstr: convert.utf82rstr,
-    base32: base32,
-    wordArray: WordArray,
-    enc_hex_parse: function(hexStr) {
-        // Shortcut
-        var hexStrLength = hexStr.length;
-
-        // Convert
-        var words = [];
-        for (var i = 0; i < hexStrLength; i += 2) {
-            words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
-        }
-
-        return new WordArray.init(words, hexStrLength / 2);
-    },
-    env_hex_stringify: function(wordArray) {
-        // Shortcuts
-        var words = wordArray.words;
-        var sigBytes = wordArray.sigBytes;
-
-        // Convert
-        var hexChars = [];
-        for (var i = 0; i < sigBytes; i++) {
-            var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-            hexChars.push((bite >>> 4).toString(16));
-            hexChars.push((bite & 0x0f).toString(16));
-        }
-
-        return hexChars.join('');
-    }
+    base32: base32
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./base32":126,"./base58":127,"./blake256":130,"./blake2b":131,"./convert":133,"./sha3":135,"./wordArray":137,"browserify-bignum":3,"buffer":4,"jssha/src/sha256":32}],137:[function(require,module,exports){
-module.exports = {
-    /**
-     * Extends this object and runs the init method.
-     * Arguments to create() will be passed to init().
-     */
-    create: function () {
-        var instance = this.extend();
-        instance.init.apply(instance, arguments);
-        return instance;
-    },
-
-    /**
-     * Initializes a newly created word array.
-     */
-    init: function (words, sigBytes) {
-        words = this.words = words || [];
-
-        if (sigBytes != undefined) {
-            this.sigBytes = sigBytes;
-        } else {
-            this.sigBytes = words.length * 4;
-        }
-    },
-
-    /**
-     * Creates a new object that inherits from this object.
-     */
-    extend: function (overrides) {
-        // Spawn
-        F.prototype = this;
-        var subtype = new F();
-        // Augment
-        if (overrides) {
-            subtype.mixIn(overrides);
-        }
-        // Create default initializer
-        if (!subtype.hasOwnProperty('init')) {
-            subtype.init = function () {
-                subtype.$super.init.apply(this, arguments);
-            };
-        }
-        // Initializer's prototype is the subtype object
-        subtype.init.prototype = subtype;
-        // Reference supertype
-        subtype.$super = this;
-        return subtype;
-    },
-
-    /**
-     * Copies properties into this object.
-     */
-    mixIn: function (properties) {
-        for (var propertyName in properties) {
-            if (properties.hasOwnProperty(propertyName)) {
-                this[propertyName] = properties[propertyName];
-            }
-        }
-        // IE won't copy toString using the loop above
-        if (properties.hasOwnProperty('toString')) {
-            this.toString = properties.toString;
-        }
-    },
-
-    /**
-     * Converts this word array to a string.
-     */
-    toString: function (encoder) {
-        if (encoder) {
-            return encoder.stringify(this);  
-        }
-        var wordArray =  this;
-        var words = wordArray.words;
-        var sigBytes = wordArray.sigBytes;
-
-        // Convert
-        var hexChars = [];
-        for (var i = 0; i < sigBytes; i++) {
-            var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-            hexChars.push((bite >>> 4).toString(16));
-            hexChars.push((bite & 0x0f).toString(16));
-        }
-
-        return hexChars.join('');
-    },
-
-    /**
-     * Concatenates a word array to this word array.
-     */
-    concat: function (wordArray) {
-        // Shortcuts
-        var thisWords = this.words;
-        var thatWords = wordArray.words;
-        var thisSigBytes = this.sigBytes;
-        var thatSigBytes = wordArray.sigBytes;
-
-        // Clamp excess bits
-        this.clamp();
-
-        // Concat
-        if (thisSigBytes % 4) {
-            // Copy one byte at a time
-            for (var i = 0; i < thatSigBytes; i++) {
-                var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-                thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
-            }
-        } else if (thatWords.length > 0xffff) {
-            // Copy one word at a time
-            for (var i = 0; i < thatSigBytes; i += 4) {
-                thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
-            }
-        } else {
-            // Copy all words at once
-            thisWords.push.apply(thisWords, thatWords);
-        }
-        this.sigBytes += thatSigBytes;
-
-        // Chainable
-        return this;
-    },
-
-    /**
-     * Removes insignificant bits.
-     */
-    clamp: function () {
-        // Shortcuts
-        var words = this.words;
-        var sigBytes = this.sigBytes;
-
-        // Clamp
-        words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
-        words.length = Math.ceil(sigBytes / 4);
-    },
-
-    /**
-     * Creates a copy of this word array.
-     */
-    clone: function () {
-        var clone = Base.clone.call(this);
-        clone.words = this.words.slice(0);
-        
-        return clone;
-    },
-
-    /**
-     * Creates a word array filled with random bytes.
-     */
-    random: function (nBytes) {
-        var words = [];
-        for (var i = 0; i < nBytes; i += 4) {
-            words.push((Math.random() * 0x100000000) | 0);
-        }
-
-        return new WordArray.init(words, nBytes);
-    },
-}
-},{}],138:[function(require,module,exports){
+},{"./base32":126,"./base58":127,"./blake256":130,"./blake2b":131,"./sha3":134,"browserify-bignum":3,"buffer":4,"jssha/src/sha256":32}],136:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -12119,7 +11725,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":124,"./bitcoin_validator":125,"./ethereum_validator":139,"./lisk_validator":140,"./monero_validator":141,"./nano_validator":142,"./nem_validator":143,"./ripple_validator":144,"./siacoin_validator":145,"./tron_validator":146}],139:[function(require,module,exports){
+},{"./ada_validator":124,"./bitcoin_validator":125,"./ethereum_validator":137,"./lisk_validator":138,"./monero_validator":139,"./nano_validator":140,"./nem_validator":141,"./ripple_validator":142,"./siacoin_validator":143,"./tron_validator":144}],137:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -12155,7 +11761,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136}],140:[function(require,module,exports){
+},{"./crypto/utils":135}],138:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12177,7 +11783,7 @@ module.exports = {
     }
 };
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],141:[function(require,module,exports){
+},{"./crypto/utils":135,"buffer":4}],139:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -12241,7 +11847,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":132,"./crypto/utils":136}],142:[function(require,module,exports){
+},{"./crypto/cnBase58":132,"./crypto/utils":135}],140:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12270,7 +11876,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],143:[function(require,module,exports){
+},{"./crypto/utils":135,"base-x":1}],141:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12286,7 +11892,7 @@ var isValidAddress = function(_address) {
     if (!address || address.length !== 40) {
         return false;
     }
-    var decoded = cryptoUtils.ua2hex(cryptoUtils.base32.b32decode(address));
+    var decoded = cryptoUtils.toHex(cryptoUtils.base32.b32decode(address));
     var stepThreeChecksum = cryptoUtils.keccak256Checksum(Buffer.from(decoded.slice(0, 42), 'hex'));
 
     return stepThreeChecksum === decoded.slice(42);
@@ -12296,7 +11902,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 }
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],144:[function(require,module,exports){
+},{"./crypto/utils":135,"buffer":4}],142:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12326,7 +11932,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],145:[function(require,module,exports){
+},{"./crypto/utils":135,"base-x":1}],143:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
 
@@ -12356,7 +11962,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":136,"lodash/isEqual":113}],146:[function(require,module,exports){
+},{"./crypto/utils":135,"lodash/isEqual":113}],144:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12418,7 +12024,7 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
-},{"./crypto/utils":136}],147:[function(require,module,exports){
+},{"./crypto/utils":135}],145:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -12435,5 +12041,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":138}]},{},[147])(147)
+},{"./currencies":136}]},{},[145])(145)
 });
