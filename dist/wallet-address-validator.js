@@ -14589,7 +14589,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/base58":160,"cbor-js":5,"crc":30}],159:[function(require,module,exports){
+},{"./crypto/base58":161,"cbor-js":5,"crc":30}],159:[function(require,module,exports){
 (function (Buffer){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -14679,7 +14679,74 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./crypto/base58":160,"./crypto/segwit_addr":167,"./crypto/utils":169,"buffer":4}],160:[function(require,module,exports){
+},{"./crypto/base58":161,"./crypto/segwit_addr":168,"./crypto/utils":170,"buffer":4}],160:[function(require,module,exports){
+var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+
+ /**
+* Encode a string to base32
+*/
+var b32encode = function(s) {
+    var parts = [];
+    var quanta = Math.floor((s.length / 5));
+    var leftover = s.length % 5;
+
+     if (leftover != 0) {
+        for (var i = 0; i < (5 - leftover); i++) {
+            s += '\x00';
+        }
+        quanta += 1;
+    }
+
+     for (var i = 0; i < quanta; i++) {
+        parts.push(alphabet.charAt(s.charCodeAt(i * 5) >> 3));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5) & 0x07) << 2) | (s.charCodeAt(i * 5 + 1) >> 6)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x3F) >> 1)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x01) << 4) | (s.charCodeAt(i * 5 + 2) >> 4)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 2) & 0x0F) << 1) | (s.charCodeAt(i * 5 + 3) >> 7)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x7F) >> 2)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x03) << 3) | (s.charCodeAt(i * 5 + 4) >> 5)));
+        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 4) & 0x1F))));
+    }
+
+     var replace = 0;
+    if (leftover == 1) replace = 6;
+    else if (leftover == 2) replace = 4;
+    else if (leftover == 3) replace = 3;
+    else if (leftover == 4) replace = 1;
+
+     for (var i = 0; i < replace; i++) parts.pop();
+    for (var i = 0; i < replace; i++) parts.push("=");
+
+     return parts.join("");
+}
+
+/**
+* Decode a base32 string.
+* This is made specifically for our use, deals only with proper strings
+*/
+var b32decode = function(s) {
+    var r = new ArrayBuffer(s.length * 5 / 8);
+    var b = new Uint8Array(r);
+    for (var j = 0; j < s.length / 8; j++) {
+        var v = [0, 0, 0, 0, 0, 0, 0, 0];
+        for (var i = 0; i < 8; ++i) {
+            v[i] = alphabet.indexOf(s[j * 8 + i]);
+        }
+        var i = 0;
+        b[j * 5 + 0] = (v[i + 0] << 3) | (v[i + 1] >> 2);
+        b[j * 5 + 1] = ((v[i + 1] & 0x3) << 6) | (v[i + 2] << 1) | (v[i + 3] >> 4);
+        b[j * 5 + 2] = ((v[i + 3] & 0xf) << 4) | (v[i + 4] >> 1);
+        b[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
+        b[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | (v[i + 7]);
+    }
+    return b;
+}
+
+module.exports = {
+    b32decode: b32decode,
+    b32encode: b32encode
+};
+},{}],161:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -14727,7 +14794,7 @@ module.exports = {
     }
 };
 
-},{}],161:[function(require,module,exports){
+},{}],162:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -14845,7 +14912,7 @@ function decode (bechString) {
   return {hrp: hrp, data: data.slice(0, data.length - 6)};
 }
 
-},{}],162:[function(require,module,exports){
+},{}],163:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -16296,7 +16363,7 @@ function decode (bechString) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],163:[function(require,module,exports){
+},{}],164:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -16487,7 +16554,7 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 }).call(this,require("buffer").Buffer)
-},{"buffer":4}],164:[function(require,module,exports){
+},{"buffer":4}],165:[function(require,module,exports){
 'use strict';
 
 /**
@@ -16765,7 +16832,7 @@ function toHex (n) {
 
 module.exports = Blake2b;
 
-},{}],165:[function(require,module,exports){
+},{}],166:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -16992,8 +17059,8 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":162}],166:[function(require,module,exports){
-var CryptoJS = require('crypto-js');
+},{"./biginteger":163}],167:[function(require,module,exports){
+var WordArray = require('./wordArray');
 
 var _hexEncodeArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -17099,7 +17166,7 @@ var ua2words = function(ua, uaLength) {
         var x = ua[i] * 0x1000000 + (ua[i + 1] || 0) * 0x10000 + (ua[i + 2] || 0) * 0x100 + (ua[i + 3] || 0);
         temp.push((x > 0x7fffffff) ? x - 0x100000000 : x);
     }
-    return CryptoJS.lib.WordArray.create(temp, uaLength);
+    return WordArray.create(temp, uaLength);
 }
 
  /**
@@ -17187,7 +17254,7 @@ var utf82rstr = function (input) {
     rstr2utf8: rstr2utf8,
     utf82rstr: utf82rstr
 }
-},{"crypto-js":39}],167:[function(require,module,exports){
+},{"./wordArray":171}],168:[function(require,module,exports){
 // Copyright (c) 2017 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -17283,7 +17350,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":161}],168:[function(require,module,exports){
+},{"./bech32":162}],169:[function(require,module,exports){
 (function (process,global){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -17927,14 +17994,18 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":156}],169:[function(require,module,exports){
+},{"_process":156}],170:[function(require,module,exports){
 (function (Buffer){
 var jsSHA = require('jssha/src/sha256');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
+var sha3 = require('./sha3')['sha3'];
 var Blake2B = require('./blake2b');
 var base58 = require('./base58');
+var base32 = require('./base32');
+var convert = require('./convert');
 var BigNum = require('browserify-bignum');
+var WordArray = require('./wordArray');
 
 function numberToHex(number) {
     var hex = Math.round(number).toString(16)
@@ -18042,38 +18113,213 @@ module.exports = {
     blake2b256: function (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
     },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX')
-        sha.update(hexString)
-        return sha.getHash('HEX')
-    },
-    sha256Checksum: function (payload) {
-        return this.sha256(this.sha256(payload)).substr(0, 8)
-    },
-    blake256: function (hexString) {
-        return new Blake256().update(hexString, 'hex').digest('hex')
-    },
-    blake256Checksum: function (payload) {
-        return this.blake256(this.blake256(payload)).substr(0, 8)
-    },
-    keccak256: function (hexString) {
-        return keccak256(hexString)
-    },
-    keccak256Checksum: function (payload) {
-        return keccak256(payload)
-            .toString()
-            .substr(0, 8)
+    sha3: function(hexString) {
+        return sha3(hexString);
     },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
     hexStr2byteArray: hexStr2byteArray,
     bigNumberToBuffer: function(bignumber, size){
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
+    },
+    hex2ua_reversed: convert.hex2ua_reversed,
+    hex2ua: convert.hex2ua,
+    ua2hex: convert.ua2hex,
+    hex2a: convert.hex2a,
+    utf8ToHex: convert.utf8ToHex,
+    ua2words: convert.ua2words,
+    words2ua: convert.words2ua,
+    rstr2utf8: convert.rstr2utf8,
+    utf82rstr: convert.utf82rstr,
+    base32: base32,
+    wordArray: WordArray,
+    enc_hex_parse: function(hexStr) {
+        // Shortcut
+        var hexStrLength = hexStr.length;
+
+        // Convert
+        var words = [];
+        for (var i = 0; i < hexStrLength; i += 2) {
+            words[i >>> 3] |= parseInt(hexStr.substr(i, 2), 16) << (24 - (i % 8) * 4);
+        }
+
+        return new WordArray.init(words, hexStrLength / 2);
+    },
+    env_hex_stringify: function(wordArray) {
+        // Shortcuts
+        var words = wordArray.words;
+        var sigBytes = wordArray.sigBytes;
+
+        // Convert
+        var hexChars = [];
+        for (var i = 0; i < sigBytes; i++) {
+            var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+            hexChars.push((bite >>> 4).toString(16));
+            hexChars.push((bite & 0x0f).toString(16));
+        }
+
+        return hexChars.join('');
     }
 }
 
 }).call(this,require("buffer").Buffer)
-},{"./base58":160,"./blake256":163,"./blake2b":164,"./sha3":168,"browserify-bignum":3,"buffer":4,"jssha/src/sha256":66}],170:[function(require,module,exports){
+},{"./base32":160,"./base58":161,"./blake256":164,"./blake2b":165,"./convert":167,"./sha3":169,"./wordArray":171,"browserify-bignum":3,"buffer":4,"jssha/src/sha256":66}],171:[function(require,module,exports){
+module.exports = {
+    /**
+     * Extends this object and runs the init method.
+     * Arguments to create() will be passed to init().
+     */
+    create: function () {
+        var instance = this.extend();
+        instance.init.apply(instance, arguments);
+        return instance;
+    },
+
+    /**
+     * Initializes a newly created word array.
+     */
+    init: function (words, sigBytes) {
+        words = this.words = words || [];
+
+        if (sigBytes != undefined) {
+            this.sigBytes = sigBytes;
+        } else {
+            this.sigBytes = words.length * 4;
+        }
+    },
+
+    /**
+     * Creates a new object that inherits from this object.
+     */
+    extend: function (overrides) {
+        // Spawn
+        F.prototype = this;
+        var subtype = new F();
+        // Augment
+        if (overrides) {
+            subtype.mixIn(overrides);
+        }
+        // Create default initializer
+        if (!subtype.hasOwnProperty('init')) {
+            subtype.init = function () {
+                subtype.$super.init.apply(this, arguments);
+            };
+        }
+        // Initializer's prototype is the subtype object
+        subtype.init.prototype = subtype;
+        // Reference supertype
+        subtype.$super = this;
+        return subtype;
+    },
+
+    /**
+     * Copies properties into this object.
+     */
+    mixIn: function (properties) {
+        for (var propertyName in properties) {
+            if (properties.hasOwnProperty(propertyName)) {
+                this[propertyName] = properties[propertyName];
+            }
+        }
+        // IE won't copy toString using the loop above
+        if (properties.hasOwnProperty('toString')) {
+            this.toString = properties.toString;
+        }
+    },
+
+    /**
+     * Converts this word array to a string.
+     */
+    toString: function (encoder) {
+        if (encoder) {
+            return encoder.stringify(this);  
+        }
+        var wordArray =  this;
+        var words = wordArray.words;
+        var sigBytes = wordArray.sigBytes;
+
+        // Convert
+        var hexChars = [];
+        for (var i = 0; i < sigBytes; i++) {
+            var bite = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+            hexChars.push((bite >>> 4).toString(16));
+            hexChars.push((bite & 0x0f).toString(16));
+        }
+
+        return hexChars.join('');
+    },
+
+    /**
+     * Concatenates a word array to this word array.
+     */
+    concat: function (wordArray) {
+        // Shortcuts
+        var thisWords = this.words;
+        var thatWords = wordArray.words;
+        var thisSigBytes = this.sigBytes;
+        var thatSigBytes = wordArray.sigBytes;
+
+        // Clamp excess bits
+        this.clamp();
+
+        // Concat
+        if (thisSigBytes % 4) {
+            // Copy one byte at a time
+            for (var i = 0; i < thatSigBytes; i++) {
+                var thatByte = (thatWords[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                thisWords[(thisSigBytes + i) >>> 2] |= thatByte << (24 - ((thisSigBytes + i) % 4) * 8);
+            }
+        } else if (thatWords.length > 0xffff) {
+            // Copy one word at a time
+            for (var i = 0; i < thatSigBytes; i += 4) {
+                thisWords[(thisSigBytes + i) >>> 2] = thatWords[i >>> 2];
+            }
+        } else {
+            // Copy all words at once
+            thisWords.push.apply(thisWords, thatWords);
+        }
+        this.sigBytes += thatSigBytes;
+
+        // Chainable
+        return this;
+    },
+
+    /**
+     * Removes insignificant bits.
+     */
+    clamp: function () {
+        // Shortcuts
+        var words = this.words;
+        var sigBytes = this.sigBytes;
+
+        // Clamp
+        words[sigBytes >>> 2] &= 0xffffffff << (32 - (sigBytes % 4) * 8);
+        words.length = Math.ceil(sigBytes / 4);
+    },
+
+    /**
+     * Creates a copy of this word array.
+     */
+    clone: function () {
+        var clone = Base.clone.call(this);
+        clone.words = this.words.slice(0);
+        
+        return clone;
+    },
+
+    /**
+     * Creates a word array filled with random bytes.
+     */
+    random: function (nBytes) {
+        var words = [];
+        for (var i = 0; i < nBytes; i += 4) {
+            words.push((Math.random() * 0x100000000) | 0);
+        }
+
+        return new WordArray.init(words, nBytes);
+    },
+}
+},{}],172:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -18485,7 +18731,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":158,"./bitcoin_validator":159,"./ethereum_validator":171,"./lisk_validator":172,"./monero_validator":173,"./nano_validator":174,"./nem_validator":175,"./ripple_validator":176,"./siacoin_validator":177,"./tron_validator":178}],171:[function(require,module,exports){
+},{"./ada_validator":158,"./bitcoin_validator":159,"./ethereum_validator":173,"./lisk_validator":174,"./monero_validator":175,"./nano_validator":176,"./nem_validator":177,"./ripple_validator":178,"./siacoin_validator":179,"./tron_validator":180}],173:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -18521,7 +18767,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":169}],172:[function(require,module,exports){
+},{"./crypto/utils":170}],174:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -18543,7 +18789,7 @@ module.exports = {
     }
 };
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":169,"buffer":4}],173:[function(require,module,exports){
+},{"./crypto/utils":170,"buffer":4}],175:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -18607,7 +18853,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":165,"./crypto/utils":169}],174:[function(require,module,exports){
+},{"./crypto/cnBase58":166,"./crypto/utils":170}],176:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -18636,80 +18882,9 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":169,"base-x":1}],175:[function(require,module,exports){
-var convert = require('./crypto/convert');
-var CryptoJS= require('crypto-js');
-
-var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-
- /**
-* Encode a string to base32
-*
-* @param {string} s - A string
-*
-* @return {string} - The encoded string
-*/
-var b32encode = function(s) {
-    var parts = [];
-    var quanta = Math.floor((s.length / 5));
-    var leftover = s.length % 5;
-
-     if (leftover != 0) {
-        for (var i = 0; i < (5 - leftover); i++) {
-            s += '\x00';
-        }
-        quanta += 1;
-    }
-
-     for (var i = 0; i < quanta; i++) {
-        parts.push(alphabet.charAt(s.charCodeAt(i * 5) >> 3));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5) & 0x07) << 2) | (s.charCodeAt(i * 5 + 1) >> 6)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x3F) >> 1)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 1) & 0x01) << 4) | (s.charCodeAt(i * 5 + 2) >> 4)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 2) & 0x0F) << 1) | (s.charCodeAt(i * 5 + 3) >> 7)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x7F) >> 2)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 3) & 0x03) << 3) | (s.charCodeAt(i * 5 + 4) >> 5)));
-        parts.push(alphabet.charAt(((s.charCodeAt(i * 5 + 4) & 0x1F))));
-    }
-
-     var replace = 0;
-    if (leftover == 1) replace = 6;
-    else if (leftover == 2) replace = 4;
-    else if (leftover == 3) replace = 3;
-    else if (leftover == 4) replace = 1;
-
-     for (var i = 0; i < replace; i++) parts.pop();
-    for (var i = 0; i < replace; i++) parts.push("=");
-
-     return parts.join("");
-}
-
- /**
-* Decode a base32 string.
-* This is made specifically for our use, deals only with proper strings
-*
-* @param {string} s - A base32 string
-*
-* @return {Uint8Array} - The decoded string
-*/
-var b32decode = function(s) {
-    var r = new ArrayBuffer(s.length * 5 / 8);
-    var b = new Uint8Array(r);
-    for (var j = 0; j < s.length / 8; j++) {
-        var v = [0, 0, 0, 0, 0, 0, 0, 0];
-        for (var i = 0; i < 8; ++i) {
-            v[i] = alphabet.indexOf(s[j * 8 + i]);
-        }
-        var i = 0;
-        b[j * 5 + 0] = (v[i + 0] << 3) | (v[i + 1] >> 2);
-        b[j * 5 + 1] = ((v[i + 1] & 0x3) << 6) | (v[i + 2] << 1) | (v[i + 3] >> 4);
-        b[j * 5 + 2] = ((v[i + 3] & 0xf) << 4) | (v[i + 4] >> 1);
-        b[j * 5 + 3] = ((v[i + 4] & 0x1) << 7) | (v[i + 5] << 2) | (v[i + 6] >> 3);
-        b[j * 5 + 4] = ((v[i + 6] & 0x7) << 5) | (v[i + 7]);
-    }
-    return b;
-}
-
+},{"./crypto/utils":170,"base-x":1}],177:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+var CryptoJS = require('crypto-js');
  /**
 * Convert a public key to a NEM address
 *
@@ -18719,20 +18894,16 @@ var b32decode = function(s) {
 * @return {string} - The NEM address
 */
 var toAddress = function(publicKey, networkId) {
-    var binPubKey = CryptoJS.enc.Hex.parse(publicKey);
-    var hash = CryptoJS.SHA3(binPubKey, {
-        outputLength: 256
-    });
+    var binPubKey = cryptoUtils.enc_hex_parse(publicKey);
+    var hash = cryptoUtils.keccak256(binPubKey);
     var hash2 = CryptoJS.RIPEMD160(hash);
     // 98 is for testnet
     var networkPrefix = Network.id2Prefix(networkId);
-    var versionPrefixedRipemd160Hash = networkPrefix + CryptoJS.enc.Hex.stringify(hash2);
-    var tempHash = CryptoJS.SHA3(CryptoJS.enc.Hex.parse(versionPrefixedRipemd160Hash), {
-        outputLength: 256
-    });
-    var stepThreeChecksum = CryptoJS.enc.Hex.stringify(tempHash).substr(0, 8);
-    var concatStepThreeAndStepSix = convert.hex2a(versionPrefixedRipemd160Hash + stepThreeChecksum);
-    var ret = b32encode(concatStepThreeAndStepSix);
+    var versionPrefixedRipemd160Hash = networkPrefix + cryptoUtils.env_hex_stringify(hash2);
+    var tempHash = cryptoUtils.keccak256(cryptoUtils.enc_hex_parse(versionPrefixedRipemd160Hash));
+    var stepThreeChecksum = cryptoUtils.env_hex_stringify(tempHash).substr(0, 8);
+    var concatStepThreeAndStepSix = cryptoUtils.hex2a(versionPrefixedRipemd160Hash + stepThreeChecksum);
+    var ret = cryptoUtils.base32.b32encode(concatStepThreeAndStepSix);
     return ret;
 };
 
@@ -18762,14 +18933,13 @@ var isValidAddress = function(_address) {
     if (!address || address.length !== 40) {
         return false;
     }
-    var decoded = convert.ua2hex(b32decode(address));
-    var versionPrefixedRipemd160Hash = CryptoJS.enc.Hex.parse(decoded.slice(0, 42));
+    var decoded = cryptoUtils.ua2hex(cryptoUtils.base32.b32decode(address));
+    var versionPrefixedRipemd160Hash = cryptoUtils.enc_hex_parse(decoded.slice(0, 42));
     var tempHash = CryptoJS.SHA3(versionPrefixedRipemd160Hash, {
         outputLength: 256
     });
-    var stepThreeChecksum = CryptoJS.enc.Hex.stringify(tempHash).substr(0, 8);
-
-     return stepThreeChecksum === decoded.slice(42);
+    var stepThreeChecksum = cryptoUtils.env_hex_stringify(tempHash).substr(0, 8);
+    return stepThreeChecksum === decoded.slice(42);
 };
 
  /**
@@ -18784,14 +18954,12 @@ var clean = function(_address) {
 };
 
 module.exports = {
-    b32encode: b32encode,
-    b32decode: b32decode,
     toAddress: toAddress,
     isFromNetwork: isFromNetwork,
     isValidAddress: isValidAddress,
     clean: clean
 }
-},{"./crypto/convert":166,"crypto-js":39}],176:[function(require,module,exports){
+},{"./crypto/utils":170,"crypto-js":39}],178:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -18821,7 +18989,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":169,"base-x":1}],177:[function(require,module,exports){
+},{"./crypto/utils":170,"base-x":1}],179:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
 
@@ -18851,7 +19019,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":169,"lodash/isEqual":147}],178:[function(require,module,exports){
+},{"./crypto/utils":170,"lodash/isEqual":147}],180:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -18913,7 +19081,7 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
-},{"./crypto/utils":169}],179:[function(require,module,exports){
+},{"./crypto/utils":170}],181:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -18930,5 +19098,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":170}]},{},[179])(179)
+},{"./currencies":172}]},{},[181])(181)
 });

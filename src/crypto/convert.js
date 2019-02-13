@@ -1,4 +1,4 @@
-var CryptoJS = require('crypto-js');
+var WordArray = require('./wordArray');
 
 var _hexEncodeArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'];
 
@@ -104,7 +104,7 @@ var ua2words = function(ua, uaLength) {
         var x = ua[i] * 0x1000000 + (ua[i + 1] || 0) * 0x10000 + (ua[i + 2] || 0) * 0x100 + (ua[i + 3] || 0);
         temp.push((x > 0x7fffffff) ? x - 0x100000000 : x);
     }
-    return CryptoJS.lib.WordArray.create(temp, uaLength);
+    return WordArray.create(temp, uaLength);
 }
 
  /**
