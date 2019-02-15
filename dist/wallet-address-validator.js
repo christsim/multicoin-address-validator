@@ -11456,8 +11456,9 @@ var CURRENCIES = [{
 }, {
     name: 'VertCoin',
     symbol: 'vtc',
-    addressTypes: { prod: ['0x', '47'], testnet: ['6f', 'c4'] },
+    addressTypes: { prod: ['0x', '47', '71', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
+    
 }, {
     name: 'BitcoinGold',
     symbol: 'btg',

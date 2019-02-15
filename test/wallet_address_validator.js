@@ -79,6 +79,9 @@ describe('WAValidator.validate()', function () {
       // p2sh addresses
       valid('3NJZLcZEEYBpxYEUGewU4knsQRn1WM5Fkt', 'bitcoincash');
       valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'bitcoincash', 'testnet');
+
+      valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch');
+
     });
 
     it('should return true for correct litecoin addresses', function () {
@@ -218,6 +221,11 @@ describe('WAValidator.validate()', function () {
     });
 
     it('should return true for correct Vertcoin addresses', function () {
+      valid('3PgeyhEJEnS5CeBu3iFcu3JHVKemeHx1AW', 'VTC');
+      valid('353nERPQKhGj4WGzoiWcareA76TPgRCVNA', 'VTC');
+      valid('376g4TmL8uQKFYsRFrbv5iz9srmb5bocEt', 'VTC');
+      valid('3AMtM4Zk5oNHu9i4jDiwKB6Kg5YEReBsav', 'VTC');
+      
       valid('VmoMjGf3zgZLy8sk3PMKd3xikZHXWvnYi7', 'vertcoin');
       valid('VmhHwXr3J8xMZpy62WuBGpu3xVvThWzcTQ', 'vertcoin');
       valid('mvww6DEJ18dbyQUukpVQXvLgrNDJazZn1Y', 'vertcoin', 'testnet');
@@ -523,6 +531,7 @@ describe('WAValidator.validate()', function () {
       valid('bitcoincash:qpp32ssez340wfspnt79h6c4xds4fzf3m5j0cplx0l', 'bsv');
       valid('qqg82u7tq2eahs3gkh9m6kjnmjehr69m5v37alepq4', 'bsv');
       valid('bitcoincash:qrwkk9a3es2wu7mdvzh0vekfvjuzysq8tv7r3hcwr5', 'bsv');
+      valid('1DrNXqCj2B8FKyx66RAWDkiEJhw2yrvhT3', 'bsv');
     });
   });
 
