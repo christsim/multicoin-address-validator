@@ -514,6 +514,16 @@ describe('WAValidator.validate()', function () {
       valid('6853061742992593192L', 'lsk');
       valid('530464791801L', 'lsk');
     });
+
+    it('should return true for correct bsv addresses', function () {
+      valid('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv');
+      valid('qp65yngy5uds4wxtrkynptal4f76qzmrh52pa3mpaf', 'bsv');
+      valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
+      valid('qz97s7ee0rvwlymtxrwafmvs87x6027jwuf3wepug7', 'bsv');
+      valid('bitcoincash:qpp32ssez340wfspnt79h6c4xds4fzf3m5j0cplx0l', 'bsv');
+      valid('qqg82u7tq2eahs3gkh9m6kjnmjehr69m5v37alepq4', 'bsv');
+      valid('bitcoincash:qrwkk9a3es2wu7mdvzh0vekfvjuzysq8tv7r3hcwr5', 'bsv');
+    });
   });
 
   describe('invalid results', function () {
@@ -795,12 +805,25 @@ describe('WAValidator.validate()', function () {
     });
     //15823701926930889868L
     it('should return false for incorrect lsk addresses', function () {
-      commonTests('nem');
+      commonTests('lsk');
       invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'lsk');
       invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'lsk');
 
       invalid('158237019269308898689L', 'lsk');
       invalid('158237A192B930C898689L', 'lsk');
+    });
+
+    it('should return false for incorrect bsv addresses', function () {
+      commonTests('bsv');
+      invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'bsv');
+      invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'bsv');
+
+      invalid('158237019269308898689L', 'bsv');
+      invalid('158237A192B930C898689L', 'bsv');
+      invalid('bitcoin:qzpuefrpg3kl2ykQe52rxn96pd3Kp4qudywr5pyrsf', 'bsv');
+      invalid('pzuefrpg3kl2ykqe52rxn96pd3kp4qudywr5py', 'bsv');
+      invalid('rlt2c2wuxr644encp3as0hygtj9djrsaumku3cex5', 'bsv');
+      invalid('qra607y4wnkmnpy3wcmrxmltzkrxywcq85c7watpdx09', 'bsv');
     });
   });
 });
