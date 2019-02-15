@@ -2,10 +2,9 @@ var cryptoUtils = require('./crypto/utils');
 var bech32 = require('./crypto/bech32');
 var BTCValidator = require('./bitcoin_validator');
 
-var regexp = new RegExp('^[qQ]{1}[0-9a-zA-Z]{41}$');
-
 function validateAddress(address, currency, networkType) {
     var prefix = 'bitcoincash';
+    var regexp = new RegExp(currency.regexp);
 
     if (!regexp.test(address)) {
         return false;
