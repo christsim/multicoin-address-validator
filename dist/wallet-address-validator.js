@@ -7978,6 +7978,43 @@ module.exports = {
 };
 
 },{"./crypto/base58":128,"cbor-js":5,"crc":30}],125:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+var bech32 = require('./crypto/bech32');
+var BTCValidator = require('./bitcoin_validator');
+
+function validateAddress(address, currency, networkType) {
+    var prefix = 'bitcoincash';
+    var regexp = new RegExp(currency.regexp);
+
+    if (!regexp.test(address)) {
+        return false;
+    }
+
+    if (address.toLowerCase() != address && address.toUpperCase() != address) {
+        return false;
+    }
+
+    var decoded = cryptoUtils.base32.b32decode(address);
+    if (networkType === 'testnet') {
+        prefix = 'bchtest';
+    }
+
+    try {
+        if (bech32.verifyChecksum(prefix, decoded)) {
+            return false;    
+        }
+    } catch(e) {
+        return false;
+    }
+    return true;
+}
+
+module.exports = {
+    isValidAddress: function (address, currency, networkType) {
+        return validateAddress(address, currency, networkType) || BTCValidator.isValidAddress(address, currency, networkType);
+    }
+}
+},{"./bitcoin_validator":126,"./crypto/bech32":129,"./crypto/utils":136}],126:[function(require,module,exports){
 (function (Buffer){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -8067,45 +8104,7 @@ module.exports = {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"./crypto/base58":128,"./crypto/segwit_addr":134,"./crypto/utils":136,"buffer":4}],126:[function(require,module,exports){
-var cryptoUtils = require('./crypto/utils');
-var bech32 = require('./crypto/bech32');
-var BTCValidator = require('./bitcoin_validator');
-
-var regexp = new RegExp('^[qQ]{1}[0-9a-zA-Z]{41}$');
-
-function validateAddress(address, currency, networkType) {
-    var prefix = 'bitcoincash';
-
-    if (!regexp.test(address)) {
-        return false;
-    }
-
-    if (address.toLowerCase() != address && address.toUpperCase() != address) {
-        return false;
-    }
-
-    var decoded = cryptoUtils.base32.b32decode(address);
-    if (networkType === 'testnet') {
-        prefix = 'bchtest';
-    }
-
-    try {
-        if (bech32.verifyChecksum(prefix, decoded)) {
-            return false;    
-        }
-    } catch(e) {
-        return false;
-    }
-    return true;
-}
-
-module.exports = {
-    isValidAddress: function (address, currency, networkType) {
-        return validateAddress(address, currency, networkType) || BTCValidator.isValidAddress(address, currency, networkType);
-    }
-}
-},{"./bitcoin_validator":125,"./crypto/bech32":129,"./crypto/utils":136}],127:[function(require,module,exports){
+},{"./crypto/base58":128,"./crypto/segwit_addr":134,"./crypto/utils":136,"buffer":4}],127:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
  /**
@@ -11363,7 +11362,7 @@ var SCValidator = require('./siacoin_validator')
 var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
-var BSVValidator = require('./bsv_validator');
+var BCHValidator = require('./bch_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -11374,13 +11373,15 @@ var CURRENCIES = [{
 }, {
     name: 'BitcoinCash',
     symbol: 'bch',
+    regexp: '^[qQpP]{1}[0-9a-zA-Z]{41}$',
     addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BSVValidator
+    validator: BCHValidator
 }, {
     name: 'Bitcoin SV',
     symbol: 'bsv',
+    regexp: '^[qQ]{1}[0-9a-zA-Z]{41}$',
     addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BSVValidator
+    validator: BCHValidator
 }, {
     name: 'LiteCoin',
     symbol: 'ltc',
@@ -11770,7 +11771,7 @@ module.exports = {
 
 
 
-},{"./ada_validator":124,"./bitcoin_validator":125,"./bsv_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./tron_validator":145}],138:[function(require,module,exports){
+},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./tron_validator":145}],138:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
