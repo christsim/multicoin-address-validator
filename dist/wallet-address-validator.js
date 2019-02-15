@@ -7985,16 +7985,27 @@ var BTCValidator = require('./bitcoin_validator');
 function validateAddress(address, currency, networkType) {
     var prefix = 'bitcoincash';
     var regexp = new RegExp(currency.regexp);
+    var raw_address;
 
-    if (!regexp.test(address)) {
+    var res = address.split(':');
+    if (res.length === 1) {
+        raw_address = address
+    } else {
+        if (res[0] !== 'bitcoincash') {
+            return false;
+        }
+        raw_address = res[1];
+    }
+
+    if (!regexp.test(raw_address)) {
         return false;
     }
 
-    if (address.toLowerCase() != address && address.toUpperCase() != address) {
+    if (raw_address.toLowerCase() != raw_address && raw_address.toUpperCase() != raw_address) {
         return false;
     }
 
-    var decoded = cryptoUtils.base32.b32decode(address);
+    var decoded = cryptoUtils.base32.b32decode(raw_address);
     if (networkType === 'testnet') {
         prefix = 'bchtest';
     }
