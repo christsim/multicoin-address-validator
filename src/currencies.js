@@ -8,6 +8,7 @@ var SCValidator = require('./siacoin_validator')
 var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
+var BSVValidator = require('./bsv_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -20,6 +21,10 @@ var CURRENCIES = [{
     symbol: 'bch',
     addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
+}, {
+    name: 'Bitcoin SV',
+    symbol: 'bsv',
+    validator: BSVValidator
 }, {
     name: 'LiteCoin',
     symbol: 'ltc',
