@@ -20,10 +20,11 @@ var CURRENCIES = [{
     name: 'BitcoinCash',
     symbol: 'bch',
     addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
+    validator: BSVValidator
 }, {
     name: 'Bitcoin SV',
     symbol: 'bsv',
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BSVValidator
 }, {
     name: 'LiteCoin',

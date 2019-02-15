@@ -8070,11 +8070,16 @@ module.exports = {
 },{"./crypto/base58":128,"./crypto/segwit_addr":134,"./crypto/utils":136,"buffer":4}],126:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var bech32 = require('./crypto/bech32');
+var BTCValidator = require('./bitcoin_validator');
 
 var regexp = new RegExp('^[qQ]{1}[0-9a-zA-Z]{41}$');
 
 function validateAddress(address, currency, networkType) {
     var prefix = 'bitcoincash';
+
+    if (!regexp.test(address)) {
+        return false;
+    }
 
     if (address.toLowerCase() != address && address.toUpperCase() != address) {
         return false;
@@ -8097,13 +8102,10 @@ function validateAddress(address, currency, networkType) {
 
 module.exports = {
     isValidAddress: function (address, currency, networkType) {
-        if (!regexp.test(address)) {
-            return false;
-        }
-        return validateAddress(address, currency, networkType);
+        return validateAddress(address, currency, networkType) || BTCValidator.isValidAddress(address, currency, networkType);
     }
 }
-},{"./crypto/bech32":129,"./crypto/utils":136}],127:[function(require,module,exports){
+},{"./bitcoin_validator":125,"./crypto/bech32":129,"./crypto/utils":136}],127:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
  /**
@@ -11373,10 +11375,11 @@ var CURRENCIES = [{
     name: 'BitcoinCash',
     symbol: 'bch',
     addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
+    validator: BSVValidator
 }, {
     name: 'Bitcoin SV',
     symbol: 'bsv',
+    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
     validator: BSVValidator
 }, {
     name: 'LiteCoin',
