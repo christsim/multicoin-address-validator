@@ -97,6 +97,7 @@ npm install multicoin-address-validator
 * SnowGem/sng `'SnowGem'` or `'sng'` 
 * SolarCoin/slr `'SolarCoin'` or `'slr'` 
 * Status/snt `'Status'` or `'snt'` 
+* stellar/xlm `'stellar'` or `'xlm'` 
 * Storj/storj `'Storj'` or `'storj'` 
 * Storm/storm `'Storm'` or `'storm'` 
 * Swarm City/swt `'Swarm City'` or `'swt'` 
@@ -111,7 +112,7 @@ npm install multicoin-address-validator
 * Wings/wings `'Wings'` or `'wings'` 
 * ZCash/zec `'ZCash'` or `'zec'` 
 * ZClassic/zcl `'ZClassic'` or `'zcl'` 
-* ZenCash/zen `'ZenCash'` or `'zen'` 
+* ZenCash/zen `'ZenCash'` or `'zen'`
 
 ### Usage example
 
