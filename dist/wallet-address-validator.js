@@ -11374,6 +11374,7 @@ var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
+var XLMValidator = require('./stellar_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -11764,6 +11765,10 @@ var CURRENCIES = [{
     name: 'lisk',
     symbol: 'lsk',
     validator: LSKValidator
+}, {
+    name: 'stellar',
+    symbol: 'xlm',
+    validator: XLMValidator,
 }];
 
 
@@ -11776,14 +11781,14 @@ module.exports = {
     }
 };
 
-// spit out details for readme.md
-// CURRENCIES
-//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
-//     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+//spit out details for readme.md
+ CURRENCIES
+     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
 
 
-},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./tron_validator":145}],138:[function(require,module,exports){
+},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./stellar_validator":145,"./tron_validator":146}],138:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -12021,6 +12026,53 @@ module.exports = {
 }
 
 },{"./crypto/utils":136,"lodash/isEqual":113}],145:[function(require,module,exports){
+var baseX = require('base-x');
+var crc = require('crc');
+var cryptoUtils = require('./crypto/utils');
+
+ var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
+ var base32 = baseX(ALPHABET);
+var regexp = new RegExp('^[' + ALPHABET + ']{56}$');
+var ed25519PublicKeyVersionByte = (6 << 3);
+
+ function swap16(number) {
+    var lower = number & 0xFF;
+    var upper = (number >> 8) & 0xFF;
+    return (lower << 8) | upper;
+}
+
+ function numberToHex(number) {
+    var hex = number.toString(16);
+    if(hex.length % 2 === 1) {
+        hex = '0' + hex;
+    }
+    return hex;
+}
+
+ module.exports = {
+    isValidAddress: function (address) {
+        if (regexp.test(address)) {
+            return this.verifyChecksum(address);
+        }
+
+         return false;
+    },
+
+     verifyChecksum: function (address) {
+        // based on https://github.com/stellar/js-stellar-base/blob/master/src/strkey.js#L126
+        var bytes = base32.decode(address);
+        if (bytes[0] !== ed25519PublicKeyVersionByte) {
+            return false;
+        }
+
+         var computedChecksum = numberToHex(swap16(crc.crc16xmodem(bytes.slice(0, -2))));
+        var checksum = cryptoUtils.toHex(bytes.slice(-2));
+
+         return computedChecksum === checksum
+    }
+};
+},{"./crypto/utils":136,"base-x":1,"crc":30}],146:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12082,7 +12134,7 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
-},{"./crypto/utils":136}],146:[function(require,module,exports){
+},{"./crypto/utils":136}],147:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -12099,5 +12151,5 @@ module.exports = {
     },
 };
 
-},{"./currencies":137}]},{},[146])(146)
+},{"./currencies":137}]},{},[147])(147)
 });
