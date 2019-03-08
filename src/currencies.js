@@ -9,6 +9,7 @@ var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
+var XLMValidator = require('./stellar_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -399,6 +400,10 @@ var CURRENCIES = [{
     name: 'lisk',
     symbol: 'lsk',
     validator: LSKValidator
+}, {
+    name: 'stellar',
+    symbol: 'xlm',
+    validator: XLMValidator,
 }];
 
 
@@ -411,7 +416,7 @@ module.exports = {
     }
 };
 
-// spit out details for readme.md
+//spit out details for readme.md
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
