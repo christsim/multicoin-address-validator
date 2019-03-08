@@ -527,6 +527,7 @@ describe('WAValidator.validate()', function () {
       valid('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv');
       valid('qp65yngy5uds4wxtrkynptal4f76qzmrh52pa3mpaf', 'bsv');
       valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
+      valid('qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
       valid('qz97s7ee0rvwlymtxrwafmvs87x6027jwuf3wepug7', 'bsv');
       valid('bitcoincash:qpp32ssez340wfspnt79h6c4xds4fzf3m5j0cplx0l', 'bsv');
       valid('qqg82u7tq2eahs3gkh9m6kjnmjehr69m5v37alepq4', 'bsv');
