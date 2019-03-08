@@ -417,8 +417,8 @@ module.exports = {
 };
 
 //spit out details for readme.md
- CURRENCIES
-     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
-     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
 
