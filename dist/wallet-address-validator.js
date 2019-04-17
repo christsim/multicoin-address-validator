@@ -2422,6 +2422,7 @@ module.exports = BigNumber;
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":4}],4:[function(require,module,exports){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -4200,7 +4201,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"base64-js":2,"buffer":4,"ieee754":31}],5:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -11672,8 +11674,8 @@ var CURRENCIES = [{
 }, {
     name: 'Monero',
     symbol: 'xmr',
-    addressTypes: { prod: ['18'], testnet: ['53'] },
-    iAddressTypes: { prod: ['19'], testnet: ['54'] },
+    addressTypes: { prod: ['18'], testnet: ['53'], stagenet: ['24'] },
+    iAddressTypes: { prod: ['19'], testnet: ['54'], stagenet: ['25'] },
     validator: XMRValidator
 }, {
     name: 'Aragon',
@@ -11928,8 +11930,10 @@ function validateNetwork(decoded, currency, networkType, addressType) {
       return network.prod.indexOf(at) >= 0
     case 'testnet':
       return network.testnet.indexOf(at) >= 0
+    case 'stagenet':
+      return network.stagenet.indexOf(at) >= 0
     case 'both':
-      return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0
+      return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0 || network.stagenet.indexOf(at) >= 0
     default:
       return false
   }

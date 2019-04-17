@@ -394,6 +394,12 @@ describe('WAValidator.validate()', function () {
       //integrated addresses
       valid('4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7', 'monero');
       valid('4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b', 'XMR');
+
+      //stagenet public address
+      valid('5BAP9qLbRseYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE87rGCxYK', 'XMR', 'stagenet');
+
+      //stagenet integrated address
+      valid('5Ls4AeA639AYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE8BCU5Q2gDkbq2HYDrn2', 'monero', 'both');
     });
 
     it('should return true for correct gamecredits addresses', function () {
