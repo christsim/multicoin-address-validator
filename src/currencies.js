@@ -94,7 +94,6 @@ var CURRENCIES = [{
     symbol: 'vtc',
     addressTypes: { prod: ['0x', '47', '71', '05'], testnet: ['6f', 'c4'] },
     validator: BTCValidator
-    
 }, {
     name: 'BitcoinGold',
     symbol: 'btg',
@@ -404,6 +403,40 @@ var CURRENCIES = [{
     name: 'stellar',
     symbol: 'xlm',
     validator: XLMValidator,
+}, {
+    name: 'pirate',
+    symbol: 'arrr',
+    validator: BTCValidator,
+}, {
+    name: 'wownero',
+    symbol: 'wow',
+    addressTypes: { prod: ['4146'], testnet: ['53'] },
+    iAddressTypes: { prod: ['6810'], testnet: ['54'] },
+    expectedLength: 97,
+    expectedIntegratedLength: 108,
+    expectedTestnetLength: 95,
+    expectedIntegratedTestnetLength: 106,
+    validator: XMRValidator,
+}, {
+    name: 'zano',
+    symbol: 'zan',
+    addressTypes: { prod: ['197'], testnet: [] },
+    iAddressTypes: { prod: [0x3678], testnet: [] },
+    expectedLength: 97,
+    expectedIntegratedLength: 108,
+    validator: XMRValidator,
+}, {
+    name: 'conceal',
+    symbol: 'ccx',
+    addressTypes: { prod: [0x7ad4], testnet: [] },
+    expectedLength: 98,
+    validator: XMRValidator,
+}, {
+    name: 'zelcash',
+    symbol: 'zel',
+    expectedLength: 26,
+    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+    validator: BTCValidator
 }];
 
 

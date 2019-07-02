@@ -1,28 +1,32 @@
-var cryptoUtils = require('./crypto/utils')
-var cnBase58 = require('./crypto/cnBase58')
+var Buffer = require('buffer-ponyfill')
+var varint = require('varint');
+var cryptoUtils = require('./crypto/utils');
+var cnBase58 = require('./crypto/cnBase58');
 
 var DEFAULT_NETWORK_TYPE = 'prod'
-var addressRegTest = new RegExp(
-  '^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{95}$'
+var addressRegTest = len => new RegExp(
+  `^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{${len || 95}}$`
 )
-var integratedAddressRegTest = new RegExp(
-  '^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{106}$'
+var integratedAddressRegTest = len => new RegExp(
+  `^[123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz]{${len || 106}}$`
 )
 
 function validateNetwork(decoded, currency, networkType, addressType) {
   var network = currency.addressTypes
-  if (addressType == 'integrated') {
+  if (addressType === 'integrated') {
     network = currency.iAddressTypes
   }
-  var at = parseInt(decoded.substr(0, 2), 16).toString()
+  const at = varint.decode(Buffer.from(decoded, 'hex'));
 
+  const isInProd = network.prod.indexOf(at) >= 0 || network.prod.indexOf(at.toString()) >= 0
+  const isInTestnet = network.testnet.indexOf(at) >= 0 || network.testnet.indexOf(at.toString()) >= 0
   switch (networkType) {
     case 'prod':
-      return network.prod.indexOf(at) >= 0
+      return isInProd
     case 'testnet':
-      return network.testnet.indexOf(at) >= 0
+      return isInTestnet
     case 'both':
-      return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0
+      return isInProd || isInTestnet
     default:
       return false
   }
@@ -41,11 +45,24 @@ module.exports = {
   isValidAddress: function(address, currency, networkType) {
     networkType = networkType || DEFAULT_NETWORK_TYPE
     var addressType = 'standard'
-    if (!addressRegTest.test(address)) {
-      if (integratedAddressRegTest.test(address)) {
-        addressType = 'integrated'
-      } else {
-        return false
+
+    if (networkType === 'prod') {
+      if (!addressRegTest(currency.expectedLength).test(address)) {
+        if (integratedAddressRegTest(currency.expectedIntegratedLength).test(address)) {
+          addressType = 'integrated'
+        } else {
+          return false
+        }
+      }
+    }
+
+    if (networkType === 'testnet') {
+      if (!addressRegTest(currency.expectedTestnetLength).test(address)) {
+        if (integratedAddressRegTest(currency.expectedIntegratedTestnetLength).test(address)) {
+          addressType = 'integrated'
+        } else {
+          return false
+        }
       }
     }
 

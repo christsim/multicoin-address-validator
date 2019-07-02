@@ -48,6 +48,7 @@ npm install multicoin-address-validator
 * Callisto/clo `'Callisto'` or `'clo'` 
 * Cardano/ada `'Cardano'` or `'ada'` 
 * Civic/cvc `'Civic'` or `'cvc'` 
+* Conceal/ccx `'Conceal'` or `'ccx'` 
 * Dash/dash `'Dash'` or `'dash'` 
 * Decred/dcr `'Decred'` or `'dcr'` 
 * DigiByte/dgb `'DigiByte'` or `'dgb'` 
@@ -84,6 +85,7 @@ npm install multicoin-address-validator
 * Odyssey/ocn `'Odyssey'` or `'ocn'` 
 * OmiseGO/omg `'OmiseGO'` or `'omg'` 
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'` 
+* PirateChain/arrr `'ARRR'` or `'arrr'` 
 * PIVX/pivx `'PIVX'` or `'pivx'` 
 * Polymath/poly `'Polymath'` or `'poly'` 
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'` 
@@ -110,8 +112,11 @@ npm install multicoin-address-validator
 * VoteCoin/vot `'VoteCoin'` or `'vot'` 
 * Waves/waves `'Waves'` or `'waves'` 
 * Wings/wings `'Wings'` or `'wings'` 
+* Wownero/wow `'Wownero'` or `'wow'` 
+* Zano/zan `'Zano'` or `'zan'` 
 * ZCash/zec `'ZCash'` or `'zec'` 
 * ZClassic/zcl `'ZClassic'` or `'zcl'` 
+* ZelCash/zel `'ZelCash'` or `'zel'`
 * ZenCash/zen `'ZenCash'` or `'zen'`
 
 ### Usage example
