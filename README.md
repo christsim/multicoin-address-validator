@@ -158,6 +158,29 @@ else
 // As this is a invalid litecoin address 'Address INVALID' will be logged to console.
 ```
 
+```javascript
+var WAValidator = require('multicoin-address-validator');
+
+var currency = WAValidator.findCurrency('xrp');
+if(currency)
+      console.log('This currency exists');
+else
+      console.log('Currency INVALID');
+
+// As this is a valid currency symbol 'This currency exists' will be logged to console.
+```
+
+```javascript
+var WAValidator = require('multicoin-address-validator');
+
+var currency = WAValidator.findCurrency('random');
+if(currency)
+      console.log('This currency exists');
+else
+      console.log('Currency INVALID');
+
+// As this is not a valid currency symbol 'Currency INVALID' will be logged to console.
+```
 #### Browser
 ```html
 <script src="wallet-address-validator.min.js"></script>
