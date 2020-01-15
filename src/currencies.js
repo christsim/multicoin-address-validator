@@ -481,6 +481,9 @@ module.exports = {
         return CURRENCIES.find(function (currency) {
             return currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol
         });
+    },
+    getAll: function () {
+        return CURRENCIES;
     }
 };
 

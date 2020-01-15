@@ -32,7 +32,7 @@
     "browser",
     "nodejs"
   ],
-  "version": "0.3.11",
+  "version": "0.3.13",
   "author": "Chris <chris.tsim@gmail.com>",
   "homepage": "https://github.com/christsim/multicoin-address-validator",
   "license": "MIT",
@@ -48,7 +48,7 @@
     "bundle": "browserify src/wallet_address_validator.js --standalone WAValidator --outfile dist/wallet-address-validator.js",
     "minify": "uglifyjs -c -m -o dist/wallet-address-validator.min.js -- dist/wallet-address-validator.js",
     "test:node": "mocha test",
-    "test:browser": "karma start",
+    "test:browser": "npm run bundle && npm run minify && karma start",
     "test": "npm run test:node && npm run test:browser",
     "start": "npm run bundle && npm run minify && npm test"
   },
