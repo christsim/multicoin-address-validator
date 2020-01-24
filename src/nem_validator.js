@@ -20,4 +20,4 @@ var isValidAddress = function(_address) {
 
 module.exports = {
     isValidAddress: isValidAddress,
-}
+};

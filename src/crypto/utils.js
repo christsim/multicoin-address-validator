@@ -86,10 +86,13 @@ module.exports = {
         }
         return hex;
     },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX');
-        sha.update(hexString);
-        return sha.getHash('HEX');
+    sha256: function (payload, format = 'HEX') {
+        var sha = new jsSHA('SHA-256', format);
+        sha.update(payload);
+        return sha.getHash(format);
+    },
+    sha256x2: function (buffer, format = 'HEX') {
+        return this.sha256(this.sha256(buffer, format), format);
     },
     sha256Checksum: function (payload) {
         return this.sha256(this.sha256(payload)).substr(0, 8);
@@ -119,4 +122,4 @@ module.exports = {
         return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
     },
     base32: base32
-}
+};
