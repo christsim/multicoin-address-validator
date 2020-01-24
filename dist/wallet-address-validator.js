@@ -11403,6 +11403,7 @@ var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
+var EOSValidator = require('./eos_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [
@@ -11862,9 +11863,11 @@ var CURRENCIES = [
         name: 'TEMCO',
         symbol: 'temco',
         validator: ETHValidator,
+    }, {
+      name: 'EOS',
+      symbol: 'eos',
+      validator: EOSValidator
     }
-
-
 ];
 
 
@@ -11887,7 +11890,23 @@ module.exports = {
 
 
 
-},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./stellar_validator":145,"./tron_validator":146}],138:[function(require,module,exports){
+},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./eos_validator":138,"./ethereum_validator":139,"./lisk_validator":140,"./monero_validator":141,"./nano_validator":142,"./nem_validator":143,"./ripple_validator":144,"./siacoin_validator":145,"./stellar_validator":146,"./tron_validator":147}],138:[function(require,module,exports){
+function isValidEOSAddress (address, currency, networkType) {
+  var regex = /^[a-z0-9]+$/g // Must be numbers and lowercase letters only
+  if (address.search(regex) !== -1 && address.length === 12) {
+    return true
+  } else {
+    return false
+  }
+}
+
+module.exports = {
+  isValidAddress: function (address, currency, networkType) {
+    return isValidEOSAddress(address, currency, networkType)
+  }
+}
+
+},{}],139:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -11923,7 +11942,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136}],139:[function(require,module,exports){
+},{"./crypto/utils":136}],140:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -11945,7 +11964,7 @@ module.exports = {
     }
 };
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],140:[function(require,module,exports){
+},{"./crypto/utils":136,"buffer":4}],141:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -12009,7 +12028,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":133,"./crypto/utils":136}],141:[function(require,module,exports){
+},{"./crypto/cnBase58":133,"./crypto/utils":136}],142:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12038,7 +12057,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],142:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1}],143:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12064,7 +12083,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 }
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],143:[function(require,module,exports){
+},{"./crypto/utils":136,"buffer":4}],144:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12094,7 +12113,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],144:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1}],145:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
 
@@ -12124,7 +12143,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":136,"lodash/isEqual":113}],145:[function(require,module,exports){
+},{"./crypto/utils":136,"lodash/isEqual":113}],146:[function(require,module,exports){
 var baseX = require('base-x');
 var crc = require('crc');
 var cryptoUtils = require('./crypto/utils');
@@ -12171,7 +12190,7 @@ var ed25519PublicKeyVersionByte = (6 << 3);
          return computedChecksum === checksum
     }
 };
-},{"./crypto/utils":136,"base-x":1,"crc":30}],146:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1,"crc":30}],147:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12233,20 +12252,10 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
-},{"./crypto/utils":136}],147:[function(require,module,exports){
+},{"./crypto/utils":136}],148:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
-
-function validate(address, currencyNameOrSymbol, networkType) {
-    var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
-
-    if (currency && currency.validator) {
-        return currency.validator.isValidAddress(address, currency, networkType);
-    }
-
-    throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
-}
 
 module.exports = {
     validate: function (address, currencyNameOrSymbol, networkType) {
@@ -12266,5 +12275,5 @@ module.exports = {
     }
 };
 
-},{"./currencies":137}]},{},[147])(147)
+},{"./currencies":137}]},{},[148])(148)
 });

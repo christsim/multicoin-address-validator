@@ -10,6 +10,7 @@ var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
+var EOSValidator = require('./eos_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [
@@ -469,9 +470,11 @@ var CURRENCIES = [
         name: 'TEMCO',
         symbol: 'temco',
         validator: ETHValidator,
+    }, {
+      name: 'EOS',
+      symbol: 'eos',
+      validator: EOSValidator
     }
-
-
 ];
 
 
@@ -491,5 +494,10 @@ module.exports = {
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+
+//spit out keywords for package.json
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
 
 

@@ -547,6 +547,12 @@ describe('WAValidator.validate()', function () {
             valid('GDD3XRXU3G4DXHVRUDH7LJM4CD4PDZTVP4QHOO4Q6DELKXUATR657OZV', 'stellar');
             valid('GDTYVCTAUQVPKEDZIBWEJGKBQHB4UGGXI2SXXUEW7LXMD4B7MK37CWLJ', 'stellar');
         });
+
+        it('should return true for correct eos addresses', function () {
+            valid('bittrexacct1', 'eos');
+            valid('binancecleos', 'eos');
+            valid('123456789012', 'eos');
+        });
     });
 
     describe('invalid results', function () {
@@ -862,5 +868,13 @@ describe('WAValidator.validate()', function () {
             invalid('gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wt', 'stellar');
             invalid('g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk', 'stellar');
         });
+
+        it('should return false for incorrect eos addresses', function () {
+            commonTests('eos');
+            invalid('1234567890123', 'eos');
+            invalid('12345678901', 'eos');
+            invalid('12345678901@', 'eos');
+        });
+
     });
 });

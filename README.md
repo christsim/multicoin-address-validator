@@ -60,6 +60,7 @@ npm install multicoin-address-validator
 * District0x/dnt `'District0x'` or `'dnt'`
 * DogeCoin/doge `'DogeCoin'` or `'doge'`
 * Enjin Coin/enj `'Enjin Coin'` or `'enj'`
+* EOS/eos `'EOS'` or `'eos'`
 * Ethereum/eth `'Ethereum'` or `'eth'`
 * EthereumClassic/etc `'EthereumClassic'` or `'etc'`
 * EtherZero/etz `'EtherZero'` or `'etz'`
@@ -71,12 +72,13 @@ npm install multicoin-address-validator
 * Golem/gnt `'Golem'` or `'gnt'`
 * HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
+* HyperSpace/xsc `'HyperSpace'` or `'xsc'`
 * iExec RLC/rlc `'iExec RLC'` or `'rlc'`
 * Komodo/kmd `'Komodo'` or `'kmd'`
 * LBRY Credits/lbc `'LBRY Credits'` or `'lbc'`
 * Lisk/lsk `'Lisk'` or `'lsk'`
 * LiteCoin/ltc `'LiteCoin'` or `'ltc'`
-* Loki/loki `'Loki'` or `'loki'`
+* loki/loki `'loki'` or `'loki'`
 * Loom Network/loom `'Loom Network'` or `'loom'`
 * Maker/mkr `'Maker'` or `'mkr'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
@@ -130,6 +132,7 @@ npm install multicoin-address-validator
 * ZCash/zec `'ZCash'` or `'zec'`
 * ZClassic/zcl `'ZClassic'` or `'zcl'`
 * ZenCash/zen `'ZenCash'` or `'zen'`
+
 
 ### Usage example
 
