@@ -11888,6 +11888,11 @@ module.exports = {
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
+//spit out keywords for package.json
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
+
 
 
 },{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./eos_validator":138,"./ethereum_validator":139,"./lisk_validator":140,"./monero_validator":141,"./nano_validator":142,"./nem_validator":143,"./ripple_validator":144,"./siacoin_validator":145,"./stellar_validator":146,"./tron_validator":147}],138:[function(require,module,exports){
