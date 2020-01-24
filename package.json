@@ -2,6 +2,15 @@
     "name": "multicoin-address-validator",
     "description": "Multicoin address validator for Bitcoin and other Altcoins.",
     "keywords": [
+        "bitcoin",
+        "crypto",
+        "wallet",
+        "address",
+        "validator",
+        "javascript",
+        "browser",
+        "nodejs",
+
         "0x","zrx",
         "Aragon","ant",
         "Augur","rep",
@@ -104,7 +113,7 @@
         "ZClassic","zcl",
         "ZenCash","zen"
     ],
-    "version": "0.4.0",
+    "version": "0.4.1",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",
