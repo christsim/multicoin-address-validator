@@ -122,6 +122,7 @@ npm install multicoin-address-validator
 * TEMCO/temco `'TEMCO'` or `'temco'`
 * TenX/pay `'TenX'` or `'pay'`
 * Tether/usdt `'Tether'` or `'usdt'`
+* Tezos/xtz `'Tezos'` or `'xtz'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
