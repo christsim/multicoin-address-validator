@@ -44,6 +44,13 @@ var CURRENCIES = [{
         bech32Hrp: { prod: ['ltc'], testnet: ['tltc'] },
         validator: BTCValidator
     }, {
+        name: 'Groestlcoin',
+        symbol: 'grs',
+        addressTypes: { prod: ['24', '05'], testnet: ['6f', 'c4'] },
+        bech32Hrp: { prod: ['grs'], testnet: ['tgrs'] },
+        hashFunction: 'groestl512x2',
+        validator: BTCValidator
+    }, {
         name: 'PeerCoin',
         symbol: 'ppc',
         addressTypes: { prod: ['37', '75'], testnet: ['6f', 'c4'] },
@@ -619,4 +626,3 @@ var CURRENCIES = [{
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
 //
-
