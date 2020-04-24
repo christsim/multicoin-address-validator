@@ -880,8 +880,6 @@ describe('WAValidator.validate()', function () {
             invalid('g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk', 'stellar');
         });
 
-
-
         it('should return false for incorrect xtz(tezos) address', function () {
             commonTests('xtz');
             invalid('SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU', 'xtz');
