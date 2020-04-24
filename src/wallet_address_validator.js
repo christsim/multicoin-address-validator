@@ -12,4 +12,10 @@ module.exports = {
 
         throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
     },
+    getCurrencies: function () {
+        return currencies.getAll();
+    },
+    findCurrency: function(symbol) {
+        return currencies.getByNameOrSymbol(symbol) || null ;
+    }
 };

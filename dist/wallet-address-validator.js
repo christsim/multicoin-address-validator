@@ -1999,7 +1999,7 @@ P['times'] = P['mul'] = function ( y, b ) {
 };
 
 /*
- * Return a buffer containing the 
+ * Return a buffer containing the
  */
 P['toBuffer'] = function ( opts ) {
 
@@ -4241,7 +4241,7 @@ function encode(value) {
       writeUint64(length);
     }
   }
-  
+
   function encodeItem(value) {
     var i;
 
@@ -4253,7 +4253,7 @@ function encode(value) {
       return writeUint8(0xf6);
     if (value === undefined)
       return writeUint8(0xf7);
-  
+
     switch (typeof value) {
       case "number":
         if (Math.floor(value) === value) {
@@ -4315,12 +4315,12 @@ function encode(value) {
         }
     }
   }
-  
+
   encodeItem(value);
 
   if ("slice" in data)
     return data.slice(0, offset);
-  
+
   var ret = new ArrayBuffer(offset);
   var retView = new DataView(ret);
   for (var i = 0; i < offset; ++i)
@@ -4331,7 +4331,7 @@ function encode(value) {
 function decode(data, tagger, simpleValue) {
   var dataView = new DataView(data);
   var offset = 0;
-  
+
   if (typeof tagger !== "function")
     tagger = function(value) { return value; };
   if (typeof simpleValue !== "function")
@@ -4352,14 +4352,14 @@ function decode(data, tagger, simpleValue) {
     var sign = value & 0x8000;
     var exponent = value & 0x7c00;
     var fraction = value & 0x03ff;
-    
+
     if (exponent === 0x7c00)
       exponent = 0xff << 10;
     else if (exponent !== 0)
       exponent += (127 - 15) << 10;
     else if (fraction !== 0)
       return fraction * POW_2_24;
-    
+
     tempDataView.setUint32(0, sign << 16 | exponent << 13 | fraction << 13);
     return tempDataView.getFloat32(0);
   }
@@ -8012,7 +8012,7 @@ function validateAddress(address, currency, networkType) {
 
     try {
         if (bech32.verifyChecksum(prefix, decoded)) {
-            return false;    
+            return false;
         }
     } catch(e) {
         return false;
@@ -8382,9 +8382,9 @@ function decode (bechString) {
         > var a = 42;
         > var a = BigInteger.toJSValue("0b101010"); // Not completely useless...
     */
-    
+
     var CONSTRUCT = {}; // Unique token to call "private" version of constructor
-    
+
     /*
         Constructor: BigInteger()
         Convert a value to a <BigInteger>.
@@ -8411,7 +8411,7 @@ function decode (bechString) {
             <parse>, <BigInteger>
     */
     function BigInteger(n, s, token) {
-        
+
         if (token !== CONSTRUCT) {
             if (n instanceof BigInteger) {
                 return n;
@@ -8421,7 +8421,7 @@ function decode (bechString) {
             }
             return BigInteger.parse(n);
         }
-    
+
         n = n || [];  // Provide the nullary constructor for subclasses.
         while (n.length && !n[n.length - 1]) {
             --n.length;
@@ -8429,43 +8429,43 @@ function decode (bechString) {
         this._d = n;
         this._s = n.length ? (s || 1) : 0;
     }
-    
+
     BigInteger._construct = function(n, s) {
         return new BigInteger(n, s, CONSTRUCT);
     };
-    
+
     // Base-10 speedup hacks in parse, toString, exp10 and log functions
     // require base to be a power of 10. 10^7 is the largest such power
     // that won't cause a precision loss when digits are multiplied.
     var BigInteger_base = 10000000;
     var BigInteger_base_log10 = 7;
-    
+
     BigInteger.base = BigInteger_base;
     BigInteger.base_log10 = BigInteger_base_log10;
-    
+
     var ZERO = new BigInteger([], 0, CONSTRUCT);
     // Constant: ZERO
     // <BigInteger> 0.
     BigInteger.ZERO = ZERO;
-    
+
     var ONE = new BigInteger([1], 1, CONSTRUCT);
     // Constant: ONE
     // <BigInteger> 1.
     BigInteger.ONE = ONE;
-    
+
     var M_ONE = new BigInteger(ONE._d, -1, CONSTRUCT);
     // Constant: M_ONE
     // <BigInteger> -1.
     BigInteger.M_ONE = M_ONE;
-    
+
     // Constant: _0
     // Shortcut for <ZERO>.
     BigInteger._0 = ZERO;
-    
+
     // Constant: _1
     // Shortcut for <ONE>.
     BigInteger._1 = ONE;
-    
+
     /*
         Constant: small
         Array of <BigIntegers> from 0 to 36.
@@ -8514,10 +8514,10 @@ function decode (bechString) {
         new BigInteger([35], 1, CONSTRUCT),
         new BigInteger([36], 1, CONSTRUCT)
     ];
-    
+
     // Used for parsing/radix conversion
     BigInteger.digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
-    
+
     /*
         Method: toString
         Convert a <BigInteger> to a string.
@@ -8550,11 +8550,11 @@ function decode (bechString) {
             var numerals = BigInteger.digits;
             base = BigInteger.small[base];
             var sign = this._s;
-    
+
             var n = this.abs();
             var digits = [];
             var digit;
-    
+
             while (n._s !== 0) {
                 var divmod = n.divRem(base);
                 n = divmod[0];
@@ -8566,7 +8566,7 @@ function decode (bechString) {
             return (sign < 0 ? "-" : "") + digits.reverse().join("");
         }
     };
-    
+
     // Verify strings for parsing
     BigInteger.radixRegex = [
         /^$/,
@@ -8607,7 +8607,7 @@ function decode (bechString) {
         /^[0-9a-yA-Y]*$/,
         /^[0-9a-zA-Z]*$/
     ];
-    
+
     /*
         Function: parse
         Parse a string into a <BigInteger>.
@@ -8638,7 +8638,7 @@ function decode (bechString) {
         // expandExponential(1000000000000000000000000000000) === "1000000000000000000000000000000";
         function expandExponential(str) {
             str = str.replace(/\s*[*xX]\s*10\s*(\^|\*\*)\s*/, "e");
-    
+
             return str.replace(/^([+\-])?(\d+)\.?(\d*)[eE]([+\-]?\d+)$/, function(x, s, n, f, c) {
                 c = +c;
                 var l = c < 0;
@@ -8650,12 +8650,12 @@ function decode (bechString) {
                 return (s || "") + (l ? r = z + r : r += z).substr(0, i += l ? z.length : 0) + (i < r.length ? "." + r.substr(i) : "");
             });
         }
-    
+
         s = s.toString();
         if (typeof base === "undefined" || +base === 10) {
             s = expandExponential(s);
         }
-    
+
         var prefixRE;
         if (typeof base === "undefined") {
             prefixRE = '0[xcb]';
@@ -8677,7 +8677,7 @@ function decode (bechString) {
             var sign = parts[1] || "+";
             var baseSection = parts[2] || "";
             var digits = parts[3] || "";
-    
+
             if (typeof base === "undefined") {
                 // Guess base
                 if (baseSection === "0x" || baseSection === "0X") { // Hex
@@ -8696,23 +8696,23 @@ function decode (bechString) {
             else if (base < 2 || base > 36) {
                 throw new Error("Illegal radix " + base + ".");
             }
-    
+
             base = +base;
-    
+
             // Check for digits outside the range
             if (!(BigInteger.radixRegex[base].test(digits))) {
                 throw new Error("Bad digit for radix " + base);
             }
-    
+
             // Strip leading zeros, and convert to array
             digits = digits.replace(/^0+/, "").split("");
             if (digits.length === 0) {
                 return ZERO;
             }
-    
+
             // Get the sign (we know it's not zero)
             sign = (sign === "-") ? -1 : 1;
-    
+
             // Optimize 10
             if (base == 10) {
                 var d = [];
@@ -8722,7 +8722,7 @@ function decode (bechString) {
                 d.push(parseInt(digits.join(''), 10));
                 return new BigInteger(d, sign, CONSTRUCT);
             }
-    
+
             // Do the conversion
             var d = ZERO;
             base = BigInteger.small[base];
@@ -8736,7 +8736,7 @@ function decode (bechString) {
             throw new Error("Invalid BigInteger format: " + s);
         }
     };
-    
+
     /*
         Function: add
         Add two <BigIntegers>.
@@ -8751,7 +8751,7 @@ function decode (bechString) {
         if (this._s === 0) {
             return BigInteger(n);
         }
-    
+
         n = BigInteger(n);
         if (n._s === 0) {
             return this;
@@ -8760,7 +8760,7 @@ function decode (bechString) {
             n = n.negate();
             return this.subtract(n);
         }
-    
+
         var a = this._d;
         var b = n._d;
         var al = a.length;
@@ -8769,7 +8769,7 @@ function decode (bechString) {
         var size = Math.min(al, bl);
         var carry = 0;
         var digit;
-    
+
         for (var i = 0; i < size; i++) {
             digit = a[i] + b[i] + carry;
             sum[i] = digit % BigInteger_base;
@@ -8787,14 +8787,14 @@ function decode (bechString) {
         if (carry) {
             sum[i] = carry;
         }
-    
+
         for ( ; i < al; i++) {
             sum[i] = a[i];
         }
-    
+
         return new BigInteger(sum, this._s, CONSTRUCT);
     };
-    
+
     /*
         Function: negate
         Get the additive inverse of a <BigInteger>.
@@ -8806,7 +8806,7 @@ function decode (bechString) {
     BigInteger.prototype.negate = function() {
         return new BigInteger(this._d, (-this._s) | 0, CONSTRUCT);
     };
-    
+
     /*
         Function: abs
         Get the absolute value of a <BigInteger>.
@@ -8818,7 +8818,7 @@ function decode (bechString) {
     BigInteger.prototype.abs = function() {
         return (this._s < 0) ? this.negate() : this;
     };
-    
+
     /*
         Function: subtract
         Subtract two <BigIntegers>.
@@ -8833,7 +8833,7 @@ function decode (bechString) {
         if (this._s === 0) {
             return BigInteger(n).negate();
         }
-    
+
         n = BigInteger(n);
         if (n._s === 0) {
             return this;
@@ -8842,14 +8842,14 @@ function decode (bechString) {
             n = n.negate();
             return this.add(n);
         }
-    
+
         var m = this;
         // negative - negative => -|a| - -|b| => -|a| + |b| => |b| - |a|
         if (this._s < 0) {
             m = new BigInteger(n._d, 1, CONSTRUCT);
             n = new BigInteger(this._d, 1, CONSTRUCT);
         }
-    
+
         // Both are positive => a - b
         var sign = m.compareAbs(n);
         if (sign === 0) {
@@ -8861,7 +8861,7 @@ function decode (bechString) {
             n = m;
             m = t;
         }
-    
+
         // a > b
         var a = m._d;
         var b = n._d;
@@ -8871,7 +8871,7 @@ function decode (bechString) {
         var borrow = 0;
         var i;
         var digit;
-    
+
         for (i = 0; i < bl; i++) {
             digit = a[i] - borrow - b[i];
             if (digit < 0) {
@@ -8897,17 +8897,17 @@ function decode (bechString) {
         for ( ; i < al; i++) {
             diff[i] = a[i];
         }
-    
+
         return new BigInteger(diff, sign, CONSTRUCT);
     };
-    
+
     (function() {
         function addOne(n, sign) {
             var a = n._d;
             var sum = a.slice();
             var carry = true;
             var i = 0;
-    
+
             while (true) {
                 var digit = (a[i] || 0) + 1;
                 sum[i] = digit % BigInteger_base;
@@ -8916,16 +8916,16 @@ function decode (bechString) {
                 }
                 ++i;
             }
-    
+
             return new BigInteger(sum, sign, CONSTRUCT);
         }
-    
+
         function subtractOne(n, sign) {
             var a = n._d;
             var sum = a.slice();
             var borrow = true;
             var i = 0;
-    
+
             while (true) {
                 var digit = (a[i] || 0) - 1;
                 if (digit < 0) {
@@ -8937,10 +8937,10 @@ function decode (bechString) {
                 }
                 ++i;
             }
-    
+
             return new BigInteger(sum, sign, CONSTRUCT);
         }
-    
+
         /*
             Function: next
             Get the next <BigInteger> (add one).
@@ -8960,7 +8960,7 @@ function decode (bechString) {
                 return addOne(this, 1);
             }
         };
-    
+
         /*
             Function: prev
             Get the previous <BigInteger> (subtract one).
@@ -8981,7 +8981,7 @@ function decode (bechString) {
             }
         };
     })();
-    
+
     /*
         Function: compareAbs
         Compare the absolute value of two <BigIntegers>.
@@ -8997,21 +8997,21 @@ function decode (bechString) {
         if (this === n) {
             return 0;
         }
-    
+
         if (!(n instanceof BigInteger)) {
             if (!isFinite(n)) {
                 return(isNaN(n) ? n : -1);
             }
             n = BigInteger(n);
         }
-    
+
         if (this._s === 0) {
             return (n._s !== 0) ? -1 : 0;
         }
         if (n._s === 0) {
             return 1;
         }
-    
+
         var l = this._d.length;
         var nl = n._d.length;
         if (l < nl) {
@@ -9020,7 +9020,7 @@ function decode (bechString) {
         else if (l > nl) {
             return 1;
         }
-    
+
         var a = this._d;
         var b = n._d;
         for (var i = l-1; i >= 0; i--) {
@@ -9028,10 +9028,10 @@ function decode (bechString) {
                 return a[i] < b[i] ? -1 : 1;
             }
         }
-    
+
         return 0;
     };
-    
+
     /*
         Function: compare
         Compare two <BigIntegers>.
@@ -9046,13 +9046,13 @@ function decode (bechString) {
         if (this === n) {
             return 0;
         }
-    
+
         n = BigInteger(n);
-    
+
         if (this._s === 0) {
             return -n._s;
         }
-    
+
         if (this._s === n._s) { // both positive or both negative
             var cmp = this.compareAbs(n);
             return cmp * this._s;
@@ -9061,7 +9061,7 @@ function decode (bechString) {
             return this._s;
         }
     };
-    
+
     /*
         Function: isUnit
         Return true iff *this* is either 1 or -1.
@@ -9076,7 +9076,7 @@ function decode (bechString) {
             this === M_ONE ||
             (this._d.length === 1 && this._d[0] === 1);
     };
-    
+
     /*
         Function: multiply
         Multiply two <BigIntegers>.
@@ -9093,7 +9093,7 @@ function decode (bechString) {
         if (this._s === 0) {
             return ZERO;
         }
-    
+
         n = BigInteger(n);
         if (n._s === 0) {
             return ZERO;
@@ -9113,20 +9113,20 @@ function decode (bechString) {
         if (this === n) {
             return this.square();
         }
-    
+
         var r = (this._d.length >= n._d.length);
         var a = (r ? this : n)._d; // a will be longer than b
         var b = (r ? n : this)._d;
         var al = a.length;
         var bl = b.length;
-    
+
         var pl = al + bl;
         var partial = new Array(pl);
         var i;
         for (i = 0; i < pl; i++) {
             partial[i] = 0;
         }
-    
+
         for (i = 0; i < bl; i++) {
             var carry = 0;
             var bi = b[i];
@@ -9145,7 +9145,7 @@ function decode (bechString) {
         }
         return new BigInteger(partial, this._s * n._s, CONSTRUCT);
     };
-    
+
     // Multiply a BigInteger by a single-digit native number
     // Assumes that this and n are >= 0
     // This is not really intended to be used outside the library itself
@@ -9156,7 +9156,7 @@ function decode (bechString) {
         if (n === 1) {
             return this;
         }
-    
+
         var digit;
         if (this._d.length === 1) {
             digit = this._d[0] * n;
@@ -9166,23 +9166,23 @@ function decode (bechString) {
             }
             return new BigInteger([digit], 1, CONSTRUCT);
         }
-    
+
         if (n === 2) {
             return this.add(this);
         }
         if (this.isUnit()) {
             return new BigInteger([n], 1, CONSTRUCT);
         }
-    
+
         var a = this._d;
         var al = a.length;
-    
+
         var pl = al + 1;
         var partial = new Array(pl);
         for (var i = 0; i < pl; i++) {
             partial[i] = 0;
         }
-    
+
         var carry = 0;
         for (var j = 0; j < al; j++) {
             digit = n * a[j] + carry;
@@ -9192,10 +9192,10 @@ function decode (bechString) {
         if (carry) {
             partial[j] = carry;
         }
-    
+
         return new BigInteger(partial, 1, CONSTRUCT);
     };
-    
+
     /*
         Function: square
         Multiply a <BigInteger> by itself.
@@ -9211,20 +9211,20 @@ function decode (bechString) {
         // Of these 10 are unique diagonals, of the remaining 90 (100-10), 45 are repeated.
         // This procedure saves (N*(N-1))/2 multiplications, (e.g., 45 of 100 multiplies).
         // Based on code by Gary Darby, Intellitech Systems Inc., www.DelphiForFun.org
-    
+
         if (this._s === 0) {
             return ZERO;
         }
         if (this.isUnit()) {
             return ONE;
         }
-    
+
         var digits = this._d;
         var length = digits.length;
         var imult1 = new Array(length + length + 1);
         var product, carry, k;
         var i;
-    
+
         // Calculate diagonal
         for (i = 0; i < length; i++) {
             k = i * 2;
@@ -9233,7 +9233,7 @@ function decode (bechString) {
             imult1[k] = product % BigInteger_base;
             imult1[k + 1] = carry;
         }
-    
+
         // Calculate repeating part
         for (i = 0; i < length; i++) {
             carry = 0;
@@ -9249,10 +9249,10 @@ function decode (bechString) {
             imult1[k] = digit % BigInteger_base;
             imult1[k + 1] += carry;
         }
-    
+
         return new BigInteger(imult1, 1, CONSTRUCT);
     };
-    
+
     /*
         Function: quotient
         Divide two <BigIntegers> and truncate towards zero.
@@ -9267,13 +9267,13 @@ function decode (bechString) {
     BigInteger.prototype.quotient = function(n) {
         return this.divRem(n)[0];
     };
-    
+
     /*
         Function: divide
         Deprecated synonym for <quotient>.
     */
     BigInteger.prototype.divide = BigInteger.prototype.quotient;
-    
+
     /*
         Function: remainder
         Calculate the remainder of two <BigIntegers>.
@@ -9289,7 +9289,7 @@ function decode (bechString) {
     BigInteger.prototype.remainder = function(n) {
         return this.divRem(n)[1];
     };
-    
+
     /*
         Function: divRem
         Calculate the integer quotient and remainder of two <BigIntegers>.
@@ -9316,7 +9316,7 @@ function decode (bechString) {
         if (n._d.length === 1) {
             return this.divRemSmall(n._s * n._d[0]);
         }
-    
+
         // Test for easy cases -- |n1| <= |n2|
         switch (this.compareAbs(n)) {
         case 0: // n1 == n2
@@ -9324,7 +9324,7 @@ function decode (bechString) {
         case -1: // |n1| < |n2|
             return [ZERO, this];
         }
-    
+
         var sign = this._s * n._s;
         var a = n.abs();
         var b_digits = this._d;
@@ -9332,13 +9332,13 @@ function decode (bechString) {
         var digits = n._d.length;
         var quot = [];
         var guess;
-    
+
         var part = new BigInteger([], 0, CONSTRUCT);
-    
+
         while (b_index) {
             part._d.unshift(b_digits[--b_index]);
             part = new BigInteger(part._d, 1, CONSTRUCT);
-    
+
             if (part.compareAbs(n) < 0) {
                 quot.push(0);
                 continue;
@@ -9364,7 +9364,7 @@ function decode (bechString) {
                 }
                 guess--;
             } while (guess);
-    
+
             quot.push(guess);
             if (!guess) {
                 continue;
@@ -9372,11 +9372,11 @@ function decode (bechString) {
             var diff = part.subtract(check);
             part._d = diff._d.slice();
         }
-    
+
         return [new BigInteger(quot.reverse(), sign, CONSTRUCT),
                new BigInteger(part._d, this._s, CONSTRUCT)];
     };
-    
+
     // Throws an exception if n is outside of (-BigInteger.base, -1] or
     // [1, BigInteger.base).  It's not necessary to call this, since the
     // other division functions will call it if they are able to.
@@ -9386,25 +9386,25 @@ function decode (bechString) {
         if (n === 0) {
             throw new Error("Divide by zero");
         }
-    
+
         var n_s = n < 0 ? -1 : 1;
         var sign = this._s * n_s;
         n = Math.abs(n);
-    
+
         if (n < 1 || n >= BigInteger_base) {
             throw new Error("Argument out of range");
         }
-    
+
         if (this._s === 0) {
             return [ZERO, ZERO];
         }
-    
+
         if (n === 1 || n === -1) {
             return [(sign === 1) ? this.abs() : new BigInteger(this._d, sign, CONSTRUCT), ZERO];
         }
-    
+
         // 2 <= n < BigInteger_base
-    
+
         // divide a single digit by a single digit
         if (this._d.length === 1) {
             var q = new BigInteger([(this._d[0] / n) | 0], 1, CONSTRUCT);
@@ -9417,14 +9417,14 @@ function decode (bechString) {
             }
             return [q, r];
         }
-    
+
         var digits = this._d.slice();
         var quot = new Array(digits.length);
         var part = 0;
         var diff = 0;
         var i = 0;
         var guess;
-    
+
         while (digits.length) {
             part = part * BigInteger_base + digits[digits.length - 1];
             if (part < n) {
@@ -9439,7 +9439,7 @@ function decode (bechString) {
             else {
                 guess = (part / n) | 0;
             }
-    
+
             var check = n * guess;
             diff = part - check;
             quot[i++] = guess;
@@ -9447,18 +9447,18 @@ function decode (bechString) {
                 digits.pop();
                 continue;
             }
-    
+
             digits.pop();
             part = diff;
         }
-    
+
         r = new BigInteger([diff], 1, CONSTRUCT);
         if (this._s < 0) {
             r = r.negate();
         }
         return [new BigInteger(quot.reverse(), sign, CONSTRUCT), r];
     };
-    
+
     /*
         Function: isEven
         Return true iff *this* is divisible by two.
@@ -9472,7 +9472,7 @@ function decode (bechString) {
         var digits = this._d;
         return this._s === 0 || digits.length === 0 || (digits[0] % 2) === 0;
     };
-    
+
     /*
         Function: isOdd
         Return true iff *this* is not divisible by two.
@@ -9484,7 +9484,7 @@ function decode (bechString) {
     BigInteger.prototype.isOdd = function() {
         return !this.isEven();
     };
-    
+
     /*
         Function: sign
         Get the sign of a <BigInteger>.
@@ -9498,7 +9498,7 @@ function decode (bechString) {
     BigInteger.prototype.sign = function() {
         return this._s;
     };
-    
+
     /*
         Function: isPositive
         Return true iff *this* > 0.
@@ -9510,7 +9510,7 @@ function decode (bechString) {
     BigInteger.prototype.isPositive = function() {
         return this._s > 0;
     };
-    
+
     /*
         Function: isNegative
         Return true iff *this* < 0.
@@ -9522,7 +9522,7 @@ function decode (bechString) {
     BigInteger.prototype.isNegative = function() {
         return this._s < 0;
     };
-    
+
     /*
         Function: isZero
         Return true iff *this* == 0.
@@ -9534,7 +9534,7 @@ function decode (bechString) {
     BigInteger.prototype.isZero = function() {
         return this._s === 0;
     };
-    
+
     /*
         Function: exp10
         Multiply a <BigInteger> by a power of 10.
@@ -9568,7 +9568,7 @@ function decode (bechString) {
         }
         if (n > 0) {
             var k = new BigInteger(this._d.slice(), this._s, CONSTRUCT);
-    
+
             for (; n >= BigInteger_base_log10; n -= BigInteger_base_log10) {
                 k._d.unshift(0);
             }
@@ -9581,14 +9581,14 @@ function decode (bechString) {
             return ZERO;
         } else {
             var k = new BigInteger(this._d.slice(), this._s, CONSTRUCT);
-    
+
             for (n = -n; n >= BigInteger_base_log10; n -= BigInteger_base_log10) {
                 k._d.shift();
             }
             return (n == 0) ? k : k.divRemSmall(Math.pow(10, n))[0];
         }
     };
-    
+
     /*
         Function: pow
         Raise a <BigInteger> to a power.
@@ -9610,7 +9610,7 @@ function decode (bechString) {
                 return BigInteger(n).isOdd() ? this : this.negate();
             }
         }
-    
+
         n = BigInteger(n);
         if (n._s === 0) {
             return ONE;
@@ -9629,14 +9629,14 @@ function decode (bechString) {
         if (n.isUnit()) {
             return this;
         }
-    
+
         if (n.compareAbs(MAX_EXP) > 0) {
             throw new Error("exponent too large in BigInteger.pow");
         }
         var x = this;
         var aux = ONE;
         var two = BigInteger.small[2];
-    
+
         while (n.isPositive()) {
             if (n.isOdd()) {
                 aux = aux.multiply(x);
@@ -9647,10 +9647,10 @@ function decode (bechString) {
             x = x.square();
             n = n.quotient(two);
         }
-    
+
         return aux;
     };
-    
+
     /*
         Function: modPow
         Raise a <BigInteger> to a power (mod m).
@@ -9667,21 +9667,21 @@ function decode (bechString) {
     BigInteger.prototype.modPow = function(exponent, modulus) {
         var result = ONE;
         var base = this;
-    
+
         while (exponent.isPositive()) {
             if (exponent.isOdd()) {
                 result = result.multiply(base).remainder(modulus);
             }
-    
+
             exponent = exponent.quotient(BigInteger.small[2]);
             if (exponent.isPositive()) {
                 base = base.square().remainder(modulus);
             }
         }
-    
+
         return result;
     };
-    
+
     /*
         Function: log
         Get the natural logarithm of a <BigInteger> as a native JavaScript number.
@@ -9699,18 +9699,18 @@ function decode (bechString) {
         case -1: return NaN;
         default: // Fall through.
         }
-    
+
         var l = this._d.length;
-    
+
         if (l*BigInteger_base_log10 < 30) {
             return Math.log(this.valueOf());
         }
-    
+
         var N = Math.ceil(30/BigInteger_base_log10);
         var firstNdigits = this._d.slice(l - N);
         return Math.log((new BigInteger(firstNdigits, 1, CONSTRUCT)).valueOf()) + (l - N) * Math.log(BigInteger_base);
     };
-    
+
     /*
         Function: valueOf
         Convert a <BigInteger> to a native JavaScript integer.
@@ -9724,7 +9724,7 @@ function decode (bechString) {
     BigInteger.prototype.valueOf = function() {
         return parseInt(this.toString(), 10);
     };
-    
+
     /*
         Function: toJSValue
         Convert a <BigInteger> to a native JavaScript integer.
@@ -9737,8 +9737,8 @@ function decode (bechString) {
     BigInteger.prototype.toJSValue = function() {
         return parseInt(this.toString(), 10);
     };
-    
-    
+
+
     /*
      Function: lowVal
      Author: Lucas Jones
@@ -9746,58 +9746,58 @@ function decode (bechString) {
     BigInteger.prototype.lowVal = function () {
         return this._d[0] || 0;
     };
-    
+
     var MAX_EXP = BigInteger(0x7FFFFFFF);
     // Constant: MAX_EXP
     // The largest exponent allowed in <pow> and <exp10> (0x7FFFFFFF or 2147483647).
     BigInteger.MAX_EXP = MAX_EXP;
-    
+
     (function() {
         function makeUnary(fn) {
             return function(a) {
                 return fn.call(BigInteger(a));
             };
         }
-    
+
         function makeBinary(fn) {
             return function(a, b) {
                 return fn.call(BigInteger(a), BigInteger(b));
             };
         }
-    
+
         function makeTrinary(fn) {
             return function(a, b, c) {
                 return fn.call(BigInteger(a), BigInteger(b), BigInteger(c));
             };
         }
-    
+
         (function() {
             var i, fn;
             var unary = "toJSValue,isEven,isOdd,sign,isZero,isNegative,abs,isUnit,square,negate,isPositive,toString,next,prev,log".split(",");
             var binary = "compare,remainder,divRem,subtract,add,quotient,divide,multiply,pow,compareAbs".split(",");
             var trinary = ["modPow"];
-    
+
             for (i = 0; i < unary.length; i++) {
                 fn = unary[i];
                 BigInteger[fn] = makeUnary(BigInteger.prototype[fn]);
             }
-    
+
             for (i = 0; i < binary.length; i++) {
                 fn = binary[i];
                 BigInteger[fn] = makeBinary(BigInteger.prototype[fn]);
             }
-    
+
             for (i = 0; i < trinary.length; i++) {
                 fn = trinary[i];
                 BigInteger[fn] = makeTrinary(BigInteger.prototype[fn]);
             }
-    
+
             BigInteger.exp10 = function(x, n) {
                 return BigInteger(x).exp10(n);
             };
         })();
     })();
-    
+
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
 },{}],131:[function(require,module,exports){
@@ -11326,10 +11326,13 @@ module.exports = {
         }
         return hex;
     },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX');
-        sha.update(hexString);
-        return sha.getHash('HEX');
+    sha256: function (payload, format = 'HEX') {
+        var sha = new jsSHA('SHA-256', format);
+        sha.update(payload);
+        return sha.getHash(format);
+    },
+    sha256x2: function (buffer, format = 'HEX') {
+        return this.sha256(this.sha256(buffer, format), format);
     },
     sha256Checksum: function (payload) {
         return this.sha256(this.sha256(payload)).substr(0, 8);
@@ -11369,407 +11372,483 @@ var BTCValidator = require('./bitcoin_validator');
 var ADAValidator = require('./ada_validator');
 var XMRValidator = require('./monero_validator');
 var NANOValidator = require('./nano_validator');
-var SCValidator = require('./siacoin_validator')
+var SCValidator = require('./siacoin_validator');
 var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
 var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
+var EOSValidator = require('./eos_validator');
+var XTZValidator = require('./tezos_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
-var CURRENCIES = [{
-    name: 'Bitcoin',
-    symbol: 'btc',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26']},
-    validator: BTCValidator
-}, {
-    name: 'BitcoinCash',
-    symbol: 'bch',
-    regexp: '^[qQpP]{1}[0-9a-zA-Z]{41}$',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BCHValidator
-}, {
-    name: 'Bitcoin SV',
-    symbol: 'bsv',
-    regexp: '^[qQ]{1}[0-9a-zA-Z]{41}$',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BCHValidator
-}, {
-    name: 'LiteCoin',
-    symbol: 'ltc',
-    addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
-    validator: BTCValidator
-}, {
-    name: 'PeerCoin',
-    symbol: 'ppc',
-    addressTypes: { prod: ['37', '75'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'DogeCoin',
-    symbol: 'doge',
-    addressTypes: { prod: ['1e', '16'], testnet: ['71', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'BeaverCoin',
-    symbol: 'bvc',
-    addressTypes: { prod: ['19', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator,
-}, {
-    name: 'FreiCoin',
-    symbol: 'frc',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'ProtoShares',
-    symbol: 'pts',
-    addressTypes: { prod: ['38', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'MegaCoin',
-    symbol: 'mec',
-    addressTypes: { prod: ['32', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'PrimeCoin',
-    symbol: 'xpm',
-    addressTypes: { prod: ['17', '53'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'AuroraCoin',
-    symbol: 'aur',
-    addressTypes: { prod: ['17', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'NameCoin',
-    symbol: 'nmc',
-    addressTypes: { prod: ['34'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'BioCoin',
-    symbol: 'bio',
-    addressTypes: { prod: ['19', '14'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'GarliCoin',
-    symbol: 'grlc',
-    addressTypes: { prod: ['26', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'VertCoin',
-    symbol: 'vtc',
-    addressTypes: { prod: ['0x', '47', '71', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-    
-}, {
-    name: 'BitcoinGold',
-    symbol: 'btg',
-    addressTypes: { prod: ['26', '17'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'Komodo',
-    symbol: 'kmd',
-    addressTypes: { prod: ['3c', '55'], testnet: ['0', '5'] },
-    validator: BTCValidator
-}, {
-    name: 'BitcoinZ',
-    symbol: 'btcz',
-    expectedLength: 26,
-    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'BitcoinPrivate',
-    symbol: 'btcp',
-    expectedLength: 26,
-    addressTypes: { prod: ['1325', '13af'], testnet: ['1957', '19e0'] },
-    validator: BTCValidator
-}, {
-    name: 'Hush',
-    symbol: 'hush',
-    expectedLength: 26,
-    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'SnowGem',
-    symbol: 'sng',
-    expectedLength: 26,
-    addressTypes: { prod: ['1c28', '1c2d'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'ZCash',
-    symbol: 'zec',
-    expectedLength: 26,
-    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'ZClassic',
-    symbol: 'zcl',
-    expectedLength: 26,
-    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'ZenCash',
-    symbol: 'zen',
-    expectedLength: 26,
-    addressTypes: { prod: ['2089', '2096'], testnet: ['2092', '2098'] },
-    validator: BTCValidator
-}, {
-    name: 'VoteCoin',
-    symbol: 'vot',
-    expectedLength: 26,
-    addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
-    validator: BTCValidator
-}, {
-    name: 'Decred',
-    symbol: 'dcr',
-    addressTypes: { prod: ['073f', '071a'], testnet: ['0f21', '0efc'] },
-    hashFunction: 'blake256',
-    expectedLength: 26,
-    validator: BTCValidator
-}, {
-    name: 'GameCredits',
-    symbol: 'game',
-    addressTypes: { prod: ['26', '05'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'PIVX',
-    symbol: 'pivx',
-    addressTypes: { prod: ['1e', '0d'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'SolarCoin',
-    symbol: 'slr',
-    addressTypes: { prod: ['12', '05'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'MonaCoin',
-    symbol: 'mona',
-    addressTypes: { prod: ['32', '37'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'DigiByte',
-    symbol: 'dgb',
-    addressTypes: { prod: ['1e'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'Tether',
-    symbol: 'usdt',
-    addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-    validator: BTCValidator
-}, {
-    name: 'Ripple',
-    symbol: 'xrp',
-    validator: XRPValidator,
-}, {
-    name: 'Dash',
-    symbol: 'dash',
-    addressTypes: { prod: ['4c', '10'], testnet: ['8c', '13'] },
-    validator: BTCValidator
-}, {
-    name: 'Neo',
-    symbol: 'neo',
-    addressTypes: { prod: ['17'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'NeoGas',
-    symbol: 'gas',
-    addressTypes: { prod: ['17'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'Qtum',
-    symbol: 'qtum',
-    addressTypes: { prod: ['3a', '32'], testnet: ['78', '6e'] },
-    validator: BTCValidator
-}, {
-    name: 'Waves',
-    symbol: 'waves',
-    addressTypes: { prod: ['0157'], testnet: ['0154'] },
-    expectedLength: 26,
-    hashFunction: 'blake256keccak256',
-    regex: /^[a-zA-Z0-9]{35}$/,
-    validator: BTCValidator
-}, {
-    name: 'Ethereum',
-    symbol: 'eth',
-    validator: ETHValidator,
-}, {
-    name: 'EtherZero',
-    symbol: 'etz',
-    validator: ETHValidator,
-}, {
-    name: 'EthereumClassic',
-    symbol: 'etc',
-    validator: ETHValidator,
-}, {
-    name: 'Callisto',
-    symbol: 'clo',
-    validator: ETHValidator,
-}, {
-    name: 'Bankex',
-    symbol: 'bkx',
-    validator: ETHValidator
-}, {
-    name: 'Cardano',
-    symbol: 'ada',
-    validator: ADAValidator
-}, {
-    name: 'Monero',
-    symbol: 'xmr',
-    addressTypes: { prod: ['18'], testnet: ['53'] },
-    iAddressTypes: { prod: ['19'], testnet: ['54'] },
-    validator: XMRValidator
-}, {
-    name: 'Aragon',
-    symbol: 'ant',
-    validator: ETHValidator
-}, {
-    name: 'Basic Attention Token',
-    symbol: 'bat',
-    validator: ETHValidator
-}, {
-    name: 'Bancor',
-    symbol: 'bnt',
-    validator: ETHValidator
-}, {
-    name: 'Civic',
-    symbol: 'cvc',
-    validator: ETHValidator
-}, {
-    name: 'District0x',
-    symbol: 'dnt',
-    validator: ETHValidator
-}, {
-    name: 'Gnosis',
-    symbol: 'gno',
-    validator: ETHValidator
-}, {
-    name: 'Golem',
-    symbol: 'gnt',
-    validator: ETHValidator
-}, {
-    name: 'Matchpool',
-    symbol: 'gup',
-    validator: ETHValidator
-}, {
-    name: 'Melon',
-    symbol: 'mln',
-    validator: ETHValidator
-}, {
-    name: 'Numeraire',
-    symbol: 'nmr',
-    validator: ETHValidator
-}, {
-    name: 'OmiseGO',
-    symbol: 'omg',
-    validator: ETHValidator
-}, {
-    name: 'TenX',
-    symbol: 'pay',
-    validator: ETHValidator
-}, {
-    name: 'Ripio Credit Network',
-    symbol: 'rcn',
-    validator: ETHValidator
-}, {
-    name: 'Augur',
-    symbol: 'rep',
-    validator: ETHValidator
-}, {
-    name: 'iExec RLC',
-    symbol: 'rlc',
-    validator: ETHValidator
-}, {
-    name: 'Salt',
-    symbol: 'salt',
-    validator: ETHValidator
-}, {
-    name: 'Status',
-    symbol: 'snt',
-    validator: ETHValidator
-}, {
-    name: 'Storj',
-    symbol: 'storj',
-    validator: ETHValidator
-}, {
-    name: 'Swarm City',
-    symbol: 'swt',
-    validator: ETHValidator
-}, {
-    name: 'TrueUSD',
-    symbol: 'tusd',
-    validator: ETHValidator
-}, {
-    name: 'Wings',
-    symbol: 'wings',
-    validator: ETHValidator
-}, {
-    name: '0x',
-    symbol: 'zrx',
-    validator: ETHValidator
-}, {
-    name: 'Expanse',
-    symbol: 'exp',
-    validator: ETHValidator
-}, {
-    name: 'Viberate',
-    symbol: 'vib',
-    validator: ETHValidator
-}, {
-    name: 'Odyssey',
-    symbol: 'ocn',
-    validator: ETHValidator
-}, {
-    name: 'Polymath',
-    symbol: 'poly',
-    validator: ETHValidator
-}, {
-    name: 'Storm',
-    symbol: 'storm',
-    validator: ETHValidator
-}, {
-    name: 'Nano',
-    symbol: 'nano',
-    validator: NANOValidator,
-}, {
-    name: 'RaiBlocks',
-    symbol: 'xrb',
-    validator: NANOValidator,
-}, {
-    name: 'siacoin',
-    symbol: 'sc',
-    validator: SCValidator
-}, {
-    name: 'hyperspace',
-    symbol: 'xsc',
-    validator: SCValidator
-}, {
-    name: 'loki',
-    symbol: 'loki',
-    addressTypes: { prod: ['114', '116'], testnet: [] },
-    iAddressTypes: { prod: ['115'], testnet: [] },
-    validator: XMRValidator
-}, {
-    name: 'lbry',
-    symbol: 'lbc',
-    addressTypes: { prod: ['55'], testnet: [] },
-    validator: BTCValidator
-}, {
-    name: 'tron',
-    symbol: 'trx',
-    addressTypes: {prod: [0x41], testnet: [0xa0]},
-    validator: TRXValidator
-}, {
-    name: 'nem',
-    symbol: 'xem',
-    validator: NEMValidator
-}, {
-    name: 'lisk',
-    symbol: 'lsk',
-    validator: LSKValidator
-}, {
-    name: 'stellar',
-    symbol: 'xlm',
-    validator: XLMValidator,
-}];
+var CURRENCIES = [
+    {
+        name: 'Bitcoin',
+        symbol: 'btc',
+        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+        validator: BTCValidator
+    }, {
+        name: 'BitcoinCash',
+        symbol: 'bch',
+        regexp: '^[qQpP]{1}[0-9a-zA-Z]{41}$',
+        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        validator: BCHValidator
+    }, {
+        name: 'Bitcoin SV',
+        symbol: 'bsv',
+        regexp: '^[qQ]{1}[0-9a-zA-Z]{41}$',
+        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        validator: BCHValidator
+    }, {
+        name: 'LiteCoin',
+        symbol: 'ltc',
+        addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
+        validator: BTCValidator
+    }, {
+        name: 'PeerCoin',
+        symbol: 'ppc',
+        addressTypes: { prod: ['37', '75'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'DogeCoin',
+        symbol: 'doge',
+        addressTypes: { prod: ['1e', '16'], testnet: ['71', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'BeaverCoin',
+        symbol: 'bvc',
+        addressTypes: { prod: ['19', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator,
+    }, {
+        name: 'FreiCoin',
+        symbol: 'frc',
+        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'ProtoShares',
+        symbol: 'pts',
+        addressTypes: { prod: ['38', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'MegaCoin',
+        symbol: 'mec',
+        addressTypes: { prod: ['32', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'PrimeCoin',
+        symbol: 'xpm',
+        addressTypes: { prod: ['17', '53'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'AuroraCoin',
+        symbol: 'aur',
+        addressTypes: { prod: ['17', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'NameCoin',
+        symbol: 'nmc',
+        addressTypes: { prod: ['34'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'BioCoin',
+        symbol: 'bio',
+        addressTypes: { prod: ['19', '14'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'GarliCoin',
+        symbol: 'grlc',
+        addressTypes: { prod: ['26', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'VertCoin',
+        symbol: 'vtc',
+        addressTypes: { prod: ['0x', '47', '71', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+
+    }, {
+        name: 'BitcoinGold',
+        symbol: 'btg',
+        addressTypes: { prod: ['26', '17'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'Komodo',
+        symbol: 'kmd',
+        addressTypes: { prod: ['3c', '55'], testnet: ['0', '5'] },
+        validator: BTCValidator
+    }, {
+        name: 'BitcoinZ',
+        symbol: 'btcz',
+        expectedLength: 26,
+        addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'BitcoinPrivate',
+        symbol: 'btcp',
+        expectedLength: 26,
+        addressTypes: { prod: ['1325', '13af'], testnet: ['1957', '19e0'] },
+        validator: BTCValidator
+    }, {
+        name: 'Hush',
+        symbol: 'hush',
+        expectedLength: 26,
+        addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'SnowGem',
+        symbol: 'sng',
+        expectedLength: 26,
+        addressTypes: { prod: ['1c28', '1c2d'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'ZCash',
+        symbol: 'zec',
+        expectedLength: 26,
+        addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'ZClassic',
+        symbol: 'zcl',
+        expectedLength: 26,
+        addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'ZenCash',
+        symbol: 'zen',
+        expectedLength: 26,
+        addressTypes: { prod: ['2089', '2096'], testnet: ['2092', '2098'] },
+        validator: BTCValidator
+    }, {
+        name: 'VoteCoin',
+        symbol: 'vot',
+        expectedLength: 26,
+        addressTypes: { prod: ['1cb8', '1cbd'], testnet: ['1d25', '1cba'] },
+        validator: BTCValidator
+    }, {
+        name: 'Decred',
+        symbol: 'dcr',
+        addressTypes: { prod: ['073f', '071a'], testnet: ['0f21', '0efc'] },
+        hashFunction: 'blake256',
+        expectedLength: 26,
+        validator: BTCValidator
+    }, {
+        name: 'GameCredits',
+        symbol: 'game',
+        addressTypes: { prod: ['26', '05'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'PIVX',
+        symbol: 'pivx',
+        addressTypes: { prod: ['1e', '0d'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'SolarCoin',
+        symbol: 'slr',
+        addressTypes: { prod: ['12', '05'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'MonaCoin',
+        symbol: 'mona',
+        addressTypes: { prod: ['32', '37'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'DigiByte',
+        symbol: 'dgb',
+        addressTypes: { prod: ['1e'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'Tether',
+        symbol: 'usdt',
+        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        validator: BTCValidator
+    }, {
+        name: 'Ripple',
+        symbol: 'xrp',
+        validator: XRPValidator,
+    }, {
+        name: 'Dash',
+        symbol: 'dash',
+        addressTypes: { prod: ['4c', '10'], testnet: ['8c', '13'] },
+        validator: BTCValidator
+    }, {
+        name: 'Neo',
+        symbol: 'neo',
+        addressTypes: { prod: ['17'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'NeoGas',
+        symbol: 'gas',
+        addressTypes: { prod: ['17'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'Qtum',
+        symbol: 'qtum',
+        addressTypes: { prod: ['3a', '32'], testnet: ['78', '6e'] },
+        validator: BTCValidator
+    }, {
+        name: 'Waves',
+        symbol: 'waves',
+        addressTypes: { prod: ['0157'], testnet: ['0154'] },
+        expectedLength: 26,
+        hashFunction: 'blake256keccak256',
+        regex: /^[a-zA-Z0-9]{35}$/,
+        validator: BTCValidator
+    }, {
+        name: 'Ethereum',
+        symbol: 'eth',
+        validator: ETHValidator,
+    }, {
+        name: 'EtherZero',
+        symbol: 'etz',
+        validator: ETHValidator,
+    }, {
+        name: 'EthereumClassic',
+        symbol: 'etc',
+        validator: ETHValidator,
+    }, {
+        name: 'Callisto',
+        symbol: 'clo',
+        validator: ETHValidator,
+    }, {
+        name: 'Bankex',
+        symbol: 'bkx',
+        validator: ETHValidator
+    }, {
+        name: 'Cardano',
+        symbol: 'ada',
+        validator: ADAValidator
+    }, {
+        name: 'Monero',
+        symbol: 'xmr',
+        addressTypes: { prod: ['18'], testnet: ['53'] },
+        iAddressTypes: { prod: ['19'], testnet: ['54'] },
+        validator: XMRValidator
+    }, {
+        name: 'Aragon',
+        symbol: 'ant',
+        validator: ETHValidator
+    }, {
+        name: 'Basic Attention Token',
+        symbol: 'bat',
+        validator: ETHValidator
+    }, {
+        name: 'Bancor',
+        symbol: 'bnt',
+        validator: ETHValidator
+    }, {
+        name: 'Civic',
+        symbol: 'cvc',
+        validator: ETHValidator
+    }, {
+        name: 'District0x',
+        symbol: 'dnt',
+        validator: ETHValidator
+    }, {
+        name: 'Gnosis',
+        symbol: 'gno',
+        validator: ETHValidator
+    }, {
+        name: 'Golem',
+        symbol: 'gnt',
+        validator: ETHValidator
+    }, {
+        name: 'Matchpool',
+        symbol: 'gup',
+        validator: ETHValidator
+    }, {
+        name: 'Melon',
+        symbol: 'mln',
+        validator: ETHValidator
+    }, {
+        name: 'Numeraire',
+        symbol: 'nmr',
+        validator: ETHValidator
+    }, {
+        name: 'OmiseGO',
+        symbol: 'omg',
+        validator: ETHValidator
+    }, {
+        name: 'TenX',
+        symbol: 'pay',
+        validator: ETHValidator
+    }, {
+        name: 'Ripio Credit Network',
+        symbol: 'rcn',
+        validator: ETHValidator
+    }, {
+        name: 'Augur',
+        symbol: 'rep',
+        validator: ETHValidator
+    }, {
+        name: 'iExec RLC',
+        symbol: 'rlc',
+        validator: ETHValidator
+    }, {
+        name: 'Salt',
+        symbol: 'salt',
+        validator: ETHValidator
+    }, {
+        name: 'Status',
+        symbol: 'snt',
+        validator: ETHValidator
+    }, {
+        name: 'Storj',
+        symbol: 'storj',
+        validator: ETHValidator
+    }, {
+        name: 'Swarm City',
+        symbol: 'swt',
+        validator: ETHValidator
+    }, {
+        name: 'TrueUSD',
+        symbol: 'tusd',
+        validator: ETHValidator
+    }, {
+        name: 'Wings',
+        symbol: 'wings',
+        validator: ETHValidator
+    }, {
+        name: '0x',
+        symbol: 'zrx',
+        validator: ETHValidator
+    }, {
+        name: 'Expanse',
+        symbol: 'exp',
+        validator: ETHValidator
+    }, {
+        name: 'Viberate',
+        symbol: 'vib',
+        validator: ETHValidator
+    }, {
+        name: 'Odyssey',
+        symbol: 'ocn',
+        validator: ETHValidator
+    }, {
+        name: 'Polymath',
+        symbol: 'poly',
+        validator: ETHValidator
+    }, {
+        name: 'Storm',
+        symbol: 'storm',
+        validator: ETHValidator
+    }, {
+        name: 'Nano',
+        symbol: 'nano',
+        validator: NANOValidator,
+    }, {
+        name: 'RaiBlocks',
+        symbol: 'xrb',
+        validator: NANOValidator,
+    }, {
+        name: 'Siacoin',
+        symbol: 'sc',
+        validator: SCValidator
+    }, {
+        name: 'HyperSpace',
+        symbol: 'xsc',
+        validator: SCValidator
+    }, {
+        name: 'loki',
+        symbol: 'loki',
+        addressTypes: { prod: ['114', '116'], testnet: [] },
+        iAddressTypes: { prod: ['115'], testnet: [] },
+        validator: XMRValidator
+    }, {
+        name: 'LBRY Credits',
+        symbol: 'lbc',
+        addressTypes: { prod: ['55'], testnet: [] },
+        validator: BTCValidator
+    }, {
+        name: 'Tron',
+        symbol: 'trx',
+        addressTypes: { prod: [0x41], testnet: [0xa0] },
+        validator: TRXValidator
+    }, {
+        name: 'Nem',
+        symbol: 'xem',
+        validator: NEMValidator
+    }, {
+        name: 'Lisk',
+        symbol: 'lsk',
+        validator: LSKValidator
+    }, {
+        name: 'Stellar',
+        symbol: 'xlm',
+        validator: XLMValidator,
+    }, {
+        name: 'BTU Protocol',
+        symbol: 'btu',
+        validator: ETHValidator,
+    }, {
+        name: 'Crypto.com Coin',
+        symbol: 'cro',
+        validator: ETHValidator,
+    }, {
+        name: 'Multi-collateral DAI',
+        symbol: 'dai',
+        validator: ETHValidator,
+    }, {
+        name: 'Enjin Coin',
+        symbol: 'enj',
+        validator: ETHValidator,
+    }, {
+        name: 'HedgeTrade',
+        symbol: 'hedg',
+        validator: ETHValidator,
+    }, {
+        name: 'Cred',
+        symbol: 'lba',
+        validator: ETHValidator,
+    }, {
+        name: 'Chainlink',
+        symbol: 'link',
+        validator: ETHValidator,
+    }, {
+        name: 'Loom Network',
+        symbol: 'loom',
+        validator: ETHValidator,
+    }, {
+        name: 'Maker',
+        symbol: 'mkr',
+        validator: ETHValidator,
+    }, {
+        name: 'Metal',
+        symbol: 'mtl',
+        validator: ETHValidator,
+    }, {
+        name: 'Ocean Protocol',
+        symbol: 'ocean',
+        validator: ETHValidator,
+    }, {
+        name: 'Quant',
+        symbol: 'qnt',
+        validator: ETHValidator,
+    }, {
+        name: 'Synthetix Network',
+        symbol: 'snx',
+        validator: ETHValidator,
+    }, {
+        name: 'SOLVE',
+        symbol: 'solve',
+        validator: ETHValidator,
+    }, {
+        name: 'Spendcoin',
+        symbol: 'spnd',
+        validator: ETHValidator,
+    }, {
+        name: 'TEMCO',
+        symbol: 'temco',
+        validator: ETHValidator,
+    }, {
+      name: 'EOS',
+      symbol: 'eos',
+      validator: EOSValidator
+    }, {
+        name: 'Tezos',
+        symbol: 'xtz',
+        validator: XTZValidator
+    }
+];
 
 
 module.exports = {
@@ -11778,17 +11857,41 @@ module.exports = {
         return CURRENCIES.find(function (currency) {
             return currency.name.toLowerCase() === nameOrSymbol || currency.symbol.toLowerCase() === nameOrSymbol
         });
+    },
+    getAll: function () {
+        return CURRENCIES;
     }
 };
 
 //spit out details for readme.md
- CURRENCIES
-     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
-     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+
+//spit out keywords for package.json
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
 
 
 
-},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./ethereum_validator":138,"./lisk_validator":139,"./monero_validator":140,"./nano_validator":141,"./nem_validator":142,"./ripple_validator":143,"./siacoin_validator":144,"./stellar_validator":145,"./tron_validator":146}],138:[function(require,module,exports){
+},{"./ada_validator":124,"./bch_validator":125,"./bitcoin_validator":126,"./eos_validator":138,"./ethereum_validator":139,"./lisk_validator":140,"./monero_validator":141,"./nano_validator":142,"./nem_validator":143,"./ripple_validator":144,"./siacoin_validator":145,"./stellar_validator":146,"./tezos_validator":147,"./tron_validator":148}],138:[function(require,module,exports){
+function isValidEOSAddress (address, currency, networkType) {
+  var regex = /^[a-z0-9]+$/g // Must be numbers and lowercase letters only
+  if (address.search(regex) !== -1 && address.length === 12) {
+    return true
+  } else {
+    return false
+  }
+}
+
+module.exports = {
+  isValidAddress: function (address, currency, networkType) {
+    return isValidEOSAddress(address, currency, networkType)
+  }
+}
+
+},{}],139:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -11824,7 +11927,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136}],139:[function(require,module,exports){
+},{"./crypto/utils":136}],140:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -11846,7 +11949,7 @@ module.exports = {
     }
 };
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],140:[function(require,module,exports){
+},{"./crypto/utils":136,"buffer":4}],141:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -11910,7 +12013,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":133,"./crypto/utils":136}],141:[function(require,module,exports){
+},{"./crypto/cnBase58":133,"./crypto/utils":136}],142:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -11939,7 +12042,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],142:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1}],143:[function(require,module,exports){
 (function (Buffer){
 var cryptoUtils = require('./crypto/utils');
 
@@ -11965,7 +12068,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 }
 }).call(this,require("buffer").Buffer)
-},{"./crypto/utils":136,"buffer":4}],143:[function(require,module,exports){
+},{"./crypto/utils":136,"buffer":4}],144:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -11995,7 +12098,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":136,"base-x":1}],144:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1}],145:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash/isEqual')
 
@@ -12025,7 +12128,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":136,"lodash/isEqual":113}],145:[function(require,module,exports){
+},{"./crypto/utils":136,"lodash/isEqual":113}],146:[function(require,module,exports){
 var baseX = require('base-x');
 var crc = require('crc');
 var cryptoUtils = require('./crypto/utils');
@@ -12072,7 +12175,45 @@ var ed25519PublicKeyVersionByte = (6 << 3);
          return computedChecksum === checksum
     }
 };
-},{"./crypto/utils":136,"base-x":1,"crc":30}],146:[function(require,module,exports){
+},{"./crypto/utils":136,"base-x":1,"crc":30}],147:[function(require,module,exports){
+const base58 = require('./crypto/base58');
+const cryptoUtils = require('./crypto/utils');
+
+const prefix = new Uint8Array([6, 161, 159]);
+
+function decodeRaw(buffer) {
+    let payload = buffer.slice(0, -4);
+    let checksum = buffer.slice(-4);
+    let newChecksum = cryptoUtils.hexStr2byteArray(
+        cryptoUtils.sha256x2(cryptoUtils.byteArray2hexStr(payload))
+    );
+
+    if (checksum[0] ^ newChecksum[0] |
+        checksum[1] ^ newChecksum[1] |
+        checksum[2] ^ newChecksum[2] |
+        checksum[3] ^ newChecksum[3])
+        return;
+    return payload;
+}
+
+const isValidAddress = function(address) {
+    try {
+        let buffer = base58.decode(address);
+        let payload = decodeRaw(buffer);
+        if (!payload)
+            return false;
+        payload.slice(prefix.length);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
+module.exports = {
+    isValidAddress
+};
+
+},{"./crypto/base58":128,"./crypto/utils":136}],148:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12134,7 +12275,7 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
-},{"./crypto/utils":136}],147:[function(require,module,exports){
+},{"./crypto/utils":136}],149:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -12149,7 +12290,13 @@ module.exports = {
 
         throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
     },
+    getCurrencies: function () {
+        return currencies.getAll();
+    },
+    findCurrency: function(symbol) {
+        return currencies.getByNameOrSymbol(symbol) || null ;
+    }
 };
 
-},{"./currencies":137}]},{},[147])(147)
+},{"./currencies":137}]},{},[149])(149)
 });

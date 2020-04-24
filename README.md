@@ -1,6 +1,8 @@
 # wallet-address-validator
 Simple wallet address validator for validating Bitcoin and other altcoins addresses in **Node.js and browser**.
 
+[![Build Status](https://travis-ci.org/christsim/multicoin-address-validator.svg?branch=master)](https://travis-ci.org/christsim/multicoin-address-validator)
+
 Forked from [ryanralph/altcoin-address](https://github.com/ryanralph/altcoin-address).
 
 **File size is ~17 kB (minifed and gzipped)**.
@@ -45,14 +47,20 @@ npm install multicoin-address-validator
 * BitcoinGold/btg `'BitcoinGold'` or `'btg'`
 * BitcoinPrivate/btcp `'BitcoinPrivate'` or `'btcp'`
 * BitcoinZ/btcz `'BitcoinZ'` or `'btcz'`
+* BTU Protocol/btu `'BTU Protocol'` or `'btu'`
 * Callisto/clo `'Callisto'` or `'clo'`
 * Cardano/ada `'Cardano'` or `'ada'`
+* Chainlink/link `'Chainlink'` or `'link'`
 * Civic/cvc `'Civic'` or `'cvc'`
+* Cred/lba `'Cred'` or `'lba'`
+* Crypto.com Coin/cro `'Crypto.com Coin'` or `'cro'`
 * Dash/dash `'Dash'` or `'dash'`
 * Decred/dcr `'Decred'` or `'dcr'`
 * DigiByte/dgb `'DigiByte'` or `'dgb'`
 * District0x/dnt `'District0x'` or `'dnt'`
 * DogeCoin/doge `'DogeCoin'` or `'doge'`
+* Enjin Coin/enj `'Enjin Coin'` or `'enj'`
+* EOS/eos `'EOS'` or `'eos'`
 * Ethereum/eth `'Ethereum'` or `'eth'`
 * EthereumClassic/etc `'EthereumClassic'` or `'etc'`
 * EtherZero/etz `'EtherZero'` or `'etz'`
@@ -62,25 +70,31 @@ npm install multicoin-address-validator
 * GarliCoin/grlc `'GarliCoin'` or `'grlc'`
 * Gnosis/gno `'Gnosis'` or `'gno'`
 * Golem/gnt `'Golem'` or `'gnt'`
+* HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
-* hyperspace/xsc `'hyperspace'` or `'xsc'`
+* HyperSpace/xsc `'HyperSpace'` or `'xsc'`
 * iExec RLC/rlc `'iExec RLC'` or `'rlc'`
 * Komodo/kmd `'Komodo'` or `'kmd'`
-* lbry/lbc `'lbry'` or `'lbc'`
-* lisk/lsk `'lisk'` or `'lsk'`
+* LBRY Credits/lbc `'LBRY Credits'` or `'lbc'`
+* Lisk/lsk `'Lisk'` or `'lsk'`
 * LiteCoin/ltc `'LiteCoin'` or `'ltc'`
 * loki/loki `'loki'` or `'loki'`
+* Loom Network/loom `'Loom Network'` or `'loom'`
+* Maker/mkr `'Maker'` or `'mkr'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`
 * Melon/mln `'Melon'` or `'mln'`
+* Metal/mtl `'Metal'` or `'mtl'`
 * MonaCoin/mona `'MonaCoin'` or `'mona'`
 * Monero/xmr `'Monero'` or `'xmr'`
+* Multi-collateral DAI/dai `'Multi-collateral DAI'` or `'dai'`
 * NameCoin/nmc `'NameCoin'` or `'nmc'`
 * Nano/nano `'Nano'` or `'nano'`
-* nem/xem `'nem'` or `'xem'`
+* Nem/xem `'Nem'` or `'xem'`
 * Neo/neo `'Neo'` or `'neo'`
 * NeoGas/gas `'NeoGas'` or `'gas'`
 * Numeraire/nmr `'Numeraire'` or `'nmr'`
+* Ocean Protocol/ocean `'Ocean Protocol'` or `'ocean'`
 * Odyssey/ocn `'Odyssey'` or `'ocn'`
 * OmiseGO/omg `'OmiseGO'` or `'omg'`
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'`
@@ -89,22 +103,27 @@ npm install multicoin-address-validator
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
 * ProtoShares/pts `'ProtoShares'` or `'pts'`
 * Qtum/qtum `'Qtum'` or `'qtum'`
+* Quant/qnt `'Quant'` or `'qnt'`
 * RaiBlocks/xrb `'RaiBlocks'` or `'xrb'`
 * Ripio Credit Network/rcn `'Ripio Credit Network'` or `'rcn'`
 * Ripple/xrp `'Ripple'` or `'xrp'`
 * Salt/salt `'Salt'` or `'salt'`
-* siacoin/sc `'siacoin'` or `'sc'`
+* Siacoin/sc `'Siacoin'` or `'sc'`
 * SnowGem/sng `'SnowGem'` or `'sng'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
+* SOLVE/solve `'SOLVE'` or `'solve'`
+* Spendcoin/spnd `'Spendcoin'` or `'spnd'`
 * Status/snt `'Status'` or `'snt'`
-* stellar/xlm `'stellar'` or `'xlm'`
+* Stellar/xlm `'Stellar'` or `'xlm'`
 * Storj/storj `'Storj'` or `'storj'`
 * Storm/storm `'Storm'` or `'storm'`
 * Swarm City/swt `'Swarm City'` or `'swt'`
+* Synthetix Network/snx `'Synthetix Network'` or `'snx'`
+* TEMCO/temco `'TEMCO'` or `'temco'`
 * TenX/pay `'TenX'` or `'pay'`
 * Tether/usdt `'Tether'` or `'usdt'`
-* Tezos/xtz `'tezos'` or `'xtz'`
-* Tron/trx `'tron'` or `'trx'`
+* Tezos/xtz `'Tezos'` or `'xtz'`
+* Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
 * Viberate/vib `'Viberate'` or `'vib'`
@@ -114,6 +133,7 @@ npm install multicoin-address-validator
 * ZCash/zec `'ZCash'` or `'zec'`
 * ZClassic/zcl `'ZClassic'` or `'zcl'`
 * ZenCash/zen `'ZenCash'` or `'zen'`
+
 
 ### Usage example
 
@@ -142,6 +162,29 @@ else
 // As this is a invalid litecoin address 'Address INVALID' will be logged to console.
 ```
 
+```javascript
+var WAValidator = require('multicoin-address-validator');
+
+var currency = WAValidator.findCurrency('xrp');
+if(currency)
+      console.log('This currency exists');
+else
+      console.log('Currency INVALID');
+
+// As this is a valid currency symbol 'This currency exists' will be logged to console.
+```
+
+```javascript
+var WAValidator = require('multicoin-address-validator');
+
+var currency = WAValidator.findCurrency('random');
+if(currency)
+      console.log('This currency exists');
+else
+      console.log('Currency INVALID');
+
+// As this is not a valid currency symbol 'Currency INVALID' will be logged to console.
+```
 #### Browser
 ```html
 <script src="wallet-address-validator.min.js"></script>
