@@ -1,5 +1,5 @@
 var cryptoUtils = require('./crypto/utils')
-var isEqual = require('lodash/isEqual')
+var isEqual = require('lodash.isequal')
 
 function hexToBytes(hex) {
   var bytes = []
