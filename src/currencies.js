@@ -252,7 +252,7 @@ var CURRENCIES = [
     }, {
         name: 'Monero',
         symbol: 'xmr',
-        addressTypes: { prod: ['18'], testnet: ['53'] },
+        addressTypes: { prod: ['18', '42'], testnet: ['53', '63'] },
         iAddressTypes: { prod: ['19'], testnet: ['54'] },
         validator: XMRValidator
     }, {
@@ -382,7 +382,7 @@ var CURRENCIES = [
     }, {
         name: 'loki',
         symbol: 'loki',
-        addressTypes: { prod: ['114', '116'], testnet: [] },
+        addressTypes: { prod: ['114', '115', '116'], testnet: [] },
         iAddressTypes: { prod: ['115'], testnet: [] },
         validator: XMRValidator
     }, {
