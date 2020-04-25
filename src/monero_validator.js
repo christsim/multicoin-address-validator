@@ -21,8 +21,10 @@ function validateNetwork(decoded, currency, networkType, addressType) {
       return network.prod.indexOf(at) >= 0
     case 'testnet':
       return network.testnet.indexOf(at) >= 0
+    case 'stagenet':
+      return network.stagenet.indexOf(at) >= 0
     case 'both':
-      return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0
+      return network.prod.indexOf(at) >= 0 || network.testnet.indexOf(at) >= 0 || network.stagenet.indexOf(at) >= 0
     default:
       return false
   }
