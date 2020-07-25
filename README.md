@@ -117,6 +117,7 @@ npm install multicoin-address-validator
 * Stellar/xlm `'Stellar'` or `'xlm'`
 * Storj/storj `'Storj'` or `'storj'`
 * Storm/storm `'Storm'` or `'storm'`
+* StormX/stmx `'StormX'` or `'stmx'`
 * Swarm City/swt `'Swarm City'` or `'swt'`
 * Synthetix Network/snx `'Synthetix Network'` or `'snx'`
 * TEMCO/temco `'TEMCO'` or `'temco'`
@@ -125,6 +126,7 @@ npm install multicoin-address-validator
 * Tezos/xtz `'Tezos'` or `'xtz'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
+* VeChain/vet `'VeChain'` or `'vet'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
 * Viberate/vib `'Viberate'` or `'vib'`
 * VoteCoin/vot `'VoteCoin'` or `'vot'`

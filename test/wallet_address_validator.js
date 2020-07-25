@@ -568,6 +568,13 @@ describe('WAValidator.validate()', function () {
       valid('binancecleos', 'eos');
       valid('123456789012', 'eos');
     });
+
+    it('should return true for correct vet addresses', function () {
+      valid('0xa7E43b445cF68CAa143a884AF673121447F29EAe', 'vet');
+      valid('0x46B8aABa5Eaa84Dc074c350eD57D8b3c35B90E09', 'VeChain');
+      valid('0x6d57D1697277C9Bb01A5265EC00558A639CA308A', 'VET');
+    });
+
   });
 
   describe('invalid results', function () {
@@ -1387,4 +1394,12 @@ describe('invalid results', function () {
     invalid('gWRYUerEKuz53tstxEuR3NCkiQDcV4wzFHmvLnZmj7PUqxW2wt', 'stellar');
     invalid('g4VPBPrHZkfE8CsjuG2S4yBQNd455UWmk', 'stellar');
   });
+
+  it('should return false for incorrect vet addresses', function () {
+    commonTests('vet');
+      invalid('SBGWKM3CD4IL47QN6X54N6Y33T3JDNVI6AIJ6CD5IM47HG3IG4O36XCU', 'vet');
+      invalid('Ox46B8aABa5Eaa84Dc074c350eD57D8b3c35B90E09', 'vet');
+      invalid('0x46b8aABa5Eaa84Dc074c350eD57D8b3c35B90E09', 'vet');
+  });
+
 });
