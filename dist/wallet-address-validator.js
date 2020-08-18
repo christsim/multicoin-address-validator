@@ -191,7 +191,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -2395,6 +2396,7 @@ module.exports = BigNumber;
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":4}],4:[function(require,module,exports){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -4173,7 +4175,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"base64-js":2,"buffer":4,"ieee754":31}],5:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -7283,6 +7286,7 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],35:[function(require,module,exports){
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -7304,6 +7308,8 @@ if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow)
 function SafeBuffer (arg, encodingOrOffset, length) {
   return Buffer(arg, encodingOrOffset, length)
 }
+
+SafeBuffer.prototype = Object.create(Buffer.prototype)
 
 // Copy static methods from Buffer
 copyProps(Buffer, SafeBuffer)
@@ -7518,7 +7524,7 @@ function isValidP2PKHandP2SHAddress(address, currency, opts) {
 
 module.exports = {
     isValidAddress: function (address, currency, networkType) {
-        return isValidP2PKHandP2SHAddress(address, currency, networkType) || segwit.isValidAddress(address);
+        return isValidP2PKHandP2SHAddress(address, currency, networkType) || segwit.isValidAddress(address, currency, networkType);
     }
 };
 
@@ -9927,6 +9933,8 @@ module.exports = cnBase58;
 
 var bech32 = require('./bech32');
 
+var DEFAULT_NETWORK_TYPE = 'prod'
+
 function convertbits (data, frombits, tobits, pad) {
   var acc = 0;
   var bits = 0;
@@ -9954,9 +9962,9 @@ function convertbits (data, frombits, tobits, pad) {
   return ret;
 }
 
-function decode (hrp, addr) {
+function decode (addr) {
   var dec = bech32.decode(addr);
-  if (dec === null || dec.hrp !== hrp || dec.data.length < 1 || dec.data[0] > 16) {
+  if (dec === null || dec.data.length < 1 || dec.data[0] > 16) {
     return null;
   }
   var res = convertbits(dec.data.slice(1), 5, 8, false);
@@ -9966,32 +9974,43 @@ function decode (hrp, addr) {
   if (dec.data[0] === 0 && res.length !== 20 && res.length !== 32) {
     return null;
   }
-  return {version: dec.data[0], program: res};
+  return {hrp: dec.hrp, version: dec.data[0], program: res};
 }
 
 function encode (hrp, version, program) {
   var ret = bech32.encode(hrp, [version].concat(convertbits(program, 8, 5, true)));
-  if (decode(hrp, ret) === null) {
+
+  if (decode(ret) === null) {
     return null;
   }
   return ret;
 }
 
-function isValidAddress(address) {
-    var hrp = 'bc';
-    var ret = decode(hrp, address);
+function isValidAddress(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
+    var ret = decode(address);
 
-    if (ret === null) {
-        hrp = 'tb';
-        ret = decode(hrp, address);
+    if(ret === null) {
+      return false;
     }
 
-    if (ret === null) {
+    var correctBech32Hrps;
+    var bech32Hrp = ret.hrp;
+
+    if (bech32Hrp) {
+      if (networkType === 'prod' || networkType === 'testnet') {
+        correctBech32Hrps = currency.bech32Hrp[networkType];
+      } else {
+        correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+      }
+ 
+      if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
         return false;
+      }
+
+      return encode(ret.hrp, ret.version, ret.program) === address.toLowerCase();
     }
 
-    var recreate = encode(hrp, ret.version, ret.program);
-    return recreate === address.toLowerCase();
 }
 
 module.exports = {
@@ -10795,6 +10814,7 @@ var CURRENCIES = [{
         name: 'Bitcoin',
         symbol: 'btc',
         addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+        bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
         validator: BTCValidator
     }, {
         name: 'BitcoinCash',
@@ -10812,6 +10832,7 @@ var CURRENCIES = [{
         name: 'LiteCoin',
         symbol: 'ltc',
         addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
+        bech32Hrp: { prod: ['ltc'], testnet: ['tltc'] },
         validator: BTCValidator
     }, {
         name: 'PeerCoin',
