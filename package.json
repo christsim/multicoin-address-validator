@@ -217,7 +217,7 @@
         "ZenCash",
         "zen"
     ],
-    "version": "0.4.5",
+    "version": "0.4.6",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",

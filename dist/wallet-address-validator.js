@@ -7388,7 +7388,8 @@ var cryptoUtils = require('./crypto/utils');
 var bech32 = require('./crypto/bech32');
 var BTCValidator = require('./bitcoin_validator');
 
-function validateAddress(address, currency, networkType) {
+function validateAddress(address, currency, opts) {
+    var networkType = opts ? opts.networkType : ''
     var prefix = 'bitcoincash';
     var regexp = new RegExp(currency.regexp);
     var raw_address;
@@ -7418,7 +7419,7 @@ function validateAddress(address, currency, networkType) {
 
     try {
         if (bech32.verifyChecksum(prefix, decoded)) {
-            return false;    
+            return false;
         }
     } catch(e) {
         return false;
@@ -7431,6 +7432,7 @@ module.exports = {
         return validateAddress(address, currency, networkType) || BTCValidator.isValidAddress(address, currency, networkType);
     }
 }
+
 },{"./bitcoin_validator":38,"./crypto/bech32":41,"./crypto/utils":48}],38:[function(require,module,exports){
 (function (Buffer){
 var base58 = require('./crypto/base58');
@@ -7495,8 +7497,8 @@ function getAddressType(address, currency) {
     return null;
 }
 
-function isValidP2PKHandP2SHAddress(address, currency, networkType) {
-    networkType = networkType || DEFAULT_NETWORK_TYPE;
+function isValidP2PKHandP2SHAddress(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
@@ -11407,8 +11409,8 @@ function hextobin(hex) {
 }
 
 module.exports = {
-  isValidAddress: function(address, currency, networkType) {
-    networkType = networkType || DEFAULT_NETWORK_TYPE
+  isValidAddress: function(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
     var addressType = 'standard'
     if (!addressRegTest.test(address)) {
       if (integratedAddressRegTest.test(address)) {
@@ -11679,7 +11681,8 @@ module.exports = {
     /**
      * tron address validation
      */
-    isValidAddress: function (mainAddress, currency, networkType) {
+    isValidAddress: function (mainAddress, currency, opts) {
+        var networkType = opts ? opts.networkType : '';
         var address = decodeBase58Address(mainAddress);
 
         if (!address) {
@@ -11693,6 +11696,7 @@ module.exports = {
         return getEnv(currency, networkType) === address[0];
     }
 };
+
 },{"./crypto/utils":48}],61:[function(require,module,exports){
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
@@ -11705,13 +11709,11 @@ function checkBothValidators(address, currency, networkType) {
 
 module.exports = {
     isValidAddress: function (address, currency, opts) {
-        if (opts && typeof opts === 'object') {
+        if (opts) {
             if (opts.chainType === 'erc20') {
                 return ETHValidator.isValidAddress(address, currency, opts.networkType);
             } else if (opts.chainType === 'omni') {
                 return BTCValidator.isValidAddress(address, currency, opts.networkType);
-            } else {
-                throw new Error(`Unknown chainType: ${opts.chainType}`);
             }
         }
         return checkBothValidators(address, currency, opts);
@@ -11724,11 +11726,15 @@ var currencies = require('./currencies');
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
 
 module.exports = {
-    validate: function (address, currencyNameOrSymbol, networkType) {
+    //validate: function (address, currencyNameOrSymbol, networkType) {
+    validate: function (address, currencyNameOrSymbol, opts) {
         var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
         if (currency && currency.validator) {
-            return currency.validator.isValidAddress(address, currency, networkType);
+            if (opts && typeof opts === 'string') {
+                return currency.validator.isValidAddress(address, currency, { networkType: opts });
+            }
+            return currency.validator.isValidAddress(address, currency, opts);
         }
 
         throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
