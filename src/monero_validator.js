@@ -40,8 +40,8 @@ function hextobin(hex) {
 }
 
 module.exports = {
-  isValidAddress: function(address, currency, networkType) {
-    networkType = networkType || DEFAULT_NETWORK_TYPE
+  isValidAddress: function(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
     var addressType = 'standard'
     if (!addressRegTest.test(address)) {
       if (integratedAddressRegTest.test(address)) {

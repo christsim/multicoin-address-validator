@@ -12,6 +12,7 @@ var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
 var XTZValidator = require('./tezos_validator');
+var USDTValidator = require('./usdt_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -191,7 +192,7 @@ var CURRENCIES = [{
         name: 'Tether',
         symbol: 'usdt',
         addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-        validator: BTCValidator
+        validator: USDTValidator
     }, {
         name: 'Ripple',
         symbol: 'xrp',

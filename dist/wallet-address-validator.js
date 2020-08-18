@@ -10786,6 +10786,7 @@ var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
 var XTZValidator = require('./tezos_validator');
+var USDTValidator = require('./usdt_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -10965,7 +10966,7 @@ var CURRENCIES = [{
         name: 'Tether',
         symbol: 'usdt',
         addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
-        validator: BTCValidator
+        validator: USDTValidator
     }, {
         name: 'Ripple',
         symbol: 'xrp',
@@ -11289,7 +11290,7 @@ var CURRENCIES = [{
 
 
 
-},{"./ada_validator":36,"./bch_validator":37,"./bitcoin_validator":38,"./eos_validator":50,"./ethereum_validator":51,"./lisk_validator":52,"./monero_validator":53,"./nano_validator":54,"./nem_validator":55,"./ripple_validator":56,"./siacoin_validator":57,"./stellar_validator":58,"./tezos_validator":59,"./tron_validator":60}],50:[function(require,module,exports){
+},{"./ada_validator":36,"./bch_validator":37,"./bitcoin_validator":38,"./eos_validator":50,"./ethereum_validator":51,"./lisk_validator":52,"./monero_validator":53,"./nano_validator":54,"./nem_validator":55,"./ripple_validator":56,"./siacoin_validator":57,"./stellar_validator":58,"./tezos_validator":59,"./tron_validator":60,"./usdt_validator":61}],50:[function(require,module,exports){
 function isValidEOSAddress (address, currency, networkType) {
   var regex = /^[a-z0-9]+$/g // Must be numbers and lowercase letters only
   if (address.search(regex) !== -1 && address.length === 12) {
@@ -11483,6 +11484,7 @@ var isValidAddress = function(_address) {
 module.exports = {
     isValidAddress: isValidAddress,
 }
+
 }).call(this,require("buffer").Buffer)
 },{"./crypto/utils":48,"buffer":4}],56:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
@@ -11692,6 +11694,31 @@ module.exports = {
     }
 };
 },{"./crypto/utils":48}],61:[function(require,module,exports){
+var BTCValidator = require('./bitcoin_validator');
+var ETHValidator = require('./ethereum_validator');
+
+function checkBothValidators(address, currency, networkType) {
+    var result = BTCValidator.isValidAddress(address, currency, networkType);
+    return result ? result :
+        ETHValidator.isValidAddress(address, currency, networkType);
+}
+
+module.exports = {
+    isValidAddress: function (address, currency, opts) {
+        if (opts && typeof opts === 'object') {
+            if (opts.chainType === 'erc20') {
+                return ETHValidator.isValidAddress(address, currency, opts.networkType);
+            } else if (opts.chainType === 'omni') {
+                return BTCValidator.isValidAddress(address, currency, opts.networkType);
+            } else {
+                throw new Error(`Unknown chainType: ${opts.chainType}`);
+            }
+        }
+        return checkBothValidators(address, currency, opts);
+    }
+};
+
+},{"./bitcoin_validator":38,"./ethereum_validator":51}],62:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -11714,5 +11741,5 @@ module.exports = {
     }
 };
 
-},{"./currencies":49}]},{},[61])(61)
+},{"./currencies":49}]},{},[62])(62)
 });

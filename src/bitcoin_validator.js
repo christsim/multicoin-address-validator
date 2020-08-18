@@ -60,8 +60,8 @@ function getAddressType(address, currency) {
     return null;
 }
 
-function isValidP2PKHandP2SHAddress(address, currency, networkType) {
-    networkType = networkType || DEFAULT_NETWORK_TYPE;
+function isValidP2PKHandP2SHAddress(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
