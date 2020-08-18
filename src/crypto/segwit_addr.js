@@ -20,6 +20,8 @@
 
 var bech32 = require('./bech32');
 
+var DEFAULT_NETWORK_TYPE = 'prod'
+
 function convertbits (data, frombits, tobits, pad) {
   var acc = 0;
   var bits = 0;
@@ -47,9 +49,9 @@ function convertbits (data, frombits, tobits, pad) {
   return ret;
 }
 
-function decode (hrp, addr) {
+function decode (addr) {
   var dec = bech32.decode(addr);
-  if (dec === null || dec.hrp !== hrp || dec.data.length < 1 || dec.data[0] > 16) {
+  if (dec === null || dec.data.length < 1 || dec.data[0] > 16) {
     return null;
   }
   var res = convertbits(dec.data.slice(1), 5, 8, false);
@@ -59,32 +61,43 @@ function decode (hrp, addr) {
   if (dec.data[0] === 0 && res.length !== 20 && res.length !== 32) {
     return null;
   }
-  return {version: dec.data[0], program: res};
+  return {hrp: dec.hrp, version: dec.data[0], program: res};
 }
 
 function encode (hrp, version, program) {
   var ret = bech32.encode(hrp, [version].concat(convertbits(program, 8, 5, true)));
-  if (decode(hrp, ret) === null) {
+
+  if (decode(ret) === null) {
     return null;
   }
   return ret;
 }
 
-function isValidAddress(address) {
-    var hrp = 'bc';
-    var ret = decode(hrp, address);
+function isValidAddress(address, currency, opts) {
+    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
+    var ret = decode(address);
 
-    if (ret === null) {
-        hrp = 'tb';
-        ret = decode(hrp, address);
+    if(ret === null) {
+      return false;
     }
 
-    if (ret === null) {
+    var correctBech32Hrps;
+    var bech32Hrp = ret.hrp;
+
+    if (bech32Hrp) {
+      if (networkType === 'prod' || networkType === 'testnet') {
+        correctBech32Hrps = currency.bech32Hrp[networkType];
+      } else {
+        correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+      }
+ 
+      if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
         return false;
+      }
+
+      return encode(ret.hrp, ret.version, ret.program) === address.toLowerCase();
     }
 
-    var recreate = encode(hrp, ret.version, ret.program);
-    return recreate === address.toLowerCase();
 }
 
 module.exports = {
