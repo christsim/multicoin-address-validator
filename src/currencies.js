@@ -19,6 +19,7 @@ var CURRENCIES = [{
         name: 'Bitcoin',
         symbol: 'btc',
         addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+        bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
         validator: BTCValidator
     }, {
         name: 'BitcoinCash',
@@ -36,6 +37,7 @@ var CURRENCIES = [{
         name: 'LiteCoin',
         symbol: 'ltc',
         addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
+        bech32Hrp: { prod: ['ltc'], testnet: ['tltc'] },
         validator: BTCValidator
     }, {
         name: 'PeerCoin',
