@@ -74,7 +74,7 @@ function encode (hrp, version, program) {
 }
 
 function isValidAddress(address, currency, opts) {
-    var networkType = opts ? (opts.networkType || DEFAULT_NETWORK_TYPE) : DEFAULT_NETWORK_TYPE
+    const { networkType = DEFAULT_NETWORK_TYPE} = opts;
     var ret = decode(address);
 
     if(ret === null) {
@@ -90,7 +90,7 @@ function isValidAddress(address, currency, opts) {
       } else {
         correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
       }
- 
+
       if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
         return false;
       }
