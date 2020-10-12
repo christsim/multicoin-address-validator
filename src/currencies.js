@@ -491,6 +491,12 @@ var CURRENCIES = [{
         name: 'StormX',
         symbol: 'stmx',
         validator: ETHValidator
+    }, {
+        name: 'Divi',
+        symbol: 'divi',
+        addressTypes: { prod: ['00', 'd'] },
+        bech32Hrp: { prod: ['divi'] },
+        validator: BTCValidator
     }
     ];
 
