@@ -73,8 +73,11 @@ function encode (hrp, version, program) {
   return ret;
 }
 
-function isValidAddress(address, currency, opts) {
+function isValidAddress(address, currency, opts = {}) {
     const { networkType = DEFAULT_NETWORK_TYPE} = opts;
+    if (!currency.bech32Hrp) {
+      return false;
+    }
     var ret = decode(address);
 
     if(ret === null) {

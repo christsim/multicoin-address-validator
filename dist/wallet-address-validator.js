@@ -191,7 +191,8 @@ function toByteArray (b64) {
     ? validLen - 4
     : validLen
 
-  for (var i = 0; i < len; i += 4) {
+  var i
+  for (i = 0; i < len; i += 4) {
     tmp =
       (revLookup[b64.charCodeAt(i)] << 18) |
       (revLookup[b64.charCodeAt(i + 1)] << 12) |
@@ -2395,6 +2396,7 @@ module.exports = BigNumber;
 
 }).call(this,require("buffer").Buffer)
 },{"buffer":4}],4:[function(require,module,exports){
+(function (Buffer){
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -4173,7 +4175,8 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"base64-js":2,"buffer":4,"ieee754":31}],5:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -7276,6 +7279,7 @@ process.chdir = function (dir) {
 process.umask = function() { return 0; };
 
 },{}],35:[function(require,module,exports){
+/*! safe-buffer. MIT License. Feross Aboukhadijeh <https://feross.org/opensource> */
 /* eslint-disable node/no-deprecated-api */
 var buffer = require('buffer')
 var Buffer = buffer.Buffer
@@ -7297,6 +7301,8 @@ if (Buffer.from && Buffer.alloc && Buffer.allocUnsafe && Buffer.allocUnsafeSlow)
 function SafeBuffer (arg, encodingOrOffset, length) {
   return Buffer(arg, encodingOrOffset, length)
 }
+
+SafeBuffer.prototype = Object.create(Buffer.prototype)
 
 // Copy static methods from Buffer
 copyProps(Buffer, SafeBuffer)
@@ -9999,8 +10005,11 @@ function encode (hrp, version, program) {
   return ret;
 }
 
-function isValidAddress(address, currency, opts) {
+function isValidAddress(address, currency, opts = {}) {
     const { networkType = DEFAULT_NETWORK_TYPE} = opts;
+    if (!currency.bech32Hrp) { 
+      return false;
+    }
     var ret = decode(address);
 
     if(ret === null) {

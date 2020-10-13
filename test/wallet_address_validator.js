@@ -82,6 +82,9 @@ describe('WAValidator.validate()', function () {
 
             valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch');
 
+            // bch addresses
+            invalid('bc1ql08eyrk03qytqc5pdp5fnwpfh0x3y3k2skauvd', 'bitcoincash', 'both');
+
         });
 
         it('should return true for correct litecoin addresses', function () {
