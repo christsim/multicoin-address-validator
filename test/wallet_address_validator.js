@@ -260,6 +260,7 @@ describe('WAValidator.validate()', function () {
             valid('D9TDZTR9Z9Mx2NoDJnhqhnYhDLKRAmsL9n', 'digibyte');
             valid('DHRzA1YHA1kFWpz2apRckZJy6KZRyGq4EV', 'digibyte');
             valid('DJ53hTyLBdZp2wMi5BsCS3rtEL1ioYUkva', 'digibyte');
+            valid('dgb1q00002724tefpjkpn8mp233uyqwd8hnny55e0zg', 'DGB', 'prod')
         });
 
         it('should return true for correct Ethereum addresses', function () {
