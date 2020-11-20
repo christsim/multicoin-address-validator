@@ -10996,8 +10996,8 @@ var CURRENCIES = [{
     }, {
         name: 'DigiByte',
         symbol: 'dgb',
-        addressTypes: { prod: ['1e'], testnet: [] },
-        bech32Hrp: { prod: ['dgb', 'S'], testnet: [] },
+        addressTypes: { prod: ['1e', '3f'], testnet: [] },
+        bech32Hrp: { prod: ['dgb'], testnet: [] },
         validator: BTCValidator
     }, {
         name: 'Tether',
