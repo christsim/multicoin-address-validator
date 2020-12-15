@@ -487,6 +487,11 @@ var CURRENCIES = [{
         name: 'StormX',
         symbol: 'stmx',
         validator: ETHValidator
+    },
+    {
+        name: 'GameCredits',
+        symbol: 'game',
+        validator: ETHValidator
     }
     ];
 
