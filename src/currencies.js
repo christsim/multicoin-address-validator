@@ -166,11 +166,6 @@ var CURRENCIES = [{
         expectedLength: 26,
         validator: BTCValidator
     }, {
-        name: 'GameCredits',
-        symbol: 'game',
-        addressTypes: { prod: ['26', '05'], testnet: [] },
-        validator: BTCValidator
-    }, {
         name: 'PIVX',
         symbol: 'pivx',
         addressTypes: { prod: ['1e', '0d'], testnet: [] },
