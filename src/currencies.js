@@ -192,6 +192,11 @@ var CURRENCIES = [{
         bech32Hrp: { prod: ['dgb'], testnet: [] },
         validator: BTCValidator
     }, {
+        name: 'Ravencoin',
+        symbol: 'rvn',
+        addressTypes: { prod: ['3c'], testnet: [] },
+        validator: BTCValidator
+    }, {
         name: 'Tether',
         symbol: 'usdt',
         addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
@@ -522,5 +527,3 @@ var CURRENCIES = [{
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
-
-
