@@ -87,8 +87,10 @@ function isValidAddress(address, currency, opts) {
     if (bech32Hrp) {
       if (networkType === 'prod' || networkType === 'testnet') {
         correctBech32Hrps = currency.bech32Hrp[networkType];
-      } else {
+      } else if(currency.bech32Hrp) {
         correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+      } else {
+          return false;
       }
 
       if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {

@@ -166,6 +166,11 @@ var CURRENCIES = [{
         expectedLength: 26,
         validator: BTCValidator
     }, {
+        name: 'GameCredits',
+        symbol: 'game',
+        addressTypes: { prod: ['26', '05'], testnet: [] },
+        validator: ETHValidator
+    }, {
         name: 'PIVX',
         symbol: 'pivx',
         addressTypes: { prod: ['1e', '0d'], testnet: [] },
@@ -184,7 +189,7 @@ var CURRENCIES = [{
         name: 'DigiByte',
         symbol: 'dgb',
         addressTypes: { prod: ['1e', '3f'], testnet: [] },
-        bech32Hrp: { prod: ['dgb'], testnet: [] },
+        bech32Hrp: { prod: ['dgb', 'S'], testnet: [] },
         validator: BTCValidator
     }, {
         name: 'Tether',
@@ -279,10 +284,14 @@ var CURRENCIES = [{
         symbol: 'gno',
         validator: ETHValidator
     }, {
-        name: 'Golem',
+        name: 'Golem (GNT)',
         symbol: 'gnt',
         validator: ETHValidator
     }, {
+        name: 'Golem',
+        symbol: 'glm',
+        validator: ETHValidator
+    },  {
         name: 'Matchpool',
         symbol: 'gup',
         validator: ETHValidator
@@ -489,11 +498,56 @@ var CURRENCIES = [{
         validator: ETHValidator
     },
     {
-        name: 'GameCredits',
-        symbol: 'game',
+        name: 'AugurV2',
+        symbol: 'repv2',
         validator: ETHValidator
-    }
-    ];
+    },
+    {
+        name: 'FirmaChain',
+        symbol: 'fct',
+        validator: ETHValidator
+    },
+    {
+        name: 'BlockTrade',
+        symbol: 'btt',
+        validator: ETHValidator
+    },
+    {
+        name: 'Quantum Resistant Ledger',
+        symbol: 'qrl',
+        validator: ETHValidator
+    },
+    {
+        name: 'Serve',
+        symbol: 'serv',
+        validator: ETHValidator
+    },
+    {
+        name: 'Tap',
+        symbol: 'xtp',
+        validator: ETHValidator
+    },
+    {
+        name: 'Compound',
+        symbol: 'comp',
+        validator: ETHValidator
+    },
+    {
+        name: 'Paxos',
+        symbol: 'pax',
+        validator: ETHValidator
+    },
+    {
+        name: 'USD Coin',
+        symbol: 'usdc',
+        validator: ETHValidator
+    },
+    {
+        name: 'CUSD',
+        symbol: 'cusd',
+        validator: ETHValidator
+    },
+];
 
 
     module.exports = {
@@ -508,14 +562,14 @@ var CURRENCIES = [{
     }
 };
 
-//spit out details for readme.md
+////spit out details for readme.md
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
-//spit out keywords for package.json
+////spit out keywords for package.json
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
-
+//
 

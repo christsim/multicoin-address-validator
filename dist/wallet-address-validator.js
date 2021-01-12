@@ -277,7 +277,7 @@ function fromByteArray (uint8) {
 }
 
 },{}],3:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 /* bignumber.js v1.3.0 https://github.com/MikeMcl/bignumber.js/LICENCE */
 
 /*jslint bitwise: true, eqeq: true, plusplus: true, sub: true, white: true, maxerr: 500 */
@@ -2393,7 +2393,7 @@ P['valueOf'] = function () {
 // EXPORT
 module.exports = BigNumber;
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"buffer":4}],4:[function(require,module,exports){
 /*!
  * The buffer module from node.js, for the browser.
@@ -5215,30 +5215,53 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 }
 
 },{}],32:[function(require,module,exports){
-/**
- * A JavaScript implementation of the SHA family of hashes - defined in FIPS PUB 180-4, FIPS PUB 202,
- * and SP 800-185 - as well as the corresponding HMAC implementation as defined in FIPS PUB 198-1.
- *
- * Copyright 2008-2020 Brian Turek, 1998-2009 Paul Johnston & Contributors
- * Distributed under the BSD License
- * See http://caligatio.github.com/jsSHA/ for more information
- *
- * Two ECMAScript polyfill functions carry the following license:
- *
- * Copyright (c) Microsoft Corporation. All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- *
- * THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED,
- * INCLUDING WITHOUT LIMITATION ANY IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
- * MERCHANTABLITY OR NON-INFRINGEMENT.
- *
- * See the Apache Version 2.0 License for specific language governing permissions and limitations under the License.
- */
-!function(t,r){"object"==typeof exports&&"undefined"!=typeof module?module.exports=r():"function"==typeof define&&define.amd?define(r):(t=t||self).jsSHA=r()}(this,(function(){"use strict";var t=function(r,n){return(t=Object.setPrototypeOf||{__proto__:[]}instanceof Array&&function(t,r){t.__proto__=r}||function(t,r){for(var n in r)r.hasOwnProperty(n)&&(t[n]=r[n])})(r,n)};var r="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";function n(t,r,n,i){var e,o,u,s=r||[0],f=(n=n||0)>>>3,h=-1===i?3:0;for(e=0;e<t.length;e+=1)o=(u=e+f)>>>2,s.length<=o&&s.push(0),s[o]|=t[e]<<8*(h+i*(u%4));return{value:s,binLen:8*t.length+n}}function i(t,i,e){switch(i){case"UTF8":case"UTF16BE":case"UTF16LE":break;default:throw new Error("encoding must be UTF8, UTF16BE, or UTF16LE")}switch(t){case"HEX":return function(t,r,n){return function(t,r,n,i){var e,o,u,s;if(0!=t.length%2)throw new Error("String of HEX type must be in byte increments");var f=r||[0],h=(n=n||0)>>>3,a=-1===i?3:0;for(e=0;e<t.length;e+=2){if(o=parseInt(t.substr(e,2),16),isNaN(o))throw new Error("String of HEX type contains invalid characters");for(u=(s=(e>>>1)+h)>>>2;f.length<=u;)f.push(0);f[u]|=o<<8*(a+i*(s%4))}return{value:f,binLen:4*t.length+n}}(t,r,n,e)};case"TEXT":return function(t,r,n){return function(t,r,n,i,e){var o,u,s,f,h,a,c,w,v=0,E=n||[0],A=(i=i||0)>>>3;if("UTF8"===r)for(c=-1===e?3:0,s=0;s<t.length;s+=1)for(u=[],128>(o=t.charCodeAt(s))?u.push(o):2048>o?(u.push(192|o>>>6),u.push(128|63&o)):55296>o||57344<=o?u.push(224|o>>>12,128|o>>>6&63,128|63&o):(s+=1,o=65536+((1023&o)<<10|1023&t.charCodeAt(s)),u.push(240|o>>>18,128|o>>>12&63,128|o>>>6&63,128|63&o)),f=0;f<u.length;f+=1){for(h=(a=v+A)>>>2;E.length<=h;)E.push(0);E[h]|=u[f]<<8*(c+e*(a%4)),v+=1}else for(c=-1===e?2:0,w="UTF16LE"===r&&1!==e||"UTF16LE"!==r&&1===e,s=0;s<t.length;s+=1){for(o=t.charCodeAt(s),!0===w&&(o=(f=255&o)<<8|o>>>8),h=(a=v+A)>>>2;E.length<=h;)E.push(0);E[h]|=o<<8*(c+e*(a%4)),v+=2}return{value:E,binLen:8*v+i}}(t,i,r,n,e)};case"B64":return function(t,n,i){return function(t,n,i,e){var o,u,s,f,h,a,c=0,w=n||[0],v=(i=i||0)>>>3,E=-1===e?3:0,A=t.indexOf("=");if(-1===t.search(/^[a-zA-Z0-9=+/]+$/))throw new Error("Invalid character in base-64 string");if(t=t.replace(/=/g,""),-1!==A&&A<t.length)throw new Error("Invalid '=' found in base-64 string");for(o=0;o<t.length;o+=4){for(f=t.substr(o,4),s=0,u=0;u<f.length;u+=1)s|=r.indexOf(f.charAt(u))<<18-6*u;for(u=0;u<f.length-1;u+=1){for(h=(a=c+v)>>>2;w.length<=h;)w.push(0);w[h]|=(s>>>16-8*u&255)<<8*(E+e*(a%4)),c+=1}}return{value:w,binLen:8*c+i}}(t,n,i,e)};case"BYTES":return function(t,r,n){return function(t,r,n,i){var e,o,u,s,f=r||[0],h=(n=n||0)>>>3,a=-1===i?3:0;for(o=0;o<t.length;o+=1)e=t.charCodeAt(o),u=(s=o+h)>>>2,f.length<=u&&f.push(0),f[u]|=e<<8*(a+i*(s%4));return{value:f,binLen:8*t.length+n}}(t,r,n,e)};case"ARRAYBUFFER":try{new ArrayBuffer(0)}catch(t){throw new Error("ARRAYBUFFER not supported by this environment")}return function(t,r,i){return function(t,r,i,e){return n(new Uint8Array(t),r,i,e)}(t,r,i,e)};case"UINT8ARRAY":try{new Uint8Array(0)}catch(t){throw new Error("UINT8ARRAY not supported by this environment")}return function(t,r,i){return n(t,r,i,e)};default:throw new Error("format must be HEX, TEXT, B64, BYTES, ARRAYBUFFER, or UINT8ARRAY")}}function e(t,n,i,e){switch(t){case"HEX":return function(t){return function(t,r,n,i){var e,o,u="",s=r/8,f=-1===n?3:0;for(e=0;e<s;e+=1)o=t[e>>>2]>>>8*(f+n*(e%4)),u+="0123456789abcdef".charAt(o>>>4&15)+"0123456789abcdef".charAt(15&o);return i.outputUpper?u.toUpperCase():u}(t,n,i,e)};case"B64":return function(t){return function(t,n,i,e){var o,u,s,f,h,a="",c=n/8,w=-1===i?3:0;for(o=0;o<c;o+=3)for(f=o+1<c?t[o+1>>>2]:0,h=o+2<c?t[o+2>>>2]:0,s=(t[o>>>2]>>>8*(w+i*(o%4))&255)<<16|(f>>>8*(w+i*((o+1)%4))&255)<<8|h>>>8*(w+i*((o+2)%4))&255,u=0;u<4;u+=1)a+=8*o+6*u<=n?r.charAt(s>>>6*(3-u)&63):e.b64Pad;return a}(t,n,i,e)};case"BYTES":return function(t){return function(t,r,n){var i,e,o="",u=r/8,s=-1===n?3:0;for(i=0;i<u;i+=1)e=t[i>>>2]>>>8*(s+n*(i%4))&255,o+=String.fromCharCode(e);return o}(t,n,i)};case"ARRAYBUFFER":try{new ArrayBuffer(0)}catch(t){throw new Error("ARRAYBUFFER not supported by this environment")}return function(t){return function(t,r,n){var i,e=r/8,o=new ArrayBuffer(e),u=new Uint8Array(o),s=-1===n?3:0;for(i=0;i<e;i+=1)u[i]=t[i>>>2]>>>8*(s+n*(i%4))&255;return o}(t,n,i)};case"UINT8ARRAY":try{new Uint8Array(0)}catch(t){throw new Error("UINT8ARRAY not supported by this environment")}return function(t){return function(t,r,n){var i,e=r/8,o=-1===n?3:0,u=new Uint8Array(e);for(i=0;i<e;i+=1)u[i]=t[i>>>2]>>>8*(o+n*(i%4))&255;return u}(t,n,i)};default:throw new Error("format must be HEX, B64, BYTES, ARRAYBUFFER, or UINT8ARRAY")}}var o=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298],u=[3238371032,914150663,812702999,4144912697,4290775857,1750603025,1694076839,3204075428],s=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225];function f(t){var r={outputUpper:!1,b64Pad:"=",outputLen:-1},n=t||{},i="Output length must be a multiple of 8";if(r.outputUpper=n.outputUpper||!1,n.b64Pad&&(r.b64Pad=n.b64Pad),n.outputLen){if(n.outputLen%8!=0)throw new Error(i);r.outputLen=n.outputLen}else if(n.shakeLen){if(n.shakeLen%8!=0)throw new Error(i);r.outputLen=n.shakeLen}if("boolean"!=typeof r.outputUpper)throw new Error("Invalid outputUpper formatting option");if("string"!=typeof r.b64Pad)throw new Error("Invalid b64Pad formatting option");return r}function h(t,r){return t>>>r|t<<32-r}function a(t,r){return t>>>r}function c(t,r,n){return t&r^~t&n}function w(t,r,n){return t&r^t&n^r&n}function v(t){return h(t,2)^h(t,13)^h(t,22)}function E(t,r){var n=(65535&t)+(65535&r);return(65535&(t>>>16)+(r>>>16)+(n>>>16))<<16|65535&n}function A(t,r,n,i){var e=(65535&t)+(65535&r)+(65535&n)+(65535&i);return(65535&(t>>>16)+(r>>>16)+(n>>>16)+(i>>>16)+(e>>>16))<<16|65535&e}function p(t,r,n,i,e){var o=(65535&t)+(65535&r)+(65535&n)+(65535&i)+(65535&e);return(65535&(t>>>16)+(r>>>16)+(n>>>16)+(i>>>16)+(e>>>16)+(o>>>16))<<16|65535&o}function d(t){return h(t,7)^h(t,18)^a(t,3)}function l(t){return h(t,6)^h(t,11)^h(t,25)}function R(t){return"SHA-224"==t?u.slice():s.slice()}function U(t,r){var n,i,e,u,s,f,R,U,y,b,T,m,F=[];for(n=r[0],i=r[1],e=r[2],u=r[3],s=r[4],f=r[5],R=r[6],U=r[7],T=0;T<64;T+=1)F[T]=T<16?t[T]:A(h(m=F[T-2],17)^h(m,19)^a(m,10),F[T-7],d(F[T-15]),F[T-16]),y=p(U,l(s),c(s,f,R),o[T],F[T]),b=E(v(n),w(n,i,e)),U=R,R=f,f=s,s=E(u,y),u=e,e=i,i=n,n=E(y,b);return r[0]=E(n,r[0]),r[1]=E(i,r[1]),r[2]=E(e,r[2]),r[3]=E(u,r[3]),r[4]=E(s,r[4]),r[5]=E(f,r[5]),r[6]=E(R,r[6]),r[7]=E(U,r[7]),r}return function(r){function n(t,n,e){var o=this;if("SHA-224"!==t&&"SHA-256"!==t)throw new Error("Chosen SHA variant is not supported");var u=e||{};return(o=r.call(this,t,n,e)||this).t=o.i,o.o=!0,o.u=-1,o.s=i(o.h,o.v,o.u),o.A=U,o.p=function(t){return t.slice()},o.l=R,o.R=function(r,n,i,e){return function(t,r,n,i,e){for(var o,u=15+(r+65>>>9<<4),s=r+n;t.length<=u;)t.push(0);for(t[r>>>5]|=128<<24-r%32,t[u]=4294967295&s,t[u-1]=s/4294967296|0,o=0;o<t.length;o+=16)i=U(t.slice(o,o+16),i);return"SHA-224"===e?[i[0],i[1],i[2],i[3],i[4],i[5],i[6]]:i}(r,n,i,e,t)},o.U=R(t),o.T=512,o.m="SHA-224"===t?224:256,o.F=!1,u.hmacKey&&o.B(function(t,r,n,e){var o=t+" must include a value and format";if(!r){if(!e)throw new Error(o);return e}if(void 0===r.value||!r.format)throw new Error(o);return i(r.format,r.encoding||"UTF8",n)(r.value)}("hmacKey",u.hmacKey,o.u)),o}return function(r,n){function i(){this.constructor=r}t(r,n),r.prototype=null===n?Object.create(n):(i.prototype=n.prototype,new i)}(n,r),n}(function(){function t(t,r,n){var i=n||{};if(this.h=r,this.v=i.encoding||"UTF8",this.numRounds=i.numRounds||1,isNaN(this.numRounds)||this.numRounds!==parseInt(this.numRounds,10)||1>this.numRounds)throw new Error("numRounds must a integer >= 1");this.g=t,this.Y=[],this.H=0,this.S=!1,this.I=0,this.C=!1,this.L=[],this.N=[]}return t.prototype.update=function(t){var r,n=0,i=this.T>>>5,e=this.s(t,this.Y,this.H),o=e.binLen,u=e.value,s=o>>>5;for(r=0;r<s;r+=i)n+this.T<=o&&(this.U=this.A(u.slice(r,r+i),this.U),n+=this.T);this.I+=n,this.Y=u.slice(n>>>5),this.H=o%this.T,this.S=!0},t.prototype.getHash=function(t,r){var n,i,o=this.m,u=f(r);if(this.F){if(-1===u.outputLen)throw new Error("Output length must be specified in options");o=u.outputLen}var s=e(t,o,this.u,u);if(this.C&&this.t)return s(this.t(u));for(i=this.R(this.Y.slice(),this.H,this.I,this.p(this.U),o),n=1;n<this.numRounds;n+=1)this.F&&o%32!=0&&(i[i.length-1]&=16777215>>>24-o%32),i=this.R(i,o,0,this.l(this.g),o);return s(i)},t.prototype.setHMACKey=function(t,r,n){if(!this.o)throw new Error("Variant does not support HMAC");if(this.S)throw new Error("Cannot set MAC key after calling update");var e=i(r,(n||{}).encoding||"UTF8",this.u);this.B(e(t))},t.prototype.B=function(t){var r,n=this.T>>>3,i=n/4-1;if(1!==this.numRounds)throw new Error("Cannot set numRounds with MAC");if(this.C)throw new Error("MAC key already set");for(n<t.binLen/8&&(t.value=this.R(t.value,t.binLen,0,this.l(this.g),this.m));t.value.length<=i;)t.value.push(0);for(r=0;r<=i;r+=1)this.L[r]=909522486^t.value[r],this.N[r]=1549556828^t.value[r];this.U=this.A(this.L,this.U),this.I=this.T,this.C=!0},t.prototype.getHMAC=function(t,r){var n=f(r);return e(t,this.m,this.u,n)(this.i())},t.prototype.i=function(){var t;if(!this.C)throw new Error("Cannot call getHMAC without first setting MAC key");var r=this.R(this.Y.slice(),this.H,this.I,this.p(this.U),this.m);return t=this.A(this.N,this.l(this.g)),t=this.R(r,this.m,this.T,t,this.m)},t}())}));
+/*
+ A JavaScript implementation of the SHA family of hashes, as
+ defined in FIPS PUB 180-4 and FIPS PUB 202, as well as the corresponding
+ HMAC implementation as defined in FIPS PUB 198a
+
+ Copyright 2008-2020 Brian Turek, 1998-2009 Paul Johnston & Contributors
+ Distributed under the BSD License
+ See http://caligatio.github.com/jsSHA/ for more information
+*/
+'use strict';(function(aa){function C(d,b,a){var h=0,k=[],m=0,g,l,c,f,n,q,u,r,I=!1,v=[],x=[],t,y=!1,z=!1,w=-1;a=a||{};g=a.encoding||"UTF8";t=a.numRounds||1;if(t!==parseInt(t,10)||1>t)throw Error("numRounds must a integer >= 1");if("SHA-1"===d)n=512,q=K,u=ba,f=160,r=function(b){return b.slice()};else if(0===d.lastIndexOf("SHA-",0))if(q=function(b,h){return L(b,h,d)},u=function(b,h,k,a){var e,f;if("SHA-224"===d||"SHA-256"===d)e=(h+65>>>9<<4)+15,f=16;else if("SHA-384"===d||"SHA-512"===d)e=(h+129>>>10<<
+5)+31,f=32;else throw Error("Unexpected error in SHA-2 implementation");for(;b.length<=e;)b.push(0);b[h>>>5]|=128<<24-h%32;h=h+k;b[e]=h&4294967295;b[e-1]=h/4294967296|0;k=b.length;for(h=0;h<k;h+=f)a=L(b.slice(h,h+f),a,d);if("SHA-224"===d)b=[a[0],a[1],a[2],a[3],a[4],a[5],a[6]];else if("SHA-256"===d)b=a;else if("SHA-384"===d)b=[a[0].a,a[0].b,a[1].a,a[1].b,a[2].a,a[2].b,a[3].a,a[3].b,a[4].a,a[4].b,a[5].a,a[5].b];else if("SHA-512"===d)b=[a[0].a,a[0].b,a[1].a,a[1].b,a[2].a,a[2].b,a[3].a,a[3].b,a[4].a,
+a[4].b,a[5].a,a[5].b,a[6].a,a[6].b,a[7].a,a[7].b];else throw Error("Unexpected error in SHA-2 implementation");return b},r=function(b){return b.slice()},"SHA-224"===d)n=512,f=224;else if("SHA-256"===d)n=512,f=256;else if("SHA-384"===d)n=1024,f=384;else if("SHA-512"===d)n=1024,f=512;else throw Error("Chosen SHA variant is not supported");else if(0===d.lastIndexOf("SHA3-",0)||0===d.lastIndexOf("SHAKE",0)){var F=6;q=D;r=function(b){var d=[],a;for(a=0;5>a;a+=1)d[a]=b[a].slice();return d};w=1;if("SHA3-224"===
+d)n=1152,f=224;else if("SHA3-256"===d)n=1088,f=256;else if("SHA3-384"===d)n=832,f=384;else if("SHA3-512"===d)n=576,f=512;else if("SHAKE128"===d)n=1344,f=-1,F=31,z=!0;else if("SHAKE256"===d)n=1088,f=-1,F=31,z=!0;else throw Error("Chosen SHA variant is not supported");u=function(b,d,a,h,k){a=n;var e=F,f,g=[],m=a>>>5,l=0,c=d>>>5;for(f=0;f<c&&d>=a;f+=m)h=D(b.slice(f,f+m),h),d-=a;b=b.slice(f);for(d%=a;b.length<m;)b.push(0);f=d>>>3;b[f>>2]^=e<<f%4*8;b[m-1]^=2147483648;for(h=D(b,h);32*g.length<k;){b=h[l%
+5][l/5|0];g.push(b.b);if(32*g.length>=k)break;g.push(b.a);l+=1;0===64*l%a&&(D(null,h),l=0)}return g}}else throw Error("Chosen SHA variant is not supported");c=M(b,g,w);l=A(d);this.setHMACKey=function(b,a,k){var e;if(!0===I)throw Error("HMAC key already set");if(!0===y)throw Error("Cannot set HMAC key after calling update");if(!0===z)throw Error("SHAKE is not supported for HMAC");g=(k||{}).encoding||"UTF8";a=M(a,g,w)(b);b=a.binLen;a=a.value;e=n>>>3;k=e/4-1;for(e<b/8&&(a=u(a,b,0,A(d),f));a.length<=
+k;)a.push(0);for(b=0;b<=k;b+=1)v[b]=a[b]^909522486,x[b]=a[b]^1549556828;l=q(v,l);h=n;I=!0};this.update=function(b){var d,a,e,f=0,g=n>>>5;d=c(b,k,m);b=d.binLen;a=d.value;d=b>>>5;for(e=0;e<d;e+=g)f+n<=b&&(l=q(a.slice(e,e+g),l),f+=n);h+=f;k=a.slice(f>>>5);m=b%n;y=!0};this.getHash=function(b,a){var e,g,c,n;if(!0===I)throw Error("Cannot call getHash after setting HMAC key");c=N(a);if(!0===z){if(-1===c.shakeLen)throw Error("shakeLen must be specified in options");f=c.shakeLen}switch(b){case "HEX":e=function(b){return O(b,
+f,w,c)};break;case "B64":e=function(b){return P(b,f,w,c)};break;case "BYTES":e=function(b){return Q(b,f,w)};break;case "ARRAYBUFFER":try{g=new ArrayBuffer(0)}catch(p){throw Error("ARRAYBUFFER not supported by this environment");}e=function(b){return R(b,f,w)};break;case "UINT8ARRAY":try{g=new Uint8Array(0)}catch(p){throw Error("UINT8ARRAY not supported by this environment");}e=function(b){return S(b,f,w)};break;default:throw Error("format must be HEX, B64, BYTES, ARRAYBUFFER, or UINT8ARRAY");}n=u(k.slice(),
+m,h,r(l),f);for(g=1;g<t;g+=1)!0===z&&0!==f%32&&(n[n.length-1]&=16777215>>>24-f%32),n=u(n,f,0,A(d),f);return e(n)};this.getHMAC=function(b,a){var e,g,c,p;if(!1===I)throw Error("Cannot call getHMAC without first setting HMAC key");c=N(a);switch(b){case "HEX":e=function(b){return O(b,f,w,c)};break;case "B64":e=function(b){return P(b,f,w,c)};break;case "BYTES":e=function(b){return Q(b,f,w)};break;case "ARRAYBUFFER":try{e=new ArrayBuffer(0)}catch(v){throw Error("ARRAYBUFFER not supported by this environment");
+}e=function(b){return R(b,f,w)};break;case "UINT8ARRAY":try{e=new Uint8Array(0)}catch(v){throw Error("UINT8ARRAY not supported by this environment");}e=function(b){return S(b,f,w)};break;default:throw Error("outputFormat must be HEX, B64, BYTES, ARRAYBUFFER, or UINT8ARRAY");}g=u(k.slice(),m,h,r(l),f);p=q(x,A(d));p=u(g,f,n,p,f);return e(p)}}function a(d,b){this.a=d;this.b=b}function T(d,b,a,h){var k,m,g,l,c;b=b||[0];a=a||0;m=a>>>3;c=-1===h?3:0;for(k=0;k<d.length;k+=1)l=k+m,g=l>>>2,b.length<=g&&b.push(0),
+b[g]|=d[k]<<8*(c+l%4*h);return{value:b,binLen:8*d.length+a}}function O(a,b,e,h){var k="";b/=8;var m,g,c;c=-1===e?3:0;for(m=0;m<b;m+=1)g=a[m>>>2]>>>8*(c+m%4*e),k+="0123456789abcdef".charAt(g>>>4&15)+"0123456789abcdef".charAt(g&15);return h.outputUpper?k.toUpperCase():k}function P(a,b,e,h){var k="",m=b/8,g,c,p,f;f=-1===e?3:0;for(g=0;g<m;g+=3)for(c=g+1<m?a[g+1>>>2]:0,p=g+2<m?a[g+2>>>2]:0,p=(a[g>>>2]>>>8*(f+g%4*e)&255)<<16|(c>>>8*(f+(g+1)%4*e)&255)<<8|p>>>8*(f+(g+2)%4*e)&255,c=0;4>c;c+=1)8*g+6*c<=b?k+=
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".charAt(p>>>6*(3-c)&63):k+=h.b64Pad;return k}function Q(a,b,e){var h="";b/=8;var k,c,g;g=-1===e?3:0;for(k=0;k<b;k+=1)c=a[k>>>2]>>>8*(g+k%4*e)&255,h+=String.fromCharCode(c);return h}function R(a,b,e){b/=8;var h,k=new ArrayBuffer(b),c,g;g=new Uint8Array(k);c=-1===e?3:0;for(h=0;h<b;h+=1)g[h]=a[h>>>2]>>>8*(c+h%4*e)&255;return k}function S(a,b,e){b/=8;var h,k=new Uint8Array(b),c;c=-1===e?3:0;for(h=0;h<b;h+=1)k[h]=a[h>>>2]>>>8*(c+h%4*e)&
+255;return k}function N(a){var b={outputUpper:!1,b64Pad:"=",shakeLen:-1};a=a||{};b.outputUpper=a.outputUpper||!1;!0===a.hasOwnProperty("b64Pad")&&(b.b64Pad=a.b64Pad);if(!0===a.hasOwnProperty("shakeLen")){if(0!==a.shakeLen%8)throw Error("shakeLen must be a multiple of 8");b.shakeLen=a.shakeLen}if("boolean"!==typeof b.outputUpper)throw Error("Invalid outputUpper formatting option");if("string"!==typeof b.b64Pad)throw Error("Invalid b64Pad formatting option");return b}function M(a,b,e){switch(b){case "UTF8":case "UTF16BE":case "UTF16LE":break;
+default:throw Error("encoding must be UTF8, UTF16BE, or UTF16LE");}switch(a){case "HEX":a=function(b,a,d){var g=b.length,c,p,f,n,q,u;if(0!==g%2)throw Error("String of HEX type must be in byte increments");a=a||[0];d=d||0;q=d>>>3;u=-1===e?3:0;for(c=0;c<g;c+=2){p=parseInt(b.substr(c,2),16);if(isNaN(p))throw Error("String of HEX type contains invalid characters");n=(c>>>1)+q;for(f=n>>>2;a.length<=f;)a.push(0);a[f]|=p<<8*(u+n%4*e)}return{value:a,binLen:4*g+d}};break;case "TEXT":a=function(a,d,c){var g,
+l,p=0,f,n,q,u,r,t;d=d||[0];c=c||0;q=c>>>3;if("UTF8"===b)for(t=-1===e?3:0,f=0;f<a.length;f+=1)for(g=a.charCodeAt(f),l=[],128>g?l.push(g):2048>g?(l.push(192|g>>>6),l.push(128|g&63)):55296>g||57344<=g?l.push(224|g>>>12,128|g>>>6&63,128|g&63):(f+=1,g=65536+((g&1023)<<10|a.charCodeAt(f)&1023),l.push(240|g>>>18,128|g>>>12&63,128|g>>>6&63,128|g&63)),n=0;n<l.length;n+=1){r=p+q;for(u=r>>>2;d.length<=u;)d.push(0);d[u]|=l[n]<<8*(t+r%4*e);p+=1}else if("UTF16BE"===b||"UTF16LE"===b)for(t=-1===e?2:0,l="UTF16LE"===
+b&&1!==e||"UTF16LE"!==b&&1===e,f=0;f<a.length;f+=1){g=a.charCodeAt(f);!0===l&&(n=g&255,g=n<<8|g>>>8);r=p+q;for(u=r>>>2;d.length<=u;)d.push(0);d[u]|=g<<8*(t+r%4*e);p+=2}return{value:d,binLen:8*p+c}};break;case "B64":a=function(b,a,d){var c=0,l,p,f,n,q,u,r,t;if(-1===b.search(/^[a-zA-Z0-9=+\/]+$/))throw Error("Invalid character in base-64 string");p=b.indexOf("=");b=b.replace(/\=/g,"");if(-1!==p&&p<b.length)throw Error("Invalid '=' found in base-64 string");a=a||[0];d=d||0;u=d>>>3;t=-1===e?3:0;for(p=
+0;p<b.length;p+=4){q=b.substr(p,4);for(f=n=0;f<q.length;f+=1)l="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".indexOf(q.charAt(f)),n|=l<<18-6*f;for(f=0;f<q.length-1;f+=1){r=c+u;for(l=r>>>2;a.length<=l;)a.push(0);a[l]|=(n>>>16-8*f&255)<<8*(t+r%4*e);c+=1}}return{value:a,binLen:8*c+d}};break;case "BYTES":a=function(b,a,d){var c,l,p,f,n,q;a=a||[0];d=d||0;p=d>>>3;q=-1===e?3:0;for(l=0;l<b.length;l+=1)c=b.charCodeAt(l),n=l+p,f=n>>>2,a.length<=f&&a.push(0),a[f]|=c<<8*(q+n%4*e);return{value:a,
+binLen:8*b.length+d}};break;case "ARRAYBUFFER":try{a=new ArrayBuffer(0)}catch(h){throw Error("ARRAYBUFFER not supported by this environment");}a=function(b,a,d){return T(new Uint8Array(b),a,d,e)};break;case "UINT8ARRAY":try{a=new Uint8Array(0)}catch(h){throw Error("UINT8ARRAY not supported by this environment");}a=function(b,a,d){return T(b,a,d,e)};break;default:throw Error("format must be HEX, TEXT, B64, BYTES, ARRAYBUFFER, or UINT8ARRAY");}return a}function y(a,b){return a<<b|a>>>32-b}function U(d,
+b){return 32<b?(b-=32,new a(d.b<<b|d.a>>>32-b,d.a<<b|d.b>>>32-b)):0!==b?new a(d.a<<b|d.b>>>32-b,d.b<<b|d.a>>>32-b):d}function x(a,b){return a>>>b|a<<32-b}function t(d,b){var e=null,e=new a(d.a,d.b);return e=32>=b?new a(e.a>>>b|e.b<<32-b&4294967295,e.b>>>b|e.a<<32-b&4294967295):new a(e.b>>>b-32|e.a<<64-b&4294967295,e.a>>>b-32|e.b<<64-b&4294967295)}function V(d,b){var e=null;return e=32>=b?new a(d.a>>>b,d.b>>>b|d.a<<32-b&4294967295):new a(0,d.a>>>b-32)}function ca(a,b,e){return a&b^~a&e}function da(d,
+b,e){return new a(d.a&b.a^~d.a&e.a,d.b&b.b^~d.b&e.b)}function W(a,b,e){return a&b^a&e^b&e}function ea(d,b,e){return new a(d.a&b.a^d.a&e.a^b.a&e.a,d.b&b.b^d.b&e.b^b.b&e.b)}function fa(a){return x(a,2)^x(a,13)^x(a,22)}function ga(d){var b=t(d,28),e=t(d,34);d=t(d,39);return new a(b.a^e.a^d.a,b.b^e.b^d.b)}function ha(a){return x(a,6)^x(a,11)^x(a,25)}function ia(d){var b=t(d,14),e=t(d,18);d=t(d,41);return new a(b.a^e.a^d.a,b.b^e.b^d.b)}function ja(a){return x(a,7)^x(a,18)^a>>>3}function ka(d){var b=t(d,
+1),e=t(d,8);d=V(d,7);return new a(b.a^e.a^d.a,b.b^e.b^d.b)}function la(a){return x(a,17)^x(a,19)^a>>>10}function ma(d){var b=t(d,19),e=t(d,61);d=V(d,6);return new a(b.a^e.a^d.a,b.b^e.b^d.b)}function G(a,b){var e=(a&65535)+(b&65535);return((a>>>16)+(b>>>16)+(e>>>16)&65535)<<16|e&65535}function na(a,b,e,h){var c=(a&65535)+(b&65535)+(e&65535)+(h&65535);return((a>>>16)+(b>>>16)+(e>>>16)+(h>>>16)+(c>>>16)&65535)<<16|c&65535}function H(a,b,e,h,c){var m=(a&65535)+(b&65535)+(e&65535)+(h&65535)+(c&65535);
+return((a>>>16)+(b>>>16)+(e>>>16)+(h>>>16)+(c>>>16)+(m>>>16)&65535)<<16|m&65535}function oa(d,b){var e,h,c;e=(d.b&65535)+(b.b&65535);h=(d.b>>>16)+(b.b>>>16)+(e>>>16);c=(h&65535)<<16|e&65535;e=(d.a&65535)+(b.a&65535)+(h>>>16);h=(d.a>>>16)+(b.a>>>16)+(e>>>16);return new a((h&65535)<<16|e&65535,c)}function pa(d,b,e,h){var c,m,g;c=(d.b&65535)+(b.b&65535)+(e.b&65535)+(h.b&65535);m=(d.b>>>16)+(b.b>>>16)+(e.b>>>16)+(h.b>>>16)+(c>>>16);g=(m&65535)<<16|c&65535;c=(d.a&65535)+(b.a&65535)+(e.a&65535)+(h.a&65535)+
+(m>>>16);m=(d.a>>>16)+(b.a>>>16)+(e.a>>>16)+(h.a>>>16)+(c>>>16);return new a((m&65535)<<16|c&65535,g)}function qa(d,b,e,h,c){var m,g,l;m=(d.b&65535)+(b.b&65535)+(e.b&65535)+(h.b&65535)+(c.b&65535);g=(d.b>>>16)+(b.b>>>16)+(e.b>>>16)+(h.b>>>16)+(c.b>>>16)+(m>>>16);l=(g&65535)<<16|m&65535;m=(d.a&65535)+(b.a&65535)+(e.a&65535)+(h.a&65535)+(c.a&65535)+(g>>>16);g=(d.a>>>16)+(b.a>>>16)+(e.a>>>16)+(h.a>>>16)+(c.a>>>16)+(m>>>16);return new a((g&65535)<<16|m&65535,l)}function B(d,b){return new a(d.a^b.a,d.b^
+b.b)}function A(d){var b=[],e;if("SHA-1"===d)b=[1732584193,4023233417,2562383102,271733878,3285377520];else if(0===d.lastIndexOf("SHA-",0))switch(b=[3238371032,914150663,812702999,4144912697,4290775857,1750603025,1694076839,3204075428],e=[1779033703,3144134277,1013904242,2773480762,1359893119,2600822924,528734635,1541459225],d){case "SHA-224":break;case "SHA-256":b=e;break;case "SHA-384":b=[new a(3418070365,b[0]),new a(1654270250,b[1]),new a(2438529370,b[2]),new a(355462360,b[3]),new a(1731405415,
+b[4]),new a(41048885895,b[5]),new a(3675008525,b[6]),new a(1203062813,b[7])];break;case "SHA-512":b=[new a(e[0],4089235720),new a(e[1],2227873595),new a(e[2],4271175723),new a(e[3],1595750129),new a(e[4],2917565137),new a(e[5],725511199),new a(e[6],4215389547),new a(e[7],327033209)];break;default:throw Error("Unknown SHA variant");}else if(0===d.lastIndexOf("SHA3-",0)||0===d.lastIndexOf("SHAKE",0))for(d=0;5>d;d+=1)b[d]=[new a(0,0),new a(0,0),new a(0,0),new a(0,0),new a(0,0)];else throw Error("No SHA variants supported");
+return b}function K(a,b){var e=[],h,c,m,g,l,p,f;h=b[0];c=b[1];m=b[2];g=b[3];l=b[4];for(f=0;80>f;f+=1)e[f]=16>f?a[f]:y(e[f-3]^e[f-8]^e[f-14]^e[f-16],1),p=20>f?H(y(h,5),c&m^~c&g,l,1518500249,e[f]):40>f?H(y(h,5),c^m^g,l,1859775393,e[f]):60>f?H(y(h,5),W(c,m,g),l,2400959708,e[f]):H(y(h,5),c^m^g,l,3395469782,e[f]),l=g,g=m,m=y(c,30),c=h,h=p;b[0]=G(h,b[0]);b[1]=G(c,b[1]);b[2]=G(m,b[2]);b[3]=G(g,b[3]);b[4]=G(l,b[4]);return b}function ba(a,b,e,c){var k;for(k=(b+65>>>9<<4)+15;a.length<=k;)a.push(0);a[b>>>5]|=
+128<<24-b%32;b+=e;a[k]=b&4294967295;a[k-1]=b/4294967296|0;b=a.length;for(k=0;k<b;k+=16)c=K(a.slice(k,k+16),c);return c}function L(d,b,e){var h,k,m,g,l,p,f,n,q,u,r,t,v,x,y,A,z,w,F,B,C,D,E=[],J;if("SHA-224"===e||"SHA-256"===e)u=64,t=1,D=Number,v=G,x=na,y=H,A=ja,z=la,w=fa,F=ha,C=W,B=ca,J=c;else if("SHA-384"===e||"SHA-512"===e)u=80,t=2,D=a,v=oa,x=pa,y=qa,A=ka,z=ma,w=ga,F=ia,C=ea,B=da,J=X;else throw Error("Unexpected error in SHA-2 implementation");e=b[0];h=b[1];k=b[2];m=b[3];g=b[4];l=b[5];p=b[6];f=b[7];
+for(r=0;r<u;r+=1)16>r?(q=r*t,n=d.length<=q?0:d[q],q=d.length<=q+1?0:d[q+1],E[r]=new D(n,q)):E[r]=x(z(E[r-2]),E[r-7],A(E[r-15]),E[r-16]),n=y(f,F(g),B(g,l,p),J[r],E[r]),q=v(w(e),C(e,h,k)),f=p,p=l,l=g,g=v(m,n),m=k,k=h,h=e,e=v(n,q);b[0]=v(e,b[0]);b[1]=v(h,b[1]);b[2]=v(k,b[2]);b[3]=v(m,b[3]);b[4]=v(g,b[4]);b[5]=v(l,b[5]);b[6]=v(p,b[6]);b[7]=v(f,b[7]);return b}function D(d,b){var e,c,k,m,g=[],l=[];if(null!==d)for(c=0;c<d.length;c+=2)b[(c>>>1)%5][(c>>>1)/5|0]=B(b[(c>>>1)%5][(c>>>1)/5|0],new a(d[c+1],d[c]));
+for(e=0;24>e;e+=1){m=A("SHA3-");for(c=0;5>c;c+=1){k=b[c][0];var p=b[c][1],f=b[c][2],n=b[c][3],q=b[c][4];g[c]=new a(k.a^p.a^f.a^n.a^q.a,k.b^p.b^f.b^n.b^q.b)}for(c=0;5>c;c+=1)l[c]=B(g[(c+4)%5],U(g[(c+1)%5],1));for(c=0;5>c;c+=1)for(k=0;5>k;k+=1)b[c][k]=B(b[c][k],l[c]);for(c=0;5>c;c+=1)for(k=0;5>k;k+=1)m[k][(2*c+3*k)%5]=U(b[c][k],Y[c][k]);for(c=0;5>c;c+=1)for(k=0;5>k;k+=1)b[c][k]=B(m[c][k],new a(~m[(c+1)%5][k].a&m[(c+2)%5][k].a,~m[(c+1)%5][k].b&m[(c+2)%5][k].b));b[0][0]=B(b[0][0],Z[e])}return b}var c,
+X,Y,Z;c=[1116352408,1899447441,3049323471,3921009573,961987163,1508970993,2453635748,2870763221,3624381080,310598401,607225278,1426881987,1925078388,2162078206,2614888103,3248222580,3835390401,4022224774,264347078,604807628,770255983,1249150122,1555081692,1996064986,2554220882,2821834349,2952996808,3210313671,3336571891,3584528711,113926993,338241895,666307205,773529912,1294757372,1396182291,1695183700,1986661051,2177026350,2456956037,2730485921,2820302411,3259730800,3345764771,3516065817,3600352804,
+4094571909,275423344,430227734,506948616,659060556,883997877,958139571,1322822218,1537002063,1747873779,1955562222,2024104815,2227730452,2361852424,2428436474,2756734187,3204031479,3329325298];X=[new a(c[0],3609767458),new a(c[1],602891725),new a(c[2],3964484399),new a(c[3],2173295548),new a(c[4],4081628472),new a(c[5],3053834265),new a(c[6],2937671579),new a(c[7],3664609560),new a(c[8],2734883394),new a(c[9],1164996542),new a(c[10],1323610764),new a(c[11],3590304994),new a(c[12],4068182383),new a(c[13],
+991336113),new a(c[14],633803317),new a(c[15],3479774868),new a(c[16],2666613458),new a(c[17],944711139),new a(c[18],2341262773),new a(c[19],2007800933),new a(c[20],1495990901),new a(c[21],1856431235),new a(c[22],3175218132),new a(c[23],2198950837),new a(c[24],3999719339),new a(c[25],766784016),new a(c[26],2566594879),new a(c[27],3203337956),new a(c[28],1034457026),new a(c[29],2466948901),new a(c[30],3758326383),new a(c[31],168717936),new a(c[32],1188179964),new a(c[33],1546045734),new a(c[34],1522805485),
+new a(c[35],2643833823),new a(c[36],2343527390),new a(c[37],1014477480),new a(c[38],1206759142),new a(c[39],344077627),new a(c[40],1290863460),new a(c[41],3158454273),new a(c[42],3505952657),new a(c[43],106217008),new a(c[44],3606008344),new a(c[45],1432725776),new a(c[46],1467031594),new a(c[47],851169720),new a(c[48],3100823752),new a(c[49],1363258195),new a(c[50],3750685593),new a(c[51],3785050280),new a(c[52],3318307427),new a(c[53],3812723403),new a(c[54],2003034995),new a(c[55],3602036899),
+new a(c[56],1575990012),new a(c[57],1125592928),new a(c[58],2716904306),new a(c[59],442776044),new a(c[60],593698344),new a(c[61],3733110249),new a(c[62],2999351573),new a(c[63],3815920427),new a(3391569614,3928383900),new a(3515267271,566280711),new a(3940187606,3454069534),new a(4118630271,4000239992),new a(116418474,1914138554),new a(174292421,2731055270),new a(289380356,3203993006),new a(460393269,320620315),new a(685471733,587496836),new a(852142971,1086792851),new a(1017036298,365543100),new a(1126000580,
+2618297676),new a(1288033470,3409855158),new a(1501505948,4234509866),new a(1607167915,987167468),new a(1816402316,1246189591)];Z=[new a(0,1),new a(0,32898),new a(2147483648,32906),new a(2147483648,2147516416),new a(0,32907),new a(0,2147483649),new a(2147483648,2147516545),new a(2147483648,32777),new a(0,138),new a(0,136),new a(0,2147516425),new a(0,2147483658),new a(0,2147516555),new a(2147483648,139),new a(2147483648,32905),new a(2147483648,32771),new a(2147483648,32770),new a(2147483648,128),new a(0,
+32778),new a(2147483648,2147483658),new a(2147483648,2147516545),new a(2147483648,32896),new a(0,2147483649),new a(2147483648,2147516424)];Y=[[0,36,3,41,18],[1,44,10,45,2],[62,6,43,15,61],[28,55,25,21,56],[27,20,39,8,14]];"function"===typeof define&&define.amd?define(function(){return C}):"undefined"!==typeof exports?("undefined"!==typeof module&&module.exports&&(module.exports=C),exports=C):aa.jsSHA=C})(this);
 
 },{}],33:[function(require,module,exports){
-(function (global){
+(function (global){(function (){
 /**
  * Lodash (Custom Build) <https://lodash.com/>
  * Build: `lodash modularize exports="npm" -o ./`
@@ -7088,7 +7111,7 @@ function stubFalse() {
 
 module.exports = isEqual;
 
-}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],34:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
@@ -7385,8 +7408,10 @@ function isValidAddressShelley(address, currency, opts) {
     let correctBech32Hrps;
     if (networkType === 'prod' || networkType === 'testnet') {
         correctBech32Hrps = currency.bech32Hrp[networkType];
-    } else {
+    } else if (currency.bech32Hrp) {
         correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+    } else {
+        return false;
     }
 
     if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
@@ -7453,7 +7478,7 @@ module.exports = {
 }
 
 },{"./bitcoin_validator":38,"./crypto/bech32":41,"./crypto/utils":48}],38:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
 var cryptoUtils = require('./crypto/utils');
@@ -7525,8 +7550,10 @@ function isValidP2PKHandP2SHAddress(address, currency, opts) {
     if (addressType) {
         if (networkType === 'prod' || networkType === 'testnet') {
             correctAddressTypes = currency.addressTypes[networkType]
-        } else {
+        } else if (currency.addressTypes) {
             correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+        } else {
+            return false;
         }
 
         return correctAddressTypes.indexOf(addressType) >= 0;
@@ -7541,7 +7568,7 @@ module.exports = {
     }
 };
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"./crypto/base58":40,"./crypto/segwit_addr":46,"./crypto/utils":48,"buffer":4}],39:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
@@ -9228,7 +9255,7 @@ function decode (bechString) {
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
 },{}],43:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 'use strict';
 
 /**
@@ -9260,7 +9287,7 @@ Blake256.u256 = [
     0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917
 ]
 
-Blake256.padding = new Buffer([
+Blake256.padding = Buffer.from([
     0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -9280,7 +9307,7 @@ Blake256.prototype._length_carry = function (arr) {
 }
 
 Blake256.prototype.update = function (data, encoding) {
-    data = new Buffer(data, encoding);
+    data = Buffer.from(data, encoding);
     var block = this._block
     var offset = 0
 
@@ -9298,8 +9325,8 @@ Blake256.prototype.update = function (data, encoding) {
     return this;
 }
 
-var zo = new Buffer([0x01])
-var oo = new Buffer([0x81])
+var zo = Buffer.from([0x01])
+var oo = Buffer.from([0x81])
 
 function rot (x, n) {
     return ((x << (32 - n)) | (x >>> n)) >>> 0
@@ -9327,7 +9354,7 @@ function Blake256 () {
 
     this._s = [0, 0, 0, 0]
 
-    this._block = new Buffer(64)
+    this._block = Buffer.allocUnsafe(64)
     this._blockOffset = 0
     this._length = [0, 0]
 
@@ -9380,7 +9407,7 @@ Blake256.prototype._padding = function () {
         hi += 1
     }
 
-    var msglen = new Buffer(8)
+    var msglen = Buffer.allocUnsafe(8)
     msglen.writeUInt32BE(hi, 0)
     msglen.writeUInt32BE(lo, 4)
 
@@ -9411,13 +9438,14 @@ Blake256.prototype._padding = function () {
 Blake256.prototype.digest = function (encoding) {
     this._padding()
 
-    var buffer = new Buffer(32)
+    var buffer = Buffer.allocUnsafe(32)
     for (var i = 0; i < 8; ++i) buffer.writeUInt32BE(this._h[i], i * 4)
     return buffer.toString(encoding);
 }
 
 module.exports = Blake256;
-}).call(this,require("buffer").Buffer)
+
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"buffer":4}],44:[function(require,module,exports){
 'use strict';
 
@@ -10013,8 +10041,10 @@ function isValidAddress(address, currency, opts) {
     if (bech32Hrp) {
       if (networkType === 'prod' || networkType === 'testnet') {
         correctBech32Hrps = currency.bech32Hrp[networkType];
-      } else {
+      } else if(currency.bech32Hrp) {
         correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+      } else {
+          return false;
       }
 
       if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
@@ -10033,7 +10063,7 @@ module.exports = {
 };
 
 },{"./bech32":41}],47:[function(require,module,exports){
-(function (process,global){
+(function (process,global){(function (){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
  *
@@ -10675,10 +10705,10 @@ var f = function (s) {
 
 module.exports = methods;
 
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+}).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":34}],48:[function(require,module,exports){
-(function (Buffer){
-var jsSHA = require('jssha/dist/sha256');
+(function (Buffer){(function (){
+var jsSHA = require('jssha');
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
@@ -10804,8 +10834,8 @@ module.exports = {
     base32: base32
 }
 
-}).call(this,require("buffer").Buffer)
-},{"./base32":39,"./base58":40,"./blake256":43,"./blake2b":44,"./sha3":47,"browserify-bignum":3,"buffer":4,"jssha/dist/sha256":32}],49:[function(require,module,exports){
+}).call(this)}).call(this,require("buffer").Buffer)
+},{"./base32":39,"./base58":40,"./blake256":43,"./blake2b":44,"./sha3":47,"browserify-bignum":3,"buffer":4,"jssha":32}],49:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -10997,7 +11027,7 @@ var CURRENCIES = [{
         name: 'DigiByte',
         symbol: 'dgb',
         addressTypes: { prod: ['1e', '3f'], testnet: [] },
-        bech32Hrp: { prod: ['dgb'], testnet: [] },
+        bech32Hrp: { prod: ['dgb', 'S'], testnet: [] },
         validator: BTCValidator
     }, {
         name: 'Tether',
@@ -11092,10 +11122,14 @@ var CURRENCIES = [{
         symbol: 'gno',
         validator: ETHValidator
     }, {
-        name: 'Golem',
+        name: 'Golem (GNT)',
         symbol: 'gnt',
         validator: ETHValidator
     }, {
+        name: 'Golem',
+        symbol: 'glm',
+        validator: ETHValidator
+    },  {
         name: 'Matchpool',
         symbol: 'gup',
         validator: ETHValidator
@@ -11300,6 +11334,56 @@ var CURRENCIES = [{
         name: 'StormX',
         symbol: 'stmx',
         validator: ETHValidator
+    },
+    {
+        name: 'AugurV2',
+        symbol: 'repv2',
+        validator: ETHValidator
+    },
+    {
+        name: 'FirmaChain',
+        symbol: 'fct',
+        validator: ETHValidator
+    },
+    {
+        name: 'BlockTrade',
+        symbol: 'btt',
+        validator: ETHValidator
+    },
+    {
+        name: 'Quantum Resistant Ledger',
+        symbol: 'qrl',
+        validator: ETHValidator
+    },
+    {
+        name: 'Serve',
+        symbol: 'serv',
+        validator: ETHValidator
+    },
+    {
+        name: 'Tap',
+        symbol: 'xtp',
+        validator: ETHValidator
+    },
+    {
+        name: 'Compound',
+        symbol: 'comp',
+        validator: ETHValidator
+    },
+    {
+        name: 'Paxos',
+        symbol: 'pax',
+        validator: ETHValidator
+    },
+    {
+        name: 'USD Coin',
+        symbol: 'usdc',
+        validator: ETHValidator
+    },
+    {
+        name: 'CUSD',
+        symbol: 'cusd',
+        validator: ETHValidator
     }
     ];
 
@@ -11316,16 +11400,16 @@ var CURRENCIES = [{
     }
 };
 
-//spit out details for readme.md
+////spit out details for readme.md
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
-//spit out keywords for package.json
+////spit out keywords for package.json
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
-
+//
 
 
 },{"./ada_validator":36,"./bch_validator":37,"./bitcoin_validator":38,"./eos_validator":50,"./ethereum_validator":51,"./lisk_validator":52,"./monero_validator":53,"./nano_validator":54,"./nem_validator":55,"./ripple_validator":56,"./siacoin_validator":57,"./stellar_validator":58,"./tezos_validator":59,"./tron_validator":60,"./usdt_validator":61}],50:[function(require,module,exports){
@@ -11381,7 +11465,7 @@ module.exports = {
 };
 
 },{"./crypto/utils":48}],52:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
 var regexp = new RegExp('^[0-9]{1,20}L$');
@@ -11401,7 +11485,7 @@ module.exports = {
         return Buffer.from(addressBuffer).slice(0, BUFFER_SIZE).equals(addressBuffer);
     }
 };
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"./crypto/utils":48,"buffer":4}],53:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
@@ -11498,7 +11582,7 @@ module.exports = {
 };
 
 },{"./crypto/utils":48,"base-x":1}],55:[function(require,module,exports){
-(function (Buffer){
+(function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
  /**
@@ -11523,7 +11607,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 }
 
-}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,require("buffer").Buffer)
 },{"./crypto/utils":48,"buffer":4}],56:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');

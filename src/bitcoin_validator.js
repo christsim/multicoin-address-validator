@@ -69,8 +69,10 @@ function isValidP2PKHandP2SHAddress(address, currency, opts) {
     if (addressType) {
         if (networkType === 'prod' || networkType === 'testnet') {
             correctAddressTypes = currency.addressTypes[networkType]
-        } else {
+        } else if (currency.addressTypes) {
             correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+        } else {
+            return false;
         }
 
         return correctAddressTypes.indexOf(addressType) >= 0;

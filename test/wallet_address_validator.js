@@ -436,6 +436,11 @@ describe('WAValidator.validate()', function () {
             valid('8YW5qcTjeyqX5kESsqu2BUdXiedgssegtQ', 'SolarCoin');
         });
 
+        it('should return true for correct tap addresses', function () {
+            valid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'xtp');
+            valid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tap');
+        });
+
         it('should return true for correct tether addresses', function () {
             valid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt');
             valid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6J', 'tether');
