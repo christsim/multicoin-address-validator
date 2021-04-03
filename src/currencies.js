@@ -550,6 +550,11 @@ var CURRENCIES = [{
         validator: ETHValidator
     },
     {
+        name: 'TheGraph',
+        symbol: 'grt',
+        validator: ETHValidator
+    },
+    {
         name: 'Algorand',
         symbol: 'algo',
         validator: AlgoValidator
