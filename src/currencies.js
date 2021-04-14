@@ -15,6 +15,7 @@ var XTZValidator = require('./tezos_validator');
 var USDTValidator = require('./usdt_validator');
 var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
+var FilValidator = require('./fil_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -558,6 +559,11 @@ var CURRENCIES = [{
         name: 'Polkadot',
         symbol: 'dot',
         validator: DotValidator
+    },
+    {
+        name: 'Filecoin',
+        symbol: 'fil',
+        validator: FilValidator
     }
 ];
 
@@ -584,4 +590,3 @@ var CURRENCIES = [{
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
 //
-
