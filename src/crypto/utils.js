@@ -7,12 +7,12 @@ var base58 = require('./base58');
 var base32 = require('./base32');
 var BigNum = require('browserify-bignum');
 
-function numberToHex(number) {
-    var hex = Math.round(number).toString(16)
-    if (hex.length === 1) {
-        hex = '0' + hex
+function numberToHex(number, length) {
+    var hex = number.toString(16);
+    if (hex.length % 2 === 1) {
+        hex = '0' + hex;
     }
-    return hex
+    return hex.padStart(length, '0');
 }
 
 function isHexChar(c) {
@@ -80,6 +80,7 @@ function hexStr2byteArray(str) {
 }
 
 module.exports = {
+    numberToHex: numberToHex,
     toHex: function (arrayOfBytes) {
         var hex = '';
         for (var i = 0; i < arrayOfBytes.length; i++) {

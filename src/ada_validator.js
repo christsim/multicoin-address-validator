@@ -1,7 +1,7 @@
 var cbor = require('cbor-js');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
-var bech32 = require('./crypto/bech32');
+var BIP173Validator = require('./bip173_validator')
 
 function getDecoded(address) {
     try {
@@ -33,27 +33,8 @@ function isValidAddressV1(address) {
 }
 
 function isValidAddressShelley(address, currency, opts) {
-    const {networkType = 'prod'} = opts;
-    const decoded = bech32.decode(address);
-    if(!decoded) {
-        return false;
-    }
-
-    const bech32Hrp = decoded.hrp;
-    let correctBech32Hrps;
-    if (networkType === 'prod' || networkType === 'testnet') {
-        correctBech32Hrps = currency.bech32Hrp[networkType];
-    } else if (currency.bech32Hrp) {
-        correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
-    } else {
-        return false;
-    }
-
-    if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
-        return false;
-    }
-
-    return true;
+    // shelley address are just bip 173 - bech32 addresses (https://cips.cardano.org/cips/cip4/)
+    return BIP173Validator.isValidAddress(address, currency, opts);
 }
 
 module.exports = {

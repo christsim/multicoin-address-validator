@@ -8302,7 +8302,7 @@ SafeBuffer.allocUnsafeSlow = function (size) {
 var cbor = require('cbor-js');
 var CRC = require('crc');
 var base58 = require('./crypto/base58');
-var bech32 = require('./crypto/bech32');
+var BIP173Validator = require('./bip173_validator')
 
 function getDecoded(address) {
     try {
@@ -8334,27 +8334,8 @@ function isValidAddressV1(address) {
 }
 
 function isValidAddressShelley(address, currency, opts) {
-    const {networkType = 'prod'} = opts;
-    const decoded = bech32.decode(address);
-    if(!decoded) {
-        return false;
-    }
-
-    const bech32Hrp = decoded.hrp;
-    let correctBech32Hrps;
-    if (networkType === 'prod' || networkType === 'testnet') {
-        correctBech32Hrps = currency.bech32Hrp[networkType];
-    } else if (currency.bech32Hrp) {
-        correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
-    } else {
-        return false;
-    }
-
-    if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
-        return false;
-    }
-
-    return true;
+    // shelley address are just bip 173 - bech32 addresses (https://cips.cardano.org/cips/cip4/)
+    return BIP173Validator.isValidAddress(address, currency, opts);
 }
 
 module.exports = {
@@ -8363,7 +8344,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/base58":42,"./crypto/bech32":43,"cbor-js":5,"crc":30}],38:[function(require,module,exports){
+},{"./bip173_validator":40,"./crypto/base58":43,"cbor-js":5,"crc":30}],38:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 const ALGORAND_CHECKSUM_BYTE_LENGTH = 4;
@@ -8393,7 +8374,7 @@ module.exports = {
     }
 }
 
-},{"./crypto/utils":50}],39:[function(require,module,exports){
+},{"./crypto/utils":51}],39:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var bech32 = require('./crypto/bech32');
 var BTCValidator = require('./bitcoin_validator');
@@ -8428,7 +8409,7 @@ function validateAddress(address, currency, opts) {
     }
 
     try {
-        if (bech32.verifyChecksum(prefix, decoded)) {
+        if (bech32.verifyChecksum(prefix, decoded, bech32.encodings.BECH32)) {
             return false;
         }
     } catch(e) {
@@ -8443,7 +8424,37 @@ module.exports = {
     }
 }
 
-},{"./bitcoin_validator":40,"./crypto/bech32":43,"./crypto/utils":50}],40:[function(require,module,exports){
+},{"./bitcoin_validator":41,"./crypto/bech32":44,"./crypto/utils":51}],40:[function(require,module,exports){
+var bech32 = require('./crypto/bech32');
+
+// bip 173 bech 32 addresses (https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki)
+module.exports = {
+    isValidAddress: function (address, currency, opts = {}) {
+        const { networkType = 'prod' } = opts;
+        const decoded = bech32.decode(address, bech32.encodings.BECH32);
+        if (!decoded) {
+            return false;
+        }
+
+        const bech32Hrp = decoded.hrp;
+        let correctBech32Hrps;
+        if (networkType === 'prod' || networkType === 'testnet') {
+            correctBech32Hrps = currency.bech32Hrp[networkType];
+        } else if (currency.bech32Hrp) {
+            correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
+        } else {
+            return false;
+        }
+
+        if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
+            return false;
+        }
+
+        return true;
+    }
+};
+
+},{"./crypto/bech32":44}],41:[function(require,module,exports){
 (function (Buffer){(function (){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -8535,7 +8546,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/base58":42,"./crypto/segwit_addr":48,"./crypto/utils":50,"buffer":4}],41:[function(require,module,exports){
+},{"./crypto/base58":43,"./crypto/segwit_addr":49,"./crypto/utils":51,"buffer":4}],42:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
  /**
@@ -8602,7 +8613,7 @@ module.exports = {
     b32decode: b32decode,
     b32encode: b32encode
 };
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -8650,8 +8661,8 @@ module.exports = {
     }
 };
 
-},{}],43:[function(require,module,exports){
-// Copyright (c) 2017 Pieter Wuille
+},{}],44:[function(require,module,exports){
+// Copyright (c) 2017, 2021 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -8674,102 +8685,117 @@ module.exports = {
 var CHARSET = 'qpzry9x8gf2tvdw0s3jn54khce6mua7l';
 var GENERATOR = [0x3b6a57b2, 0x26508e6d, 0x1ea119fa, 0x3d4233dd, 0x2a1462b3];
 
-module.exports = {
-  decode: decode,
-  encode: encode,
-  verifyChecksum: verifyChecksum
+const encodings = {
+    BECH32: "bech32",
+    BECH32M: "bech32m",
 };
 
+module.exports = {
+    decode: decode,
+    encode: encode,
+    encodings: encodings,
+    verifyChecksum: verifyChecksum
+};
+
+function getEncodingConst (enc) {
+    if (enc == encodings.BECH32) {
+        return 1;
+    } else if (enc == encodings.BECH32M) {
+        return 0x2bc830a3;
+    } else {
+        return null;
+    }
+}
 
 function polymod (values) {
-  var chk = 1;
-  for (var p = 0; p < values.length; ++p) {
-    var top = chk >> 25;
-    chk = (chk & 0x1ffffff) << 5 ^ values[p];
-    for (var i = 0; i < 5; ++i) {
-      if ((top >> i) & 1) {
-        chk ^= GENERATOR[i];
-      }
+    var chk = 1;
+    for (var p = 0; p < values.length; ++p) {
+        var top = chk >> 25;
+        chk = (chk & 0x1ffffff) << 5 ^ values[p];
+        for (var i = 0; i < 5; ++i) {
+            if ((top >> i) & 1) {
+                chk ^= GENERATOR[i];
+            }
+        }
     }
-  }
-  return chk;
+    return chk;
 }
 
 function hrpExpand (hrp) {
-  var ret = [];
-  var p;
-  for (p = 0; p < hrp.length; ++p) {
-    ret.push(hrp.charCodeAt(p) >> 5);
-  }
-  ret.push(0);
-  for (p = 0; p < hrp.length; ++p) {
-    ret.push(hrp.charCodeAt(p) & 31);
-  }
-  return ret;
-}
-
-function verifyChecksum (hrp, data) {
-  return polymod(hrpExpand(hrp).concat(data)) === 1;
-}
-
-function createChecksum (hrp, data) {
-  var values = hrpExpand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
-  var mod = polymod(values) ^ 1;
-  var ret = [];
-  for (var p = 0; p < 6; ++p) {
-    ret.push((mod >> 5 * (5 - p)) & 31);
-  }
-  return ret;
-}
-
-function encode (hrp, data) {
-  var combined = data.concat(createChecksum(hrp, data));
-  var ret = hrp + '1';
-  for (var p = 0; p < combined.length; ++p) {
-    ret += CHARSET.charAt(combined[p]);
-  }
-  return ret;
-}
-
-function decode (bechString) {
-  var p;
-  var has_lower = false;
-  var has_upper = false;
-  for (p = 0; p < bechString.length; ++p) {
-    if (bechString.charCodeAt(p) < 33 || bechString.charCodeAt(p) > 126) {
-      return null;
+    var ret = [];
+    var p;
+    for (p = 0; p < hrp.length; ++p) {
+        ret.push(hrp.charCodeAt(p) >> 5);
     }
-    if (bechString.charCodeAt(p) >= 97 && bechString.charCodeAt(p) <= 122) {
-        has_lower = true;
+    ret.push(0);
+    for (p = 0; p < hrp.length; ++p) {
+        ret.push(hrp.charCodeAt(p) & 31);
     }
-    if (bechString.charCodeAt(p) >= 65 && bechString.charCodeAt(p) <= 90) {
-        has_upper = true;
-    }
-  }
-  if (has_lower && has_upper) {
-    return null;
-  }
-  bechString = bechString.toLowerCase();
-  var pos = bechString.lastIndexOf('1');
-  if (pos < 1 || pos + 7 > bechString.length || bechString.length > 110) {
-    return null;
-  }
-  var hrp = bechString.substring(0, pos);
-  var data = [];
-  for (p = pos + 1; p < bechString.length; ++p) {
-    var d = CHARSET.indexOf(bechString.charAt(p));
-    if (d === -1) {
-      return null;
-    }
-    data.push(d);
-  }
-  if (!verifyChecksum(hrp, data)) {
-    return null;
-  }
-  return {hrp: hrp, data: data.slice(0, data.length - 6)};
+    return ret;
 }
 
-},{}],44:[function(require,module,exports){
+function verifyChecksum (hrp, data, enc) {
+    return polymod(hrpExpand(hrp).concat(data)) === getEncodingConst(enc);
+}
+
+function createChecksum (hrp, data, enc) {
+    var values = hrpExpand(hrp).concat(data).concat([0, 0, 0, 0, 0, 0]);
+    var mod = polymod(values) ^ getEncodingConst(enc);
+    var ret = [];
+    for (var p = 0; p < 6; ++p) {
+        ret.push((mod >> 5 * (5 - p)) & 31);
+    }
+    return ret;
+}
+
+function encode (hrp, data, enc) {
+    var combined = data.concat(createChecksum(hrp, data, enc));
+    var ret = hrp + '1';
+    for (var p = 0; p < combined.length; ++p) {
+        ret += CHARSET.charAt(combined[p]);
+    }
+    return ret;
+}
+
+function decode (bechString, enc) {
+    var p;
+    var has_lower = false;
+    var has_upper = false;
+    for (p = 0; p < bechString.length; ++p) {
+        if (bechString.charCodeAt(p) < 33 || bechString.charCodeAt(p) > 126) {
+            return null;
+        }
+        if (bechString.charCodeAt(p) >= 97 && bechString.charCodeAt(p) <= 122) {
+            has_lower = true;
+        }
+        if (bechString.charCodeAt(p) >= 65 && bechString.charCodeAt(p) <= 90) {
+            has_upper = true;
+        }
+    }
+    if (has_lower && has_upper) {
+        return null;
+    }
+    bechString = bechString.toLowerCase();
+    var pos = bechString.lastIndexOf('1');
+    if (pos < 1 || pos + 7 > bechString.length || bechString.length > 110) {
+        return null;
+    }
+    var hrp = bechString.substring(0, pos);
+    var data = [];
+    for (p = pos + 1; p < bechString.length; ++p) {
+        var d = CHARSET.indexOf(bechString.charAt(p));
+        if (d === -1) {
+            return null;
+        }
+        data.push(d);
+    }
+    if (!verifyChecksum(hrp, data, enc)) {
+        return null;
+    }
+    return {hrp: hrp, data: data.slice(0, data.length - 6)};
+}
+
+},{}],45:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -10220,7 +10246,7 @@ function decode (bechString) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 (function (Buffer){(function (){
 'use strict';
 
@@ -10412,7 +10438,7 @@ Blake256.prototype.digest = function (encoding) {
 module.exports = Blake256;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":4}],46:[function(require,module,exports){
+},{"buffer":4}],47:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10690,7 +10716,7 @@ function toHex (n) {
 
 module.exports = Blake2b;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -10917,8 +10943,8 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":44}],48:[function(require,module,exports){
-// Copyright (c) 2017 Pieter Wuille
+},{"./biginteger":45}],49:[function(require,module,exports){
+// Copyright (c) 2017, 2021 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -10940,86 +10966,100 @@ module.exports = cnBase58;
 
 var bech32 = require('./bech32');
 
-var DEFAULT_NETWORK_TYPE = 'prod'
-
 function convertbits (data, frombits, tobits, pad) {
-  var acc = 0;
-  var bits = 0;
-  var ret = [];
-  var maxv = (1 << tobits) - 1;
-  for (var p = 0; p < data.length; ++p) {
-    var value = data[p];
-    if (value < 0 || (value >> frombits) !== 0) {
-      return null;
+    var acc = 0;
+    var bits = 0;
+    var ret = [];
+    var maxv = (1 << tobits) - 1;
+    for (var p = 0; p < data.length; ++p) {
+        var value = data[p];
+        if (value < 0 || (value >> frombits) !== 0) {
+            return null;
+        }
+        acc = (acc << frombits) | value;
+        bits += frombits;
+        while (bits >= tobits) {
+            bits -= tobits;
+            ret.push((acc >> bits) & maxv);
+        }
     }
-    acc = (acc << frombits) | value;
-    bits += frombits;
-    while (bits >= tobits) {
-      bits -= tobits;
-      ret.push((acc >> bits) & maxv);
+    if (pad) {
+        if (bits > 0) {
+            ret.push((acc << (tobits - bits)) & maxv);
+        }
+    } else if (bits >= frombits || ((acc << (tobits - bits)) & maxv)) {
+        return null;
     }
-  }
-  if (pad) {
-    if (bits > 0) {
-      ret.push((acc << (tobits - bits)) & maxv);
-    }
-  } else if (bits >= frombits || ((acc << (tobits - bits)) & maxv)) {
-    return null;
-  }
-  return ret;
+    return ret;
 }
 
-function decode (addr) {
-  var dec = bech32.decode(addr);
-  if (dec === null || dec.data.length < 1 || dec.data[0] > 16) {
-    return null;
-  }
-  var res = convertbits(dec.data.slice(1), 5, 8, false);
-  if (res === null || res.length < 2 || res.length > 40) {
-    return null;
-  }
-  if (dec.data[0] === 0 && res.length !== 20 && res.length !== 32) {
-    return null;
-  }
-  return {hrp: dec.hrp, version: dec.data[0], program: res};
+function decode (hrp, addr) {
+    var bech32m = false;
+    var dec = bech32.decode(addr, bech32.encodings.BECH32);
+    if (dec === null) {
+        dec = bech32.decode(addr, bech32.encodings.BECH32M);
+        bech32m = true;
+    }
+    if (dec === null || dec.hrp !== hrp || dec.data.length < 1 || dec.data[0] > 16) {
+        return null;
+    }
+    var res = convertbits(dec.data.slice(1), 5, 8, false);
+    if (res === null || res.length < 2 || res.length > 40) {
+        return null;
+    }
+    if (dec.data[0] === 0 && res.length !== 20 && res.length !== 32) {
+        return null;
+    }
+    if (dec.data[0] === 0 && bech32m) {
+        return null;
+    }
+    if (dec.data[0] !== 0 && !bech32m) {
+        return null;
+    }
+    return {version: dec.data[0], program: res};
 }
 
 function encode (hrp, version, program) {
-  var ret = bech32.encode(hrp, [version].concat(convertbits(program, 8, 5, true)));
-
-  if (decode(ret) === null) {
-    return null;
-  }
-  return ret;
+    var enc = bech32.encodings.BECH32;
+    if (version > 0) {
+        enc = bech32.encodings.BECH32M;
+    }
+    var ret = bech32.encode(hrp, [version].concat(convertbits(program, 8, 5, true)), enc);
+    if (decode(hrp, ret, enc) === null) {
+        return null;
+    }
+    return ret;
 }
 
-function isValidAddress(address, currency, opts = {}) {
-    const { networkType = DEFAULT_NETWORK_TYPE} = opts;
-    var ret = decode(address);
+/////////////////////////////////////////////////////
 
-    if(ret === null) {
-      return false;
+var DEFAULT_NETWORK_TYPE = 'prod'
+
+function isValidAddress(address, currency, opts = {}) {
+
+    if(!currency.bech32Hrp || currency.bech32Hrp.length === 0) {
+        return false;
     }
+
+    const { networkType = DEFAULT_NETWORK_TYPE} = opts;
 
     var correctBech32Hrps;
-    var bech32Hrp = ret.hrp;
-
-    if (bech32Hrp) {
-      if (networkType === 'prod' || networkType === 'testnet') {
+    if (networkType === 'prod' || networkType === 'testnet') {
         correctBech32Hrps = currency.bech32Hrp[networkType];
-      } else if(currency.bech32Hrp) {
+    } else if(currency.bech32Hrp) {
         correctBech32Hrps = currency.bech32Hrp.prod.concat(currency.bech32Hrp.testnet)
-      } else {
-          return false;
-      }
-
-      if (correctBech32Hrps.indexOf(bech32Hrp) === -1) {
+    } else {
         return false;
-      }
-
-      return encode(ret.hrp, ret.version, ret.program) === address.toLowerCase();
     }
 
+    for(var chrp of correctBech32Hrps) {
+        var ret = decode(chrp, address);
+        if(ret) {
+            return encode(chrp, ret.version, ret.program) === address.toLowerCase();
+        }
+    }
+
+    return false;
 }
 
 module.exports = {
@@ -11028,7 +11068,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":43}],49:[function(require,module,exports){
+},{"./bech32":44}],50:[function(require,module,exports){
 (function (process,global){(function (){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -11672,7 +11712,7 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":35}],50:[function(require,module,exports){
+},{"_process":35}],51:[function(require,module,exports){
 (function (Buffer){(function (){
 var jsSHA = require('jssha');
 var sha512256 = require('js-sha512').sha512_256
@@ -11683,12 +11723,12 @@ var base58 = require('./base58');
 var base32 = require('./base32');
 var BigNum = require('browserify-bignum');
 
-function numberToHex(number) {
-    var hex = Math.round(number).toString(16)
-    if (hex.length === 1) {
-        hex = '0' + hex
+function numberToHex(number, length) {
+    var hex = number.toString(16);
+    if (hex.length % 2 === 1) {
+        hex = '0' + hex;
     }
-    return hex
+    return hex.padStart(length, '0');
 }
 
 function isHexChar(c) {
@@ -11756,6 +11796,7 @@ function hexStr2byteArray(str) {
 }
 
 module.exports = {
+    numberToHex: numberToHex,
     toHex: function (arrayOfBytes) {
         var hex = '';
         for (var i = 0; i < arrayOfBytes.length; i++) {
@@ -11807,7 +11848,7 @@ module.exports = {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./base32":41,"./base58":42,"./blake256":45,"./blake2b":46,"./sha3":49,"browserify-bignum":3,"buffer":4,"js-sha512":32,"jssha":33}],51:[function(require,module,exports){
+},{"./base32":42,"./base58":43,"./blake256":46,"./blake2b":47,"./sha3":50,"browserify-bignum":3,"buffer":4,"js-sha512":32,"jssha":33}],52:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -11826,6 +11867,7 @@ var USDTValidator = require('./usdt_validator');
 var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var FilValidator = require('./fil_validator');
+var BIP173Validator = require('./bip173_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -12235,7 +12277,8 @@ var CURRENCIES = [{
     }, {
         name: 'Crypto.com Coin',
         symbol: 'cro',
-        validator: ETHValidator,
+        bech32Hrp: { prod: ['cro'], testnet: ['tcro']},
+        validator: BIP173Validator,
     }, {
         name: 'Multi-collateral DAI',
         symbol: 'dai',
@@ -12401,7 +12444,7 @@ var CURRENCIES = [{
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
 //
 
-},{"./ada_validator":37,"./algo_validator":38,"./bch_validator":39,"./bitcoin_validator":40,"./dot_validator":52,"./eos_validator":53,"./ethereum_validator":54,"./fil_validator":55,"./lisk_validator":56,"./monero_validator":57,"./nano_validator":58,"./nem_validator":59,"./ripple_validator":60,"./siacoin_validator":61,"./stellar_validator":62,"./tezos_validator":63,"./tron_validator":64,"./usdt_validator":65}],52:[function(require,module,exports){
+},{"./ada_validator":37,"./algo_validator":38,"./bch_validator":39,"./bip173_validator":40,"./bitcoin_validator":41,"./dot_validator":53,"./eos_validator":54,"./ethereum_validator":55,"./fil_validator":56,"./lisk_validator":57,"./monero_validator":58,"./nano_validator":59,"./nem_validator":60,"./ripple_validator":61,"./siacoin_validator":62,"./stellar_validator":63,"./tezos_validator":64,"./tron_validator":65,"./usdt_validator":66}],53:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 // from https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
@@ -12462,7 +12505,7 @@ module.exports = {
     }
 }
 
-},{"./crypto/utils":50}],53:[function(require,module,exports){
+},{"./crypto/utils":51}],54:[function(require,module,exports){
 function isValidEOSAddress (address, currency, networkType) {
   var regex = /^[a-z0-9.]+$/g // Must be numbers, lowercase letters and decimal points only
   if (address.search(regex) !== -1 && address.length === 12) {
@@ -12478,7 +12521,7 @@ module.exports = {
   }
 }
 
-},{}],54:[function(require,module,exports){
+},{}],55:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -12514,7 +12557,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":50}],55:[function(require,module,exports){
+},{"./crypto/utils":51}],56:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 var DEFAULT_NETWORK_TYPE = 'prod';
@@ -12621,7 +12664,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":50}],56:[function(require,module,exports){
+},{"./crypto/utils":51}],57:[function(require,module,exports){
 (function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12643,7 +12686,7 @@ module.exports = {
     }
 };
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/utils":50,"buffer":4}],57:[function(require,module,exports){
+},{"./crypto/utils":51,"buffer":4}],58:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -12709,7 +12752,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":47,"./crypto/utils":50}],58:[function(require,module,exports){
+},{"./crypto/cnBase58":48,"./crypto/utils":51}],59:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12738,7 +12781,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":50,"base-x":1}],59:[function(require,module,exports){
+},{"./crypto/utils":51,"base-x":1}],60:[function(require,module,exports){
 (function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12765,7 +12808,7 @@ module.exports = {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/utils":50,"buffer":4}],60:[function(require,module,exports){
+},{"./crypto/utils":51,"buffer":4}],61:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12795,7 +12838,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":50,"base-x":1}],61:[function(require,module,exports){
+},{"./crypto/utils":51,"base-x":1}],62:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash.isequal')
 
@@ -12825,54 +12868,47 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":50,"lodash.isequal":34}],62:[function(require,module,exports){
+},{"./crypto/utils":51,"lodash.isequal":34}],63:[function(require,module,exports){
 var baseX = require('base-x');
 var crc = require('crc');
 var cryptoUtils = require('./crypto/utils');
 
- var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
- var base32 = baseX(ALPHABET);
+var base32 = baseX(ALPHABET);
 var regexp = new RegExp('^[' + ALPHABET + ']{56}$');
 var ed25519PublicKeyVersionByte = (6 << 3);
 
- function swap16(number) {
+function swap16(number) {
     var lower = number & 0xFF;
     var upper = (number >> 8) & 0xFF;
     return (lower << 8) | upper;
 }
 
- function numberToHex(number) {
-    var hex = number.toString(16);
-    if(hex.length % 2 === 1) {
-        hex = '0' + hex;
-    }
-    return hex;
-}
-
- module.exports = {
+module.exports = {
     isValidAddress: function (address) {
         if (regexp.test(address)) {
             return this.verifyChecksum(address);
         }
 
-         return false;
+        return false;
     },
 
-     verifyChecksum: function (address) {
+    verifyChecksum: function (address) {
         // based on https://github.com/stellar/js-stellar-base/blob/master/src/strkey.js#L126
         var bytes = base32.decode(address);
         if (bytes[0] !== ed25519PublicKeyVersionByte) {
             return false;
         }
 
-         var computedChecksum = numberToHex(swap16(crc.crc16xmodem(bytes.slice(0, -2))));
+        var computedChecksum = cryptoUtils.numberToHex(swap16(crc.crc16xmodem(bytes.slice(0, -2))), 4);
         var checksum = cryptoUtils.toHex(bytes.slice(-2));
 
-         return computedChecksum === checksum
+        return computedChecksum === checksum
     }
 };
-},{"./crypto/utils":50,"base-x":1,"crc":30}],63:[function(require,module,exports){
+
+},{"./crypto/utils":51,"base-x":1,"crc":30}],64:[function(require,module,exports){
 const base58 = require('./crypto/base58');
 const cryptoUtils = require('./crypto/utils');
 
@@ -12910,7 +12946,7 @@ module.exports = {
     isValidAddress
 };
 
-},{"./crypto/base58":42,"./crypto/utils":50}],64:[function(require,module,exports){
+},{"./crypto/base58":43,"./crypto/utils":51}],65:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12974,7 +13010,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":50}],65:[function(require,module,exports){
+},{"./crypto/utils":51}],66:[function(require,module,exports){
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
 
@@ -12997,7 +13033,7 @@ module.exports = {
     }
 };
 
-},{"./bitcoin_validator":40,"./ethereum_validator":54}],66:[function(require,module,exports){
+},{"./bitcoin_validator":41,"./ethereum_validator":55}],67:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -13024,5 +13060,5 @@ module.exports = {
     }
 };
 
-},{"./currencies":51}]},{},[66])(66)
+},{"./currencies":52}]},{},[67])(67)
 });

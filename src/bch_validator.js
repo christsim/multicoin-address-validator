@@ -32,7 +32,7 @@ function validateAddress(address, currency, opts) {
     }
 
     try {
-        if (bech32.verifyChecksum(prefix, decoded)) {
+        if (bech32.verifyChecksum(prefix, decoded, bech32.encodings.BECH32)) {
             return false;
         }
     } catch(e) {
