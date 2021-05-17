@@ -1159,6 +1159,20 @@ describe('WAValidator.validate()', function () {
         valid('GDTYVCTAUQVPKEDZIBWEJGKBQHB4UGGXI2SXXUEW7LXMD4B7MK37CWLJ', 'stellar');
         valid('GCCVYKDNQP7NGNTR42SYPMQUZIFTPJUJHXM6JIXQMDLXMCC3ZYOV6AG3', 'xlm', 'testnet')
     });
+
+    it('should return true for correct filecoin addresses', function () {
+        valid('f01000', 'filecoin');
+        valid('t01000', 'filecoin', 'testnet');
+        valid('f094245', 'filecoin');
+        valid('f1skoejt35ehkyb2j7nagb6wojfcings5nfkiodra', 'filecoin');
+        valid('f1abjxfbp274xpdqcpuaykwkfb43omjotacm2p3za', 'fil');
+        valid('t1eqer4jumu46w7qtojcwreuvr676rcnbiq5ktaea', 'filecoin', 'testnet');
+        valid('t1qlrpncv57yjwb77hizgcm6t2iurvs6qhvbrxf6a', 'fil', 'testnet');
+        valid('f2plku564ddywnmb5b2ky7dhk4mb6uacsxuuev3pi', 'fil');
+        valid('f2fzhk262somdqlhxjugju5h3h6qxnlwxcobf7lei', 'filecoin');
+        valid('f3wg6tunlwerstoyefuke35yeaohqvpc3wcu4sqdpr34niqf2bdj4gkwjwi3t2kusmadc2oyr6hbc7za3z2e7q', 'fil');
+        valid('f3uffuljzqg3fseq3fhvtdr6lgyih26ehcvkaafqyw4ltl2qicogxnq4qfzvlyrdlxmyrs5xb3ugvzfap4hi3q', 'filecoin');
+    })
 });
 
 describe('invalid results', function () {
@@ -1497,6 +1511,19 @@ describe('invalid results', function () {
     });
 
 
+    it('should return false for incorrect filecoin addresses', function () {
+        commonTests('fil');
+        invalid('p01', 'filecoin');
+        invalid('f01000', 'filecoin', 'testnet');
+        invalid('f01000ZZZ', 'filecoin');
+        invalid('f9skoejt35ehkyb2j7nagb6wojfcings5nfkiodra', 'filecoin');
+        invalid('t1eqer4jumu46w7qtojcwreuvr676rcnbiq5ktaea', 'fil');
+        invalid('f1abjxfbp274xpdqcpuaykwkfb43omjotacm2p3za', 'filecoin', 'testnet');
+        invalid('d1qlrpncv57yjwb77hizgcm6t2iurvs6qhvbrxf6a', 'fil', 'testnet');
+        invalid('t1qlrpncv57yjwb77hizgcm6t2iurvs6qhvbrx99z', 'fil', 'testnet');
+        invalid('f2plku564ddywnmb5b2ky7dhk', 'fil');
+        invalid('f2zzzzzzzsomdqlhxjugju5h3h6qxnlwxcobf7lei', 'filecoin');
+        invalid('f3wg6tunlwerstoyefuke35yeaohqvpc3wcu4sqdpr34niqf2bdj4gkwjwi3t2kusmadc2oyr6hbc7za3zzzzz', 'fil');
+        invalid('f3uffuljzqg3fseq3fhvtdr6lgyih26ehcvkaafqyw4ltl2qicogxnq4qfzvlyrdlxmyrs5xb3ugvzfap4hi3q', 'filecoin', 'testnet');
+    })
 });
-
-
