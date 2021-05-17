@@ -233,7 +233,7 @@
         "ZenCash",
         "zen"
     ],
-    "version": "0.5.0",
+    "version": "0.5.1",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",
@@ -262,7 +262,7 @@
         "js-sha512": "^0.8.0",
         "jssha": "^2.4.2",
         "lodash.isequal": "^4.5.0",
-        "minify": "^7.0.1"
+        "minify": "^6.0.1"
     },
     "devDependencies": {
         "browserify": "^17.0.0",
