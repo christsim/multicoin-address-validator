@@ -560,6 +560,21 @@ var CURRENCIES = [{
         name: 'Polkadot',
         symbol: 'dot',
         validator: DotValidator
+    },
+    {
+        name: 'Uniswap Coin',
+        symbol: 'uni',
+        validator: ETHValidator
+    },
+    {
+        name: 'Aave Coin',
+        symbol: 'aave',
+        validator: ETHValidator
+    },
+    {
+        name: 'Matic',
+        symbol: 'matic',
+        validator: ETHValidator
     }
 ];
 
