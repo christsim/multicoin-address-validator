@@ -575,6 +575,11 @@ var CURRENCIES = [{
         name: 'Matic',
         symbol: 'matic',
         validator: ETHValidator
+    },
+    {
+        name: 'Decentraland',
+        symbol: 'mana',
+        validator: ETHValidator
     }
 ];
 
