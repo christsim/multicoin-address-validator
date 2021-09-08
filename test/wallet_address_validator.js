@@ -828,6 +828,12 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'sol');
         });
 
+        it('should return true for correct sys addresses', function () {
+            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys');
+            valid('sys1qmrp4z288583kjcj2f4cy5gyauv026ppsrzu2h0', 'sys');
+            valid('tsys1quuu4ach5npjp3vpmaezzctc9r33405p39khz67', 'sys', 'testnet');
+            valid('TP81Y6pnybiw93vwHugV5zvKizg2rLQBGE', 'sys', 'testnet')
+        })
     });
 
     describe('invalid results', function () {
