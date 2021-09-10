@@ -38,7 +38,7 @@ function getEnv(currency, networkType) {
 
     if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
 
-    return currency.addressTypes[evn][0]
+    return evn;
 }
 
 module.exports = {
@@ -57,6 +57,8 @@ module.exports = {
             return false;
         }
 
-        return getEnv(currency, networkType) === address[0];
+        var evn = getEnv(currency,networkType);
+
+        return currency.addressTypes[evn].includes(address[0]);
     }
 };
