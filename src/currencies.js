@@ -580,7 +580,13 @@ var CURRENCIES = [{
         name: 'Decentraland',
         symbol: 'mana',
         validator: ETHValidator
+    },
+    {
+        name: 'Binance Smart Chain',
+        symbol: 'bnb',
+        validator: ETHValidator
     }
+
 ];
 
 
