@@ -638,6 +638,184 @@ describe('WAValidator.validate()', function () {
             invalid('cromwdzawjd27uku0cqf8zngxfcycd292u353xe7v1', 'cro');
         });
 
+        it('should return true for correct monero addresses', function () {
+            valid('47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2', 'monero');
+            valid('48bWuoDG75CXMDHbmPEvUF2hm1vLDic7ZJ7hqRkL65QR9p13AQAX4eEACXNk4YP115Q4KRVZnAvmMBHrcGfv9FvKPZnH6vH', 'XMR');
+            valid('A2be3UvzMtkJtxRYgcCbQt2y7Rp2eLVGqNTWfZeankrWimSMM4y7uMP6B9oAZaHsXTj8KFSerkSkkVRuEuEca9QM8VhxCNU', 'monero', 'testnet');
+
+            //integrated addresses
+            valid('4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7', 'monero');
+            valid('4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b', 'XMR');
+
+            //stagenet public address
+            valid('5BAP9qLbRseYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE87rGCxYK', 'XMR', 'stagenet');
+
+            //stagenet integrated address
+            valid('5Ls4AeA639AYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE8BCU5Q2gDkbq2HYDrn2', 'monero', 'both');
+        });
+
+        it('should return true for correct erc20 addresses', function () {
+
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'game');
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'game');
+
+        });
+
+        it('should return true for correct monacoin addresses', function () {
+            valid('MMN1Q1aRVUzanmg9DJjcRYzQSJQoBeQPui', 'mona');
+            valid('PFMzNYnBm5X4c9qJkJPkfgdCyd9fuuy2vT', 'mona');
+            valid('PCtN7VUYHW8w4g59BaphrfPs8g7pNgAzxn', 'mona');
+            valid('MXCcYFGRmsd4d3CcQugFiqG8uarj5tVu76', 'mona');
+            valid('MNK1pGsBf9WdoE54fZM9VFhkeYHW6VUf2u', 'mona');
+        });
+
+        it('should return true for correct pivx addresses', function () {
+            valid('DJXFW9oJJBUX7QKrG6GKvmTs63MYKzwtpZ', 'pivx');
+            valid('DEaYb8EHQgyKvX6VXDS3DZQautJrHBmK3T', 'pivx');
+            valid('DDeCGR3QSgqsBxVR23bJvteiyYE34ZmxAc', 'pivx');
+            valid('DSqQM8DPpBHHoZXHgRdwmaf6hZPEoZcFkh', 'pivx');
+        });
+
+        it('should return true for correct solarcoin addresses', function () {
+            valid('8VxVLzwB26E2YZZ82o1NcQe96QSM2z6GwW', 'slr');
+            valid('8YW5qcTjeyqX5kESsqu2BUdXiedgssegtQ', 'SolarCoin');
+        });
+
+        it('should return true for correct tether addresses', function () {
+            valid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt');
+            valid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6J', 'tether');
+        });
+
+        it('should return true for correct expanse addresses', function () {
+            valid('0xbab463743603a253bdf1f84975b1a9517505ae05', 'exp');
+            valid('0x5d0777cb5d6977873904864c6ab531f4b3261f0b', 'expanse');
+        });
+
+        it('should return true for correct waves addresses', function () {
+            valid('3P93mVrYnQ4ahaRMYwA2BeWY32eDxTpLVEs', 'waves');
+            valid('3P4eeU7v1LMHQFwwT2GW9W99c6vZyytHajj', 'waves');
+
+            valid('3Myrq5QDgRq3nBVRSSv9UYrP36xTtpJND5y', 'waves', 'testnet');
+            valid('3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8', 'waves', 'testnet');
+        });
+
+        it('should return true for correct nano addresses', function () {
+            valid('xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3', 'nano');
+            valid('xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo', 'nano');
+            valid('xrb_35jjmmmh81kydepzeuf9oec8hzkay7msr6yxagzxpcht7thwa5bus5tomgz9', 'nano');
+            valid('xrb_1111111111111111111111111111111111111111111111111111hifc8npp', 'nano');
+            valid('xrb_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est', 'nano');
+            valid('xrb_3wm37qz19zhei7nzscjcopbrbnnachs4p1gnwo5oroi3qonw6inwgoeuufdp', 'nano');
+            valid('xrb_3arg3asgtigae3xckabaaewkx3bzsh7nwz7jkmjos79ihyaxwphhm6qgjps4', 'nano');
+            valid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjmgu', 'nano');
+            valid('xrb_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
+            valid('nano_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
+        });
+
+        it('should return true for correct siacoin addresses', function () {
+            valid(
+                'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
+                'siacoin'
+            )
+            valid(
+                'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
+                'siacoin'
+            )
+            valid(
+                'ab0c327982abfcc6055a6c9551589167d8a73501aca8769f106371fbc937ad100c955c3b7ba9',
+                'siacoin'
+            )
+            valid(
+                'ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530373',
+                'siacoin'
+            )
+        })
+
+        it('should return true for correct loki addresses', function () {
+            // public
+            valid(
+                'L63ymg8cb5aRz1PhXrEQ22PWw9KBhBS8rMsgqbABhTGFfh53U3Rc2iWCJpCPsHZT5hfyt7fPQa612a5Z1tBnGYEA9h6YHnn',
+                'loki'
+            )
+            valid(
+                'L5QKRGMNpQU3eCAdjMVTCR631bRKqnW1oEWWBEHAtFJLieA5VvuxyyubCd9FczEEatg8jfy39UJZ13npLJqZG6dtMtM99ha',
+                'loki'
+            )
+            //   integrated
+            valid(
+                'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiD1xbPb6dpYo7toNRqk',
+                'loki'
+            )
+            valid(
+                'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiCtWq1AYo1oJTVqgUcQ',
+                'loki'
+            )
+            //   subaddress
+            valid(
+                'LW1VMYcvWPZZJ2h1pKGEku2y9WeDiAU2VhgrgVgvjybaRuCdcEkg6FhXjVNSd37Bp7fhYH8tVa5T9VmRaYiWyxYdCpEGBg8',
+                'loki'
+            )
+        })
+
+        it('should return true for correct lbry addresses', function () {
+            valid('bNEMVqeUZUqTrYUxud5ehnUhtTAiWDXQ5e', 'lbc')
+            valid('bDb6NmobyDVeNGpizWQQBZkYjKCRQBdKdG', 'LBC')
+            valid('bTFXPcV3a8iVDezogvHTHezWZ1mZGWpPDc', 'lbc')
+            valid('bK2uEVn6UuwjCTUZ1Dfj5HhWYi9BtqZDDm', 'LBRY Credits')
+        })
+
+        it('should return true for correct trx addresses', function () {
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
+            valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+        });
+
+        it('should return true for correct nem addresses', function () {
+            valid('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'xem');
+            valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
+        });
+
+        it('should return true for correct lsk addresses', function () {
+            valid('469226551L', 'lsk');
+            valid('15823701926930889868L', 'lsk');
+            valid('1657699692452120239L', 'lsk');
+            valid('555666666999992L', 'lsk');
+            valid('6853061742992593192L', 'lsk');
+            valid('530464791801L', 'lsk');
+        });
+
+        it('should return true for correct bsv addresses', function () {
+            valid('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv');
+            valid('qp65yngy5uds4wxtrkynptal4f76qzmrh52pa3mpaf', 'bsv');
+            valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
+            valid('qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
+            valid('qz97s7ee0rvwlymtxrwafmvs87x6027jwuf3wepug7', 'bsv');
+            valid('bitcoincash:qpp32ssez340wfspnt79h6c4xds4fzf3m5j0cplx0l', 'bsv');
+            valid('qqg82u7tq2eahs3gkh9m6kjnmjehr69m5v37alepq4', 'bsv');
+            valid('bitcoincash:qrwkk9a3es2wu7mdvzh0vekfvjuzysq8tv7r3hcwr5', 'bsv');
+            valid('1DrNXqCj2B8FKyx66RAWDkiEJhw2yrvhT3', 'bsv');
+        });
+
+        it('should return true for correct stellar addresses', function () {
+            valid('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', 'stellar');
+            valid('GB7KKHHVYLDIZEKYJPAJUOTBE5E3NJAXPSDZK7O6O44WR3EBRO5HRPVT', 'stellar');
+            valid('GD6WVYRVID442Y4JVWFWKWCZKB45UGHJAABBJRS22TUSTWGJYXIUR7N2', 'stellar');
+            valid('GBCG42WTVWPO4Q6OZCYI3D6ZSTFSJIXIS6INCIUF23L6VN3ADE4337AP', 'stellar');
+            valid('GDFX463YPLCO2EY7NGFMI7SXWWDQAMASGYZXCG2LATOF3PP5NQIUKBPT', 'stellar');
+            valid('GBXEODUMM3SJ3QSX2VYUWFU3NRP7BQRC2ERWS7E2LZXDJXL2N66ZQ5PT', 'stellar');
+            valid('GAJHORKJKDDEPYCD6URDFODV7CVLJ5AAOJKR6PG2VQOLWFQOF3X7XLOG', 'stellar');
+            valid('GACXQEAXYBEZLBMQ2XETOBRO4P66FZAJENDHOQRYPUIXZIIXLKMZEXBJ', 'stellar');
+            valid('GDD3XRXU3G4DXHVRUDH7LJM4CD4PDZTVP4QHOO4Q6DELKXUATR657OZV', 'stellar');
+            valid('GDTYVCTAUQVPKEDZIBWEJGKBQHB4UGGXI2SXXUEW7LXMD4B7MK37CWLJ', 'xlm');
+            valid('GCCVYKDNQP7NGNTR42SYPMQUZIFTPJUJHXM6JIXQMDLXMCC3ZYOV6AG3', 'xlm', 'testnet');
+        });
+
+        it('should return true for correct solana addresses', function () {
+            valid('833XorXTTx5iya5B3Tr6iqEs9GbRuvVfwyLCP2vpdzhq', 'solana');
+            valid('6ZRCB7AAqGre6c72PRz3MHLC73VMYvJ8bi9KHf1HFpNk', 'sol');
+            valid('HgyXhqapicB8zoyyFQ23oUwwFrBACDyDc7bqUuvnEELM', 'sol');
+            valid('833XorXTTx5iya5B3Tr6iqEs9GbRuvVfwyLCP2vpdzhq', 'sol', 'testnet');
+        });
+
     });
 
     describe('invalid results', function () {
@@ -987,178 +1165,17 @@ describe('WAValidator.validate()', function () {
             invalid('12345678901@', 'eos');
         });
 
-    });
+        it('should return false for incorrect solana addresses', function () {
+            invalid('833XQoXTx05iya53Tr6iqEs9GbRuvVfwyLCP2vpdzhq', 'solana');
+            invalid('833XorXTTx5iya5B3Tr6iqEs9GbRuvVfwyLCP2vpdz', 'solana');
+            invalid('bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej', 'sol');
+            invalid('Ae2tdPwUPEZKmwoy3AU3cXb5Chnasj6mvVNxV1H11997q3VW5ihbSfQwGpm', 'sol');
+            invalid('addr1skemppmfevyk0lshu2w8j34707s3t3t58a04xcx5ccevrcmvpmxg2qt4pk0', 'sol', 'testnet');
+        });
 
-    it('should return true for correct monero addresses', function () {
-        valid('47zQ5LAivg6hNCgijXSEFVLX7mke1bgM6YGLFaANDoJbgXDymcAAZvvMNt2PmMpqEe5qRy2zyfMYXdwpmdyitiFh84xnPG2', 'monero');
-        valid('48bWuoDG75CXMDHbmPEvUF2hm1vLDic7ZJ7hqRkL65QR9p13AQAX4eEACXNk4YP115Q4KRVZnAvmMBHrcGfv9FvKPZnH6vH', 'XMR');
-        valid('A2be3UvzMtkJtxRYgcCbQt2y7Rp2eLVGqNTWfZeankrWimSMM4y7uMP6B9oAZaHsXTj8KFSerkSkkVRuEuEca9QM8VhxCNU', 'monero', 'testnet');
-
-        //integrated addresses
-        valid('4Gd4DLiXzBmbVX2FZZ3Cvu6fUaWACup1qDowprUCje1kSP4FmbftiJMSfV8kWZXNqmVwj4m52xqtgFNUudVmsmGkGvkLcCibWfVUfUFVB7', 'monero');
-        valid('4J5sF94AzXgFgx8LuWc9dcWkJkGkD3cL3L2AuhX6QA9jFvSxxj6QhHqHXqM2b2Go7G8RyDzEbHxYd9G26XUUbuJChipEyBz9fENMU2Ua9b', 'XMR');
-
-        //stagenet public address
-        valid('5BAP9qLbRseYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE87rGCxYK', 'XMR', 'stagenet');
-
-        //stagenet integrated address
-        valid('5Ls4AeA639AYrGneYVRaFANMajuaD4KZrf3fGWvt5cVDR1xUXm6qoFYLkgU6Vp12fs2R24r4269inAWHFEdsLnE8BCU5Q2gDkbq2HYDrn2', 'monero', 'both');
-    });
-
-    it('should return true for correct erc20 addresses', function () {
-
-        valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'game');
-        valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'game');
 
     });
 
-    it('should return true for correct monacoin addresses', function () {
-        valid('MMN1Q1aRVUzanmg9DJjcRYzQSJQoBeQPui', 'mona');
-        valid('PFMzNYnBm5X4c9qJkJPkfgdCyd9fuuy2vT', 'mona');
-        valid('PCtN7VUYHW8w4g59BaphrfPs8g7pNgAzxn', 'mona');
-        valid('MXCcYFGRmsd4d3CcQugFiqG8uarj5tVu76', 'mona');
-        valid('MNK1pGsBf9WdoE54fZM9VFhkeYHW6VUf2u', 'mona');
-    });
-
-    it('should return true for correct pivx addresses', function () {
-        valid('DJXFW9oJJBUX7QKrG6GKvmTs63MYKzwtpZ', 'pivx');
-        valid('DEaYb8EHQgyKvX6VXDS3DZQautJrHBmK3T', 'pivx');
-        valid('DDeCGR3QSgqsBxVR23bJvteiyYE34ZmxAc', 'pivx');
-        valid('DSqQM8DPpBHHoZXHgRdwmaf6hZPEoZcFkh', 'pivx');
-    });
-
-    it('should return true for correct solarcoin addresses', function () {
-        valid('8VxVLzwB26E2YZZ82o1NcQe96QSM2z6GwW', 'slr');
-        valid('8YW5qcTjeyqX5kESsqu2BUdXiedgssegtQ', 'SolarCoin');
-    });
-
-    it('should return true for correct tether addresses', function () {
-        valid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt');
-        valid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6J', 'tether');
-    });
-
-    it('should return true for correct expanse addresses', function () {
-        valid('0xbab463743603a253bdf1f84975b1a9517505ae05', 'exp');
-        valid('0x5d0777cb5d6977873904864c6ab531f4b3261f0b', 'expanse');
-    });
-
-    it('should return true for correct waves addresses', function () {
-        valid('3P93mVrYnQ4ahaRMYwA2BeWY32eDxTpLVEs', 'waves');
-        valid('3P4eeU7v1LMHQFwwT2GW9W99c6vZyytHajj', 'waves');
-
-        valid('3Myrq5QDgRq3nBVRSSv9UYrP36xTtpJND5y', 'waves', 'testnet');
-        valid('3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8', 'waves', 'testnet');
-    });
-
-    it('should return true for correct nano addresses', function () {
-        valid('xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3', 'nano');
-        valid('xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo', 'nano');
-        valid('xrb_35jjmmmh81kydepzeuf9oec8hzkay7msr6yxagzxpcht7thwa5bus5tomgz9', 'nano');
-        valid('xrb_1111111111111111111111111111111111111111111111111111hifc8npp', 'nano');
-        valid('xrb_1ipx847tk8o46pwxt5qjdbncjqcbwcc1rrmqnkztrfjy5k7z4imsrata9est', 'nano');
-        valid('xrb_3wm37qz19zhei7nzscjcopbrbnnachs4p1gnwo5oroi3qonw6inwgoeuufdp', 'nano');
-        valid('xrb_3arg3asgtigae3xckabaaewkx3bzsh7nwz7jkmjos79ihyaxwphhm6qgjps4', 'nano');
-        valid('xrb_1f5e4w33ndqbkx4bw5jtp13kp5xghebfxcmw9hdt1f7goid1s4373w6tjmgu', 'nano');
-        valid('xrb_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
-        valid('nano_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
-    });
-
-    it('should return true for correct siacoin addresses', function () {
-        valid(
-            'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
-            'siacoin'
-        )
-        valid(
-            'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
-            'siacoin'
-        )
-        valid(
-            'ab0c327982abfcc6055a6c9551589167d8a73501aca8769f106371fbc937ad100c955c3b7ba9',
-            'siacoin'
-        )
-        valid(
-            'ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530373',
-            'siacoin'
-        )
-    })
-
-    it('should return true for correct loki addresses', function () {
-        // public
-        valid(
-            'L63ymg8cb5aRz1PhXrEQ22PWw9KBhBS8rMsgqbABhTGFfh53U3Rc2iWCJpCPsHZT5hfyt7fPQa612a5Z1tBnGYEA9h6YHnn',
-            'loki'
-        )
-        valid(
-            'L5QKRGMNpQU3eCAdjMVTCR631bRKqnW1oEWWBEHAtFJLieA5VvuxyyubCd9FczEEatg8jfy39UJZ13npLJqZG6dtMtM99ha',
-            'loki'
-        )
-        //   integrated
-        valid(
-            'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiD1xbPb6dpYo7toNRqk',
-            'loki'
-        )
-        valid(
-            'LK8CGQ17G9R3ys3Xf33wCeViD2B95jgdpjAhcRsjuheJ784dumXn7g3RPAzedWpFq364jJKYL9dkQ8mY66sZG9BiCtWq1AYo1oJTVqgUcQ',
-            'loki'
-        )
-        //   subaddress
-        valid(
-            'LW1VMYcvWPZZJ2h1pKGEku2y9WeDiAU2VhgrgVgvjybaRuCdcEkg6FhXjVNSd37Bp7fhYH8tVa5T9VmRaYiWyxYdCpEGBg8',
-            'loki'
-        )
-    })
-
-    it('should return true for correct lbry addresses', function () {
-        valid('bNEMVqeUZUqTrYUxud5ehnUhtTAiWDXQ5e', 'lbc')
-        valid('bDb6NmobyDVeNGpizWQQBZkYjKCRQBdKdG', 'LBC')
-        valid('bTFXPcV3a8iVDezogvHTHezWZ1mZGWpPDc', 'lbc')
-        valid('bK2uEVn6UuwjCTUZ1Dfj5HhWYi9BtqZDDm', 'LBRY Credits')
-    })
-
-    it('should return true for correct trx addresses', function () {
-        valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
-        valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
-    });
-
-    it('should return true for correct nem addresses', function () {
-        valid('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'xem');
-        valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
-    });
-
-    it('should return true for correct lsk addresses', function () {
-        valid('469226551L', 'lsk');
-        valid('15823701926930889868L', 'lsk');
-        valid('1657699692452120239L', 'lsk');
-        valid('555666666999992L', 'lsk');
-        valid('6853061742992593192L', 'lsk');
-        valid('530464791801L', 'lsk');
-    });
-
-    it('should return true for correct bsv addresses', function () {
-        valid('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv');
-        valid('qp65yngy5uds4wxtrkynptal4f76qzmrh52pa3mpaf', 'bsv');
-        valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
-        valid('qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bsv');
-        valid('qz97s7ee0rvwlymtxrwafmvs87x6027jwuf3wepug7', 'bsv');
-        valid('bitcoincash:qpp32ssez340wfspnt79h6c4xds4fzf3m5j0cplx0l', 'bsv');
-        valid('qqg82u7tq2eahs3gkh9m6kjnmjehr69m5v37alepq4', 'bsv');
-        valid('bitcoincash:qrwkk9a3es2wu7mdvzh0vekfvjuzysq8tv7r3hcwr5', 'bsv');
-        valid('1DrNXqCj2B8FKyx66RAWDkiEJhw2yrvhT3', 'bsv');
-    });
-
-    it('should return true for correct stellar addresses', function () {
-        valid('GBBM6BKZPEHWYO3E3YKREDPQXMS4VK35YLNU7NFBRI26RAN7GI5POFBB', 'stellar');
-        valid('GB7KKHHVYLDIZEKYJPAJUOTBE5E3NJAXPSDZK7O6O44WR3EBRO5HRPVT', 'stellar');
-        valid('GD6WVYRVID442Y4JVWFWKWCZKB45UGHJAABBJRS22TUSTWGJYXIUR7N2', 'stellar');
-        valid('GBCG42WTVWPO4Q6OZCYI3D6ZSTFSJIXIS6INCIUF23L6VN3ADE4337AP', 'stellar');
-        valid('GDFX463YPLCO2EY7NGFMI7SXWWDQAMASGYZXCG2LATOF3PP5NQIUKBPT', 'stellar');
-        valid('GBXEODUMM3SJ3QSX2VYUWFU3NRP7BQRC2ERWS7E2LZXDJXL2N66ZQ5PT', 'stellar');
-        valid('GAJHORKJKDDEPYCD6URDFODV7CVLJ5AAOJKR6PG2VQOLWFQOF3X7XLOG', 'stellar');
-        valid('GACXQEAXYBEZLBMQ2XETOBRO4P66FZAJENDHOQRYPUIXZIIXLKMZEXBJ', 'stellar');
-        valid('GDD3XRXU3G4DXHVRUDH7LJM4CD4PDZTVP4QHOO4Q6DELKXUATR657OZV', 'stellar');
-        valid('GDTYVCTAUQVPKEDZIBWEJGKBQHB4UGGXI2SXXUEW7LXMD4B7MK37CWLJ', 'stellar');
-        valid('GCCVYKDNQP7NGNTR42SYPMQUZIFTPJUJHXM6JIXQMDLXMCC3ZYOV6AG3', 'xlm', 'testnet')
-    });
 });
 
 describe('invalid results', function () {
