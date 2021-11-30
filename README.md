@@ -33,8 +33,11 @@ npm install multicoin-address-validator
 ### Supported crypto currencies
 
 * 0x/zrx `'0x'` or `'zrx'`
+* Aave Coin/aave `'Aave Coin'` or `'aave'`
+* Algorand/algo `'Algorand'` or `'algo'`
 * Aragon/ant `'Aragon'` or `'ant'`
 * Augur/rep `'Augur'` or `'rep'`
+* AugurV2/repv2 `'AugurV2'` or `'repv2'`
 * AuroraCoin/aur `'AuroraCoin'` or `'aur'`
 * Bancor/bnt `'Bancor'` or `'bnt'`
 * Bankex/bkx `'Bankex'` or `'bkx'`
@@ -47,14 +50,18 @@ npm install multicoin-address-validator
 * BitcoinGold/btg `'BitcoinGold'` or `'btg'`
 * BitcoinPrivate/btcp `'BitcoinPrivate'` or `'btcp'`
 * BitcoinZ/btcz `'BitcoinZ'` or `'btcz'`
+* BlockTrade/btt `'BlockTrade'` or `'btt'`
 * BTU Protocol/btu `'BTU Protocol'` or `'btu'`
 * Callisto/clo `'Callisto'` or `'clo'`
 * Cardano/ada `'Cardano'` or `'ada'`
 * Chainlink/link `'Chainlink'` or `'link'`
 * Civic/cvc `'Civic'` or `'cvc'`
+* Compound/comp `'Compound'` or `'comp'`
 * Cred/lba `'Cred'` or `'lba'`
 * Crypto.com Coin/cro `'Crypto.com Coin'` or `'cro'`
+* CUSD/cusd `'CUSD'` or `'cusd'`
 * Dash/dash `'Dash'` or `'dash'`
+* Decentraland/mana `'Decentraland'` or `'mana'`
 * Decred/dcr `'Decred'` or `'dcr'`
 * DigiByte/dgb `'DigiByte'` or `'dgb'`
 * District0x/dnt `'District0x'` or `'dnt'`
@@ -65,11 +72,13 @@ npm install multicoin-address-validator
 * EthereumClassic/etc `'EthereumClassic'` or `'etc'`
 * EtherZero/etz `'EtherZero'` or `'etz'`
 * Expanse/exp `'Expanse'` or `'exp'`
+* FirmaChain/fct `'FirmaChain'` or `'fct'`
 * FreiCoin/frc `'FreiCoin'` or `'frc'`
 * GameCredits/game `'GameCredits'` or `'game'`
 * GarliCoin/grlc `'GarliCoin'` or `'grlc'`
 * Gnosis/gno `'Gnosis'` or `'gno'`
-* Golem/gnt `'Golem'` or `'gnt'`
+* Golem/glm `'Golem'` or `'glm'`
+* Golem (GNT)/gnt `'Golem (GNT)'` or `'gnt'`
 * HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
 * HyperSpace/xsc `'HyperSpace'` or `'xsc'`
@@ -82,6 +91,7 @@ npm install multicoin-address-validator
 * Loom Network/loom `'Loom Network'` or `'loom'`
 * Maker/mkr `'Maker'` or `'mkr'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
+* Matic/matic `'Matic'` or `'matic'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`
 * Melon/mln `'Melon'` or `'mln'`
 * Metal/mtl `'Metal'` or `'mtl'`
@@ -97,17 +107,21 @@ npm install multicoin-address-validator
 * Ocean Protocol/ocean `'Ocean Protocol'` or `'ocean'`
 * Odyssey/ocn `'Odyssey'` or `'ocn'`
 * OmiseGO/omg `'OmiseGO'` or `'omg'`
+* Paxos/pax `'Paxos'` or `'pax'`
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'`
 * PIVX/pivx `'PIVX'` or `'pivx'`
+* Polkadot/dot `'Polkadot'` or `'dot'`
 * Polymath/poly `'Polymath'` or `'poly'`
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
 * ProtoShares/pts `'ProtoShares'` or `'pts'`
 * Qtum/qtum `'Qtum'` or `'qtum'`
 * Quant/qnt `'Quant'` or `'qnt'`
+* Quantum Resistant Ledger/qrl `'Quantum Resistant Ledger'` or `'qrl'`
 * RaiBlocks/xrb `'RaiBlocks'` or `'xrb'`
 * Ripio Credit Network/rcn `'Ripio Credit Network'` or `'rcn'`
 * Ripple/xrp `'Ripple'` or `'xrp'`
 * Salt/salt `'Salt'` or `'salt'`
+* Serve/serv `'Serve'` or `'serv'`
 * Siacoin/sc `'Siacoin'` or `'sc'`
 * SnowGem/sng `'SnowGem'` or `'sng'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
@@ -117,14 +131,19 @@ npm install multicoin-address-validator
 * Stellar/xlm `'Stellar'` or `'xlm'`
 * Storj/storj `'Storj'` or `'storj'`
 * Storm/storm `'Storm'` or `'storm'`
+* StormX/stmx `'StormX'` or `'stmx'`
 * Swarm City/swt `'Swarm City'` or `'swt'`
 * Synthetix Network/snx `'Synthetix Network'` or `'snx'`
+* Tap/xtp `'Tap'` or `'xtp'`
 * TEMCO/temco `'TEMCO'` or `'temco'`
 * TenX/pay `'TenX'` or `'pay'`
 * Tether/usdt `'Tether'` or `'usdt'`
 * Tezos/xtz `'Tezos'` or `'xtz'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
+* Uniswap Coin/uni `'Uniswap Coin'` or `'uni'`
+* USD Coin/usdc `'USD Coin'` or `'usdc'`
+* VeChain/vet `'VeChain'` or `'vet'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
 * Viberate/vib `'Viberate'` or `'vib'`
 * VoteCoin/vot `'VoteCoin'` or `'vot'`
