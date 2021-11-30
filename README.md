@@ -33,6 +33,8 @@ npm install multicoin-address-validator
 ### Supported crypto currencies
 
 * 0x/zrx `'0x'` or `'zrx'`
+* Aave Coin/aave `'Aave Coin'` or `'aave'`
+* Algorand/algo `'Algorand'` or `'algo'`
 * Aragon/ant `'Aragon'` or `'ant'`
 * Augur/rep `'Augur'` or `'rep'`
 * AugurV2/repv2 `'AugurV2'` or `'repv2'`
@@ -59,6 +61,7 @@ npm install multicoin-address-validator
 * Crypto.com Coin/cro `'Crypto.com Coin'` or `'cro'`
 * CUSD/cusd `'CUSD'` or `'cusd'`
 * Dash/dash `'Dash'` or `'dash'`
+* Decentraland/mana `'Decentraland'` or `'mana'`
 * Decred/dcr `'Decred'` or `'dcr'`
 * DigiByte/dgb `'DigiByte'` or `'dgb'`
 * District0x/dnt `'District0x'` or `'dnt'`
@@ -74,7 +77,8 @@ npm install multicoin-address-validator
 * GameCredits/game `'GameCredits'` or `'game'`
 * GarliCoin/grlc `'GarliCoin'` or `'grlc'`
 * Gnosis/gno `'Gnosis'` or `'gno'`
-* Golem/gnt `'Golem'` or `'gnt'`
+* Golem/glm `'Golem'` or `'glm'`
+* Golem (GNT)/gnt `'Golem (GNT)'` or `'gnt'`
 * HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
 * HyperSpace/xsc `'HyperSpace'` or `'xsc'`
@@ -87,6 +91,7 @@ npm install multicoin-address-validator
 * Loom Network/loom `'Loom Network'` or `'loom'`
 * Maker/mkr `'Maker'` or `'mkr'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
+* Matic/matic `'Matic'` or `'matic'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`
 * Melon/mln `'Melon'` or `'mln'`
 * Metal/mtl `'Metal'` or `'mtl'`
@@ -105,6 +110,7 @@ npm install multicoin-address-validator
 * Paxos/pax `'Paxos'` or `'pax'`
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'`
 * PIVX/pivx `'PIVX'` or `'pivx'`
+* Polkadot/dot `'Polkadot'` or `'dot'`
 * Polymath/poly `'Polymath'` or `'poly'`
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
 * ProtoShares/pts `'ProtoShares'` or `'pts'`
@@ -135,6 +141,7 @@ npm install multicoin-address-validator
 * Tezos/xtz `'Tezos'` or `'xtz'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
+* Uniswap Coin/uni `'Uniswap Coin'` or `'uni'`
 * USD Coin/usdc `'USD Coin'` or `'usdc'`
 * VeChain/vet `'VeChain'` or `'vet'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`

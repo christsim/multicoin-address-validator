@@ -13,6 +13,10 @@ var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
 var XTZValidator = require('./tezos_validator');
 var USDTValidator = require('./usdt_validator');
+var AlgoValidator = require('./algo_validator');
+var DotValidator = require('./dot_validator');
+var BIP173Validator = require('./bip173_validator')
+var Base58Validator = require('./base58_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -169,7 +173,7 @@ var CURRENCIES = [{
         name: 'GameCredits',
         symbol: 'game',
         addressTypes: { prod: ['26', '05'], testnet: [] },
-        validator: BTCValidator
+        validator: ETHValidator
     }, {
         name: 'PIVX',
         symbol: 'pivx',
@@ -284,10 +288,14 @@ var CURRENCIES = [{
         symbol: 'gno',
         validator: ETHValidator
     }, {
-        name: 'Golem',
+        name: 'Golem (GNT)',
         symbol: 'gnt',
         validator: ETHValidator
     }, {
+        name: 'Golem',
+        symbol: 'glm',
+        validator: ETHValidator
+    },  {
         name: 'Matchpool',
         symbol: 'gup',
         validator: ETHValidator
@@ -418,7 +426,8 @@ var CURRENCIES = [{
     }, {
         name: 'Crypto.com Coin',
         symbol: 'cro',
-        validator: ETHValidator,
+        bech32Hrp: { prod: ['cro'], testnet: ['tcro']},
+        validator: BIP173Validator,
     }, {
         name: 'Multi-collateral DAI',
         symbol: 'dai',
@@ -542,8 +551,45 @@ var CURRENCIES = [{
         name: 'CUSD',
         symbol: 'cusd',
         validator: ETHValidator
+    },
+    {
+        name: 'Algorand',
+        symbol: 'algo',
+        validator: AlgoValidator
+    },
+    {
+        name: 'Polkadot',
+        symbol: 'dot',
+        validator: DotValidator
+    },
+    {
+        name: 'Uniswap Coin',
+        symbol: 'uni',
+        validator: ETHValidator
+    },
+    {
+        name: 'Aave Coin',
+        symbol: 'aave',
+        validator: ETHValidator
+    },
+    {
+        name: 'Matic',
+        symbol: 'matic',
+        validator: ETHValidator
+    },
+    {
+        name: 'Decentraland',
+        symbol: 'mana',
+        validator: ETHValidator
+    },
+    {
+        name: 'Solana',
+        symbol: 'sol',
+        validator: Base58Validator,
+        maxLength: 44,
+        minLength: 43
     }
-    ];
+];
 
 
     module.exports = {
@@ -558,14 +604,14 @@ var CURRENCIES = [{
     }
 };
 
-//spit out details for readme.md
+////spit out details for readme.md
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
-//spit out keywords for package.json
+////spit out keywords for package.json
 // CURRENCIES
 //     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
 //     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
-
+//
 

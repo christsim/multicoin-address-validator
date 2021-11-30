@@ -3,8 +3,8 @@ addons:
   chrome: stable
 language: node_js
 node_js:
-  - "10"
   - "12"
+  - "14"
   - "stable"
 before_install:
     - npm install -g yarn --cache-min 999999999
