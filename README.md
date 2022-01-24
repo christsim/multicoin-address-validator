@@ -43,6 +43,7 @@ npm install multicoin-address-validator
 * Bankex/bkx `'Bankex'` or `'bkx'`
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
 * BeaverCoin/bvc `'BeaverCoin'` or `'bvc'`
+* Binance/bnb `'Binance'` or `'bnb'`
 * BioCoin/bio `'BioCoin'` or `'bio'`
 * Bitcoin/btc `'Bitcoin'` or `'btc'`
 * Bitcoin SV/bsv `'Bitcoin SV'` or `'bsv'`
@@ -124,6 +125,7 @@ npm install multicoin-address-validator
 * Serve/serv `'Serve'` or `'serv'`
 * Siacoin/sc `'Siacoin'` or `'sc'`
 * SnowGem/sng `'SnowGem'` or `'sng'`
+* Solana/sol `'Solana'` or `'sol'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
 * SOLVE/solve `'SOLVE'` or `'solve'`
 * Spendcoin/spnd `'Spendcoin'` or `'spnd'`
@@ -152,6 +154,7 @@ npm install multicoin-address-validator
 * ZCash/zec `'ZCash'` or `'zec'`
 * ZClassic/zcl `'ZClassic'` or `'zcl'`
 * ZenCash/zen `'ZenCash'` or `'zen'`
+
 
 
 ### Usage example
