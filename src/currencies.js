@@ -594,6 +594,13 @@ var CURRENCIES = [{
         symbol: 'bnb',
         validator: ETHValidator,
     },
+    {
+        name: 'Syscoin',
+        symbol: 'sys',
+        addressTypes: { prod: ['3f'], testnet: ['41'] },
+        bech32Hrp: { prod: ['sys'], testnet: ['tsys'] },
+        validator: BTCValidator
+    }
 ];
 
 
