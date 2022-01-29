@@ -828,6 +828,9 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'sol');
         });
 
+        it('should return true for correct xdc addresses', function () {
+            valid('xdc12301c38f07a30d60f474366b4d4ef9c4298f06e', 'xdc');
+        });
     });
 
     describe('invalid results', function () {
