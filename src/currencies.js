@@ -17,6 +17,7 @@ var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
+var XDCValidtaor = require('./xinfin_validator');
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -593,6 +594,11 @@ var CURRENCIES = [{
         name: 'Binance',
         symbol: 'bnb',
         validator: ETHValidator,
+    },
+    {
+        name: 'XinFin',
+        symbol: 'XDC',
+        validator: XDCValidtaor
     },
 ];
 
