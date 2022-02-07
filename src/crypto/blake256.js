@@ -1,5 +1,5 @@
 'use strict';
-
+var Buffer = require('buffer-ponyfill')
 /**
  * Credits to https://github.com/cryptocoinjs/blake-hash
  */
