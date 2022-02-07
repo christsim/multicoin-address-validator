@@ -1,4 +1,5 @@
-var jsSHA = require('jssha/src/sha256');
+var jsSHA = require('jssha');
+var sha512256 = require('js-sha512').sha512_256
 var Blake256 = require('./blake256');
 var keccak256 = require('./sha3')['keccak256'];
 var Blake2B = require('./blake2b');
@@ -6,12 +7,12 @@ var base58 = require('./base58');
 var base32 = require('./base32');
 var BigNum = require('browserify-bignum');
 
-function numberToHex(number) {
-    var hex = Math.round(number).toString(16)
-    if (hex.length === 1) {
-        hex = '0' + hex
+function numberToHex(number, length) {
+    var hex = number.toString(16);
+    if (hex.length % 2 === 1) {
+        hex = '0' + hex;
     }
-    return hex
+    return hex.padStart(length, '0');
 }
 
 function isHexChar(c) {
@@ -79,6 +80,7 @@ function hexStr2byteArray(str) {
 }
 
 module.exports = {
+    numberToHex: numberToHex,
     toHex: function (arrayOfBytes) {
         var hex = '';
         for (var i = 0; i < arrayOfBytes.length; i++) {
@@ -86,13 +88,21 @@ module.exports = {
         }
         return hex;
     },
-    sha256: function (hexString) {
-        var sha = new jsSHA('SHA-256', 'HEX');
-        sha.update(hexString);
-        return sha.getHash('HEX');
+    sha256: function (payload, format = 'HEX') {
+        var sha = new jsSHA('SHA-256', format);
+        sha.update(payload);
+        return sha.getHash(format);
+    },
+    sha256x2: function (buffer, format = 'HEX') {
+        return this.sha256(this.sha256(buffer, format), format);
     },
     sha256Checksum: function (payload) {
         return this.sha256(this.sha256(payload)).substr(0, 8);
+    },
+    sha512_256: function (payload, format = 'HEX') {
+        const hash = sha512256.create()
+        hash.update(Buffer.from(payload, format))
+        return hash.hex().toUpperCase();
     },
     blake256: function (hexString) {
         return new Blake256().update(hexString, 'hex').digest('hex');

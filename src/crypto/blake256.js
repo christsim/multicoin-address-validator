@@ -29,7 +29,7 @@ Blake256.u256 = [
     0xc0ac29b7, 0xc97c50dd, 0x3f84d5b5, 0xb5470917
 ]
 
-Blake256.padding = new Buffer([
+Blake256.padding = Buffer.from([
     0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -49,7 +49,7 @@ Blake256.prototype._length_carry = function (arr) {
 }
 
 Blake256.prototype.update = function (data, encoding) {
-    data = new Buffer(data, encoding);
+    data = Buffer.from(data, encoding);
     var block = this._block
     var offset = 0
 
@@ -67,8 +67,8 @@ Blake256.prototype.update = function (data, encoding) {
     return this;
 }
 
-var zo = new Buffer([0x01])
-var oo = new Buffer([0x81])
+var zo = Buffer.from([0x01])
+var oo = Buffer.from([0x81])
 
 function rot (x, n) {
     return ((x << (32 - n)) | (x >>> n)) >>> 0
@@ -96,7 +96,7 @@ function Blake256 () {
 
     this._s = [0, 0, 0, 0]
 
-    this._block = new Buffer(64)
+    this._block = Buffer.allocUnsafe(64)
     this._blockOffset = 0
     this._length = [0, 0]
 
@@ -149,7 +149,7 @@ Blake256.prototype._padding = function () {
         hi += 1
     }
 
-    var msglen = new Buffer(8)
+    var msglen = Buffer.allocUnsafe(8)
     msglen.writeUInt32BE(hi, 0)
     msglen.writeUInt32BE(lo, 4)
 
@@ -180,7 +180,7 @@ Blake256.prototype._padding = function () {
 Blake256.prototype.digest = function (encoding) {
     this._padding()
 
-    var buffer = new Buffer(32)
+    var buffer = Buffer.allocUnsafe(32)
     for (var i = 0; i < 8; ++i) buffer.writeUInt32BE(this._h[i], i * 4)
     return buffer.toString(encoding);
 }

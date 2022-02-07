@@ -45,7 +45,8 @@ module.exports = {
     /**
      * tron address validation
      */
-    isValidAddress: function (mainAddress, currency, networkType) {
+    isValidAddress: function (mainAddress, currency, opts) {
+        var networkType = opts ? opts.networkType : '';
         var address = decodeBase58Address(mainAddress);
 
         if (!address) {

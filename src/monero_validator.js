@@ -20,13 +20,17 @@ function validateNetwork(decoded, currency, networkType, addressType) {
 
   const isInProd = network.prod.indexOf(at) >= 0 || network.prod.indexOf(at.toString()) >= 0
   const isInTestnet = network.testnet.indexOf(at) >= 0 || network.testnet.indexOf(at.toString()) >= 0
+  // const isInStagenet = network.stagenet?.indexOf(at) >= 0 || network.stagenet?.indexOf(at.toString()) >= 0
+
   switch (networkType) {
     case 'prod':
       return isInProd
+    case 'stagenet':
+      return isInStagenet
     case 'testnet':
       return isInTestnet
     case 'both':
-      return isInProd || isInTestnet
+      return isInProd || isInStagenet || isInTestnet
     default:
       return false
   }
@@ -43,7 +47,7 @@ function hextobin(hex) {
 
 module.exports = {
   isValidAddress: function(address, currency, networkType) {
-    networkType = networkType || DEFAULT_NETWORK_TYPE
+    networkType = networkType?.networkType || DEFAULT_NETWORK_TYPE
     var addressType = 'standard'
 
     if (networkType === 'prod') {
@@ -55,6 +59,16 @@ module.exports = {
         }
       }
     }
+
+    /*if (networkType === 'stagenet' || networkType === 'both') {
+      if (!addressRegTest(currency.expectedTestnetLength).test(address)) {
+        if (integratedAddressRegTest(currency.expectedIntegratedTestnetLength).test(address)) {
+          addressType = 'integrated'
+        } else {
+          return false
+        }
+      }
+    }*/
 
     if (networkType === 'testnet') {
       if (!addressRegTest(currency.expectedTestnetLength).test(address)) {
