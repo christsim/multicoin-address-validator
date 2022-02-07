@@ -594,6 +594,26 @@ var CURRENCIES = [{
         symbol: 'bnb',
         validator: ETHValidator,
     },
+    {
+        name: 'wownero',
+        symbol: 'wow',
+        addressTypes: { prod: ['4146'], testnet: ['53'] },
+        iAddressTypes: { prod: ['6810'], testnet: ['54'] },
+        expectedLength: 97,
+        expectedIntegratedLength: 108,
+        expectedTestnetLength: 95,
+        expectedIntegratedTestnetLength: 106,
+        validator: XMRValidator,
+    },
+    {
+        name: 'conceal',
+        symbol: 'ccx',
+        addressTypes: { prod: [0x7ad4], testnet: [] },
+        iAddressTypes: { prod: [0x7ad4], testnet: [] },
+        expectedLength: 98,
+        expectedIntegratedLength: 186,
+        validator: XMRValidator,
+    }
 ];
 
 
