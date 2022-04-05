@@ -67,8 +67,6 @@ function base (ALPHABET) {
     if (typeof source !== 'string') { throw new TypeError('Expected String') }
     if (source.length === 0) { return _Buffer.alloc(0) }
     var psz = 0
-        // Skip leading spaces.
-    if (source[psz] === ' ') { return }
         // Skip and count leading '1's.
     var zeroes = 0
     var length = 0
@@ -95,8 +93,6 @@ function base (ALPHABET) {
       length = i
       psz++
     }
-        // Skip trailing spaces.
-    if (source[psz] === ' ') { return }
         // Skip leading zeroes in b256.
     var it4 = size - length
     while (it4 !== size && b256[it4] === 0) {
@@ -8339,7 +8335,7 @@ module.exports = {
     }
 };
 
-},{"./bip173_validator":40,"./crypto/base58":43,"cbor-js":5,"crc":30}],38:[function(require,module,exports){
+},{"./bip173_validator":41,"./crypto/base58":44,"cbor-js":5,"crc":30}],38:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 const ALGORAND_CHECKSUM_BYTE_LENGTH = 4;
@@ -8369,7 +8365,41 @@ module.exports = {
     }
 }
 
-},{"./crypto/utils":51}],39:[function(require,module,exports){
+},{"./crypto/utils":52}],39:[function(require,module,exports){
+const base58 = require('./crypto/base58');
+
+// simple base58 validator.  Just checks if it can be decoded.
+module.exports = {
+    isValidAddress: function (address, currency, opts = {}) {
+        try {
+            if (!address || address.length == 0) {
+                return false;
+            }
+
+            if (currency.minLength && (address.length < currency.minLength)) {
+                return false;
+            }
+
+            if (currency.maxLength && (address.length > currency.maxLength)) {
+                return false;
+            }
+            try {
+                const decoded = base58.decode(address);
+                if (!decoded || !decoded.length) {
+                    return false;
+                }
+            } catch (e) {
+                // if decoding fails, assume invalid address
+                return false;
+            }
+            return true;
+        } catch (e) {
+            return false;
+        }
+    }
+};
+
+},{"./crypto/base58":44}],40:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var bech32 = require('./crypto/bech32');
 var BTCValidator = require('./bitcoin_validator');
@@ -8419,7 +8449,7 @@ module.exports = {
     }
 }
 
-},{"./bitcoin_validator":41,"./crypto/bech32":44,"./crypto/utils":51}],40:[function(require,module,exports){
+},{"./bitcoin_validator":42,"./crypto/bech32":45,"./crypto/utils":52}],41:[function(require,module,exports){
 var bech32 = require('./crypto/bech32');
 
 // bip 173 bech 32 addresses (https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki)
@@ -8449,7 +8479,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/bech32":44}],41:[function(require,module,exports){
+},{"./crypto/bech32":45}],42:[function(require,module,exports){
 (function (Buffer){(function (){
 var base58 = require('./crypto/base58');
 var segwit = require('./crypto/segwit_addr');
@@ -8541,7 +8571,7 @@ module.exports = {
 };
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/base58":43,"./crypto/segwit_addr":49,"./crypto/utils":51,"buffer":4}],42:[function(require,module,exports){
+},{"./crypto/base58":44,"./crypto/segwit_addr":50,"./crypto/utils":52,"buffer":4}],43:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
  /**
@@ -8608,7 +8638,7 @@ module.exports = {
     b32decode: b32decode,
     b32encode: b32encode
 };
-},{}],43:[function(require,module,exports){
+},{}],44:[function(require,module,exports){
 // Base58 encoding/decoding
 // Originally written by Mike Hearn for BitcoinJ
 // Copyright (c) 2011 Google Inc
@@ -8656,7 +8686,7 @@ module.exports = {
     }
 };
 
-},{}],44:[function(require,module,exports){
+},{}],45:[function(require,module,exports){
 // Copyright (c) 2017, 2021 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8790,7 +8820,7 @@ function decode (bechString, enc) {
     return {hrp: hrp, data: data.slice(0, data.length - 6)};
 }
 
-},{}],45:[function(require,module,exports){
+},{}],46:[function(require,module,exports){
 /*
 	JavaScript BigInteger library version 0.9.1
 	http://silentmatt.com/biginteger/
@@ -10241,7 +10271,7 @@ function decode (bechString, enc) {
     
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
-},{}],46:[function(require,module,exports){
+},{}],47:[function(require,module,exports){
 (function (Buffer){(function (){
 'use strict';
 
@@ -10433,7 +10463,7 @@ Blake256.prototype.digest = function (encoding) {
 module.exports = Blake256;
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":4}],47:[function(require,module,exports){
+},{"buffer":4}],48:[function(require,module,exports){
 'use strict';
 
 /**
@@ -10711,7 +10741,7 @@ function toHex (n) {
 
 module.exports = Blake2b;
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 var JSBigInt = require('./biginteger')['JSBigInt'];
 
 /**
@@ -10938,7 +10968,7 @@ var cnBase58 = (function () {
     return b58;
 })();
 module.exports = cnBase58;
-},{"./biginteger":45}],49:[function(require,module,exports){
+},{"./biginteger":46}],50:[function(require,module,exports){
 // Copyright (c) 2017, 2021 Pieter Wuille
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -11063,7 +11093,7 @@ module.exports = {
     isValidAddress: isValidAddress,
 };
 
-},{"./bech32":44}],50:[function(require,module,exports){
+},{"./bech32":45}],51:[function(require,module,exports){
 (function (process,global){(function (){
 /**
  * [js-sha3]{@link https://github.com/emn178/js-sha3}
@@ -11707,7 +11737,7 @@ var f = function (s) {
 module.exports = methods;
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":35}],51:[function(require,module,exports){
+},{"_process":35}],52:[function(require,module,exports){
 (function (Buffer){(function (){
 var jsSHA = require('jssha');
 var sha512256 = require('js-sha512').sha512_256
@@ -11843,7 +11873,7 @@ module.exports = {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./base32":42,"./base58":43,"./blake256":46,"./blake2b":47,"./sha3":50,"browserify-bignum":3,"buffer":4,"js-sha512":32,"jssha":33}],52:[function(require,module,exports){
+},{"./base32":43,"./base58":44,"./blake256":47,"./blake2b":48,"./sha3":51,"browserify-bignum":3,"buffer":4,"js-sha512":32,"jssha":33}],53:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
 var BTCValidator = require('./bitcoin_validator');
@@ -11862,6 +11892,7 @@ var USDTValidator = require('./usdt_validator');
 var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
+var Base58Validator = require('./base58_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -12406,7 +12437,39 @@ var CURRENCIES = [{
         name: 'Polkadot',
         symbol: 'dot',
         validator: DotValidator
-    }
+    },
+    {
+        name: 'Uniswap Coin',
+        symbol: 'uni',
+        validator: ETHValidator
+    },
+    {
+        name: 'Aave Coin',
+        symbol: 'aave',
+        validator: ETHValidator
+    },
+    {
+        name: 'Matic',
+        symbol: 'matic',
+        validator: ETHValidator
+    },
+    {
+        name: 'Decentraland',
+        symbol: 'mana',
+        validator: ETHValidator
+    },
+    {
+        name: 'Solana',
+        symbol: 'sol',
+        validator: Base58Validator,
+        maxLength: 44,
+        minLength: 43
+    },
+    {
+        name: 'Binance',
+        symbol: 'bnb',
+        validator: ETHValidator,
+    },
 ];
 
 
@@ -12434,7 +12497,7 @@ var CURRENCIES = [{
 //
 
 
-},{"./ada_validator":37,"./algo_validator":38,"./bch_validator":39,"./bip173_validator":40,"./bitcoin_validator":41,"./dot_validator":53,"./eos_validator":54,"./ethereum_validator":55,"./lisk_validator":56,"./monero_validator":57,"./nano_validator":58,"./nem_validator":59,"./ripple_validator":60,"./siacoin_validator":61,"./stellar_validator":62,"./tezos_validator":63,"./tron_validator":64,"./usdt_validator":65}],53:[function(require,module,exports){
+},{"./ada_validator":37,"./algo_validator":38,"./base58_validator":39,"./bch_validator":40,"./bip173_validator":41,"./bitcoin_validator":42,"./dot_validator":54,"./eos_validator":55,"./ethereum_validator":56,"./lisk_validator":57,"./monero_validator":58,"./nano_validator":59,"./nem_validator":60,"./ripple_validator":61,"./siacoin_validator":62,"./stellar_validator":63,"./tezos_validator":64,"./tron_validator":65,"./usdt_validator":66}],54:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 // from https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
@@ -12477,7 +12540,7 @@ module.exports = {
             const addressFormat = addressFormats.find(af => af.addressLength === addressAndChecksum.length);
 
             if (!addressFormat) {
-                throw new Erorr('Invalid address length');
+                throw new Error('Invalid address length');
             }
 
             const decodedAddress = cryptoUtils.byteArray2hexStr(addressAndChecksum.slice(0, addressFormat.accountIndexLength));
@@ -12495,7 +12558,7 @@ module.exports = {
     }
 }
 
-},{"./crypto/utils":51}],54:[function(require,module,exports){
+},{"./crypto/utils":52}],55:[function(require,module,exports){
 function isValidEOSAddress (address, currency, networkType) {
   var regex = /^[a-z0-9.]+$/g // Must be numbers, lowercase letters and decimal points only
   if (address.search(regex) !== -1 && address.length === 12) {
@@ -12511,7 +12574,7 @@ module.exports = {
   }
 }
 
-},{}],55:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 module.exports = {
@@ -12547,7 +12610,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":51}],56:[function(require,module,exports){
+},{"./crypto/utils":52}],57:[function(require,module,exports){
 (function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12569,7 +12632,7 @@ module.exports = {
     }
 };
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/utils":51,"buffer":4}],57:[function(require,module,exports){
+},{"./crypto/utils":52,"buffer":4}],58:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -12635,7 +12698,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":48,"./crypto/utils":51}],58:[function(require,module,exports){
+},{"./crypto/cnBase58":49,"./crypto/utils":52}],59:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12664,7 +12727,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":51,"base-x":1}],59:[function(require,module,exports){
+},{"./crypto/utils":52,"base-x":1}],60:[function(require,module,exports){
 (function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12691,7 +12754,7 @@ module.exports = {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/utils":51,"buffer":4}],60:[function(require,module,exports){
+},{"./crypto/utils":52,"buffer":4}],61:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12721,7 +12784,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":51,"base-x":1}],61:[function(require,module,exports){
+},{"./crypto/utils":52,"base-x":1}],62:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash.isequal')
 
@@ -12751,7 +12814,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":51,"lodash.isequal":34}],62:[function(require,module,exports){
+},{"./crypto/utils":52,"lodash.isequal":34}],63:[function(require,module,exports){
 var baseX = require('base-x');
 var crc = require('crc');
 var cryptoUtils = require('./crypto/utils');
@@ -12791,7 +12854,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":51,"base-x":1,"crc":30}],63:[function(require,module,exports){
+},{"./crypto/utils":52,"base-x":1,"crc":30}],64:[function(require,module,exports){
 const base58 = require('./crypto/base58');
 const cryptoUtils = require('./crypto/utils');
 
@@ -12829,7 +12892,7 @@ module.exports = {
     isValidAddress
 };
 
-},{"./crypto/base58":43,"./crypto/utils":51}],64:[function(require,module,exports){
+},{"./crypto/base58":44,"./crypto/utils":52}],65:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58Sting) {
@@ -12893,7 +12956,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":51}],65:[function(require,module,exports){
+},{"./crypto/utils":52}],66:[function(require,module,exports){
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
 
@@ -12916,7 +12979,7 @@ module.exports = {
     }
 };
 
-},{"./bitcoin_validator":41,"./ethereum_validator":55}],66:[function(require,module,exports){
+},{"./bitcoin_validator":42,"./ethereum_validator":56}],67:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
@@ -12943,5 +13006,5 @@ module.exports = {
     }
 };
 
-},{"./currencies":52}]},{},[66])(66)
+},{"./currencies":53}]},{},[67])(67)
 });

@@ -33,6 +33,8 @@ npm install multicoin-address-validator
 ### Supported crypto currencies
 
 * 0x/zrx `'0x'` or `'zrx'`
+* Aave Coin/aave `'Aave Coin'` or `'aave'`
+* Algorand/algo `'Algorand'` or `'algo'`
 * Aragon/ant `'Aragon'` or `'ant'`
 * Augur/rep `'Augur'` or `'rep'`
 * AugurV2/repv2 `'AugurV2'` or `'repv2'`
@@ -41,6 +43,7 @@ npm install multicoin-address-validator
 * Bankex/bkx `'Bankex'` or `'bkx'`
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
 * BeaverCoin/bvc `'BeaverCoin'` or `'bvc'`
+* Binance/bnb `'Binance'` or `'bnb'`
 * BioCoin/bio `'BioCoin'` or `'bio'`
 * Bitcoin/btc `'Bitcoin'` or `'btc'`
 * Bitcoin SV/bsv `'Bitcoin SV'` or `'bsv'`
@@ -59,6 +62,7 @@ npm install multicoin-address-validator
 * Crypto.com Coin/cro `'Crypto.com Coin'` or `'cro'`
 * CUSD/cusd `'CUSD'` or `'cusd'`
 * Dash/dash `'Dash'` or `'dash'`
+* Decentraland/mana `'Decentraland'` or `'mana'`
 * Decred/dcr `'Decred'` or `'dcr'`
 * DigiByte/dgb `'DigiByte'` or `'dgb'`
 * District0x/dnt `'District0x'` or `'dnt'`
@@ -88,6 +92,7 @@ npm install multicoin-address-validator
 * Loom Network/loom `'Loom Network'` or `'loom'`
 * Maker/mkr `'Maker'` or `'mkr'`
 * Matchpool/gup `'Matchpool'` or `'gup'`
+* Matic/matic `'Matic'` or `'matic'`
 * MegaCoin/mec `'MegaCoin'` or `'mec'`
 * Melon/mln `'Melon'` or `'mln'`
 * Metal/mtl `'Metal'` or `'mtl'`
@@ -106,6 +111,7 @@ npm install multicoin-address-validator
 * Paxos/pax `'Paxos'` or `'pax'`
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'`
 * PIVX/pivx `'PIVX'` or `'pivx'`
+* Polkadot/dot `'Polkadot'` or `'dot'`
 * Polymath/poly `'Polymath'` or `'poly'`
 * PrimeCoin/xpm `'PrimeCoin'` or `'xpm'`
 * ProtoShares/pts `'ProtoShares'` or `'pts'`
@@ -119,6 +125,7 @@ npm install multicoin-address-validator
 * Serve/serv `'Serve'` or `'serv'`
 * Siacoin/sc `'Siacoin'` or `'sc'`
 * SnowGem/sng `'SnowGem'` or `'sng'`
+* Solana/sol `'Solana'` or `'sol'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
 * SOLVE/solve `'SOLVE'` or `'solve'`
 * Spendcoin/spnd `'Spendcoin'` or `'spnd'`
@@ -136,6 +143,7 @@ npm install multicoin-address-validator
 * Tezos/xtz `'Tezos'` or `'xtz'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
+* Uniswap Coin/uni `'Uniswap Coin'` or `'uni'`
 * USD Coin/usdc `'USD Coin'` or `'usdc'`
 * VeChain/vet `'VeChain'` or `'vet'`
 * VertCoin/vtc `'VertCoin'` or `'vtc'`
@@ -146,6 +154,8 @@ npm install multicoin-address-validator
 * ZCash/zec `'ZCash'` or `'zec'`
 * ZClassic/zcl `'ZClassic'` or `'zcl'`
 * ZenCash/zen `'ZenCash'` or `'zen'`
+
+
 
 ### Usage example
 

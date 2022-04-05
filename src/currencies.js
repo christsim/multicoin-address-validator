@@ -16,6 +16,7 @@ var USDTValidator = require('./usdt_validator');
 var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
+var Base58Validator = require('./base58_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -580,7 +581,24 @@ var CURRENCIES = [{
         name: 'Decentraland',
         symbol: 'mana',
         validator: ETHValidator
-    }
+    },
+    {
+        name: 'Solana',
+        symbol: 'sol',
+        validator: Base58Validator,
+        maxLength: 44,
+        minLength: 43
+    },
+    {
+        name: 'Binance',
+        symbol: 'bnb',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Avalanche',
+        symbol: 'avax',
+        validator: ETHValidator,
+    },
 ];
 
 
