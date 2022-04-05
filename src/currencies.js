@@ -594,6 +594,11 @@ var CURRENCIES = [{
         symbol: 'bnb',
         validator: ETHValidator,
     },
+    {
+        name: 'Avalanche',
+        symbol: 'avax',
+        validator: ETHValidator,
+    },
 ];
 
 
