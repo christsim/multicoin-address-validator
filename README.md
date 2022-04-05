@@ -39,6 +39,7 @@ npm install multicoin-address-validator
 * Augur/rep `'Augur'` or `'rep'`
 * AugurV2/repv2 `'AugurV2'` or `'repv2'`
 * AuroraCoin/aur `'AuroraCoin'` or `'aur'`
+* Avalanche/avax `'Avalanche'` or `'avax'`
 * Bancor/bnt `'Bancor'` or `'bnt'`
 * Bankex/bkx `'Bankex'` or `'bkx'`
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
