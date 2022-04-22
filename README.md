@@ -35,11 +35,13 @@ npm install multicoin-address-validator
 * 0x/zrx `'0x'` or `'zrx'`
 * Aave Coin/aave `'Aave Coin'` or `'aave'`
 * Algorand/algo `'Algorand'` or `'algo'`
+* Apecoin/ape `'Apecoin'` or `'ape'`
 * Aragon/ant `'Aragon'` or `'ant'`
 * Augur/rep `'Augur'` or `'rep'`
 * AugurV2/repv2 `'AugurV2'` or `'repv2'`
 * AuroraCoin/aur `'AuroraCoin'` or `'aur'`
 * Avalanche/avax `'Avalanche'` or `'avax'`
+* Axe Infinity/axs `'Axe Infinity'` or `'axs'`
 * Bancor/bnt `'Bancor'` or `'bnt'`
 * Bankex/bkx `'Bankex'` or `'bkx'`
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
@@ -61,6 +63,7 @@ npm install multicoin-address-validator
 * Compound/comp `'Compound'` or `'comp'`
 * Cred/lba `'Cred'` or `'lba'`
 * Crypto.com Coin/cro `'Crypto.com Coin'` or `'cro'`
+* Curve DAO/crv `'Curve DAO'` or `'crv'`
 * CUSD/cusd `'CUSD'` or `'cusd'`
 * Dash/dash `'Dash'` or `'dash'`
 * Decentraland/mana `'Decentraland'` or `'mana'`
@@ -76,6 +79,7 @@ npm install multicoin-address-validator
 * Expanse/exp `'Expanse'` or `'exp'`
 * FirmaChain/fct `'FirmaChain'` or `'fct'`
 * FreiCoin/frc `'FreiCoin'` or `'frc'`
+* Fantom/ftm `'Fantom'` or `'ftm'`
 * GameCredits/game `'GameCredits'` or `'game'`
 * GarliCoin/grlc `'GarliCoin'` or `'grlc'`
 * Gnosis/gno `'Gnosis'` or `'gno'`
