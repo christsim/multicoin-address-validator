@@ -828,6 +828,28 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'sol');
         });
 
+        it('should return true for correct Apecoin addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'apecoin');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'ape');
+        });
+
+        it('should return true for correct curve dao addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'curve dao');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'crv');
+        });
+
+        
+        it('should return true for correct fantom addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'fantom');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'ftm');
+        });
+
+        
+        it('should return true for correct axe infinity addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'axe infinity');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'axs');
+        });
+
     });
 
     describe('invalid results', function () {
