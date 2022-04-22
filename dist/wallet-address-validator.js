@@ -12129,6 +12129,22 @@ var CURRENCIES = [{
         symbol: 'bkx',
         validator: ETHValidator
     }, {
+        name: 'ApeCoin',
+        symbol: 'ape',
+        validator: ETHValidator
+    }, {
+        name: 'Curve DAO',
+        symbol: 'crv',
+        validator: ETHValidator
+    }, {
+        name: 'Fantom',
+        symbol: 'ftm',
+        validator: ETHValidator
+    }, {
+        name: 'Axe Infinity',
+        symbol: 'axs',
+        validator: ETHValidator
+    }, {
         name: 'Cardano',
         symbol: 'ada',
         bech32Hrp: { prod: ['addr'], testnet: ['addr']},
