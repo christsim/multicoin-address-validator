@@ -17,6 +17,7 @@ var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
+var AVAXValidator = require('./avax_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -597,7 +598,8 @@ var CURRENCIES = [{
     {
         name: 'Avalanche',
         symbol: 'avax',
-        validator: ETHValidator,
+        bech32Hrp: { prod: ['avax'], testnet: ['cascade', 'denali', 'everest', 'fuji', 'local', 'custom'] },
+        validator: AVAXValidator
     },
 ];
 

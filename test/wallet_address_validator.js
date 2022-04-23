@@ -828,6 +828,17 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'sol');
         });
 
+        it('should return true for correct X- & P- Avalanche chain addreses', function () {
+            valid('P-avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avax');
+            valid('X-avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avax');
+            valid('avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avax');
+            valid('P-avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avalanche');
+            valid('X-avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avalanche');
+            valid('avax1ks5kfds2mk8hxwdfdg6dya2v3pggdwf6enj9lt', 'avalanche');
+
+            valid('X-fuji1xpmx0ljrpvqexrvrj26fnggvr0ax9wm32gaxmx', 'avalanche', 'testnet');
+            valid('fuji1xpmx0ljrpvqexrvrj26fnggvr0ax9wm32gaxmx', 'avalanche', 'testnet');
+        });
     });
 
     describe('invalid results', function () {
