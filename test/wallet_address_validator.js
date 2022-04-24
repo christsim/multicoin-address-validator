@@ -839,6 +839,13 @@ describe('WAValidator.validate()', function () {
             valid('X-fuji1xpmx0ljrpvqexrvrj26fnggvr0ax9wm32gaxmx', 'avalanche', 'testnet');
             valid('fuji1xpmx0ljrpvqexrvrj26fnggvr0ax9wm32gaxmx', 'avalanche', 'testnet');
         });
+
+        it('should return true for correct Avalanche C-chain address (AVAXC)', function () {
+            valid('C-0x572f4D80f10f663B5049F789546f25f70Bb62a7F', 'avaxc');
+            valid('0x572f4D80f10f663B5049F789546f25f70Bb62a7F', 'avaxc');
+            valid('C-0x572f4D80f10f663B5049F789546f25f70Bb62a7F', 'avalanche c-chain');
+            valid('0x572f4D80f10f663B5049F789546f25f70Bb62a7F', 'avalanche c-chain');
+        });
     });
 
     describe('invalid results', function () {
