@@ -11978,6 +11978,7 @@ var CURRENCIES = [{
         name: 'VertCoin',
         symbol: 'vtc',
         addressTypes: { prod: ['0x', '47', '71', '05'], testnet: ['6f', 'c4'] },
+        bech32Hrp: { prod: ['vtc'], testnet: ['tvtc'] },
         validator: BTCValidator
 
     }, {

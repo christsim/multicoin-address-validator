@@ -233,6 +233,7 @@ describe('WAValidator.validate()', function () {
             valid('353nERPQKhGj4WGzoiWcareA76TPgRCVNA', 'VTC');
             valid('376g4TmL8uQKFYsRFrbv5iz9srmb5bocEt', 'VTC');
             valid('3AMtM4Zk5oNHu9i4jDiwKB6Kg5YEReBsav', 'VTC');
+            valid('vtc1qgxsy46a865z5awrevvcu9k9ll9h5yl4efgj78g', 'VTC');
 
             valid('VmoMjGf3zgZLy8sk3PMKd3xikZHXWvnYi7', 'vertcoin');
             valid('VmhHwXr3J8xMZpy62WuBGpu3xVvThWzcTQ', 'vertcoin');
