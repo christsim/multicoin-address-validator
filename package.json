@@ -9,6 +9,7 @@
         "Augur","rep",
         "AugurV2","repv2",
         "AuroraCoin","aur",
+        "Avalance","avax",
         "Bancor","bnt",
         "Bankex","bkx",
         "Basic Attention Token","bat",
@@ -125,7 +126,7 @@
         "ZClassic","zcl",
         "ZenCash","zen"
     ],
-    "version": "0.5.6",
+    "version": "0.5.9",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",

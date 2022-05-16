@@ -40,7 +40,7 @@ module.exports = {
             const addressFormat = addressFormats.find(af => af.addressLength === addressAndChecksum.length);
 
             if (!addressFormat) {
-                throw new Erorr('Invalid address length');
+                throw new Error('Invalid address length');
             }
 
             const decodedAddress = cryptoUtils.byteArray2hexStr(addressAndChecksum.slice(0, addressFormat.accountIndexLength));
