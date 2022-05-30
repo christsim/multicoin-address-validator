@@ -1,5 +1,5 @@
 {
-    "name": "@abx/multicoin-address-validator",
+    "name": "multicoin-address-validator",
     "description": "Multicoin address validator for Bitcoin and other Altcoins.",
     "keywords": [
         "0x","zrx",
