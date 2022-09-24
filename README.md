@@ -72,6 +72,7 @@ npm install multicoin-address-validator
 * EOS/eos `'EOS'` or `'eos'`
 * Ethereum/eth `'Ethereum'` or `'eth'`
 * EthereumClassic/etc `'EthereumClassic'` or `'etc'`
+* EthereumPow/ethw `'EthereumPow'` or `'ethw'`
 * EtherZero/etz `'EtherZero'` or `'etz'`
 * Expanse/exp `'Expanse'` or `'exp'`
 * FirmaChain/fct `'FirmaChain'` or `'fct'`

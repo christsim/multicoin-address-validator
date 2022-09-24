@@ -12114,6 +12114,10 @@ var CURRENCIES = [{
         symbol: 'eth',
         validator: ETHValidator,
     }, {
+        name: 'EthereumPow',
+        symbol: 'ethw',
+        validator: ETHValidator,
+    }, {
         name: 'EtherZero',
         symbol: 'etz',
         validator: ETHValidator,
