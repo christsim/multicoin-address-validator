@@ -305,13 +305,24 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'ETHW');
         });
 
-        it('should return true for correct binance coin addresses', function () {
-            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'binance');
-            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'binance');
-            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'BNB');
-            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'bnb');
-            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'BNB');
-            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'bnb');
+        it('should return true for correct binance smart chain (BSC) address', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'binance smart chain');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'binance smart chain');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'bsc');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'BSC');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'bsc');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'BSC');
+            valid('0x7ae2f5b9e386cd1b50a4550696d957cb4900f03a', 'bsc');
+            valid('0x0000000000000000000000000000000000001000', 'Binance Smart Chain');
+            valid('0x0590396689ee1d287147e9383fb8dd24532f2006', 'bsc');
+            valid('0x07fc5c2bcaa0fa6bdaa4fff897490312c8f33c27', 'binance smart chain');
+        });
+
+        it('should return true for correct binance chain (Bep-2) address', function () {
+            valid('bnb1xlvns0n2mxh77mzaspn2hgav4rr4m8eerfju38', 'bnb');
+            valid('bnb1xlvns0n2mxh77mzaspn2hgav4rr4m8eerfju38', 'binancechain');
+            // testnet bnb address
+            valid('tbnb17lhacayu5jwpmndvt05zhldjhwat76pkkhmmrg', 'bnb');
         });
 
         it('should return true for correct Ripple addresses', function () {
@@ -320,6 +331,8 @@ describe('WAValidator.validate()', function () {
             valid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'XRP');
             valid('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', 'XRP');
             valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'XRP');
+            valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'XRPL');
+            valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'xrpl');
         });
 
         it('should return true for correct dash addresses', function () {
@@ -516,6 +529,15 @@ describe('WAValidator.validate()', function () {
             valid('nano_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
         });
 
+        it('should return true for correct Aeternity addresses', () => {
+            valid('ak_AT2bs7LkqwKbPUj5waoqq1E7QYgRzXUbaBanDHXDVsaCJ8gRA', 'ae')
+            valid('ak_8QxnP9qXP3NpA4fskYZE7P1GfHzKZAMmoNuok7jJC5NqVYi21', 'ae')
+        });
+
+        it('should return true for correct Ardor addresses', () => {
+            valid('ARDOR-HFNE-E2VE-SMV3-DCRZ8', 'ardr')
+        });
+
         it('should return true for correct siacoin addresses', function () {
             valid(
                 'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
@@ -633,6 +655,7 @@ describe('WAValidator.validate()', function () {
             valid('0xa7E43b445cF68CAa143a884AF673121447F29EAe', 'vet');
             valid('0x46B8aABa5Eaa84Dc074c350eD57D8b3c35B90E09', 'VeChain');
             valid('0x6d57D1697277C9Bb01A5265EC00558A639CA308A', 'VET');
+            valid('0x1374A7E9d5Ed5CFF9c56a0e57B3d8a836a378715', 'vet')
         });
 
         it('should return true for correct algo addresses', function () {
@@ -842,6 +865,74 @@ describe('WAValidator.validate()', function () {
 
             valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'sol');
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'sol');
+        });
+
+        it('should return true for correct Cosmos addresses', () => {
+            valid('cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u', 'atom')
+        });
+
+        it('should return true for correct HashGraph addresses', () => {
+            valid('0.0.10819', 'hbar')
+            valid('0.0.13458', 'hbar')
+            valid('0.0.16952', 'hbar')
+        });
+
+        it('should return true for correct ICON addresses', () => {
+            valid('hxf5a52d659df00ef0517921647516daaf7502a728', 'icx')
+            valid('hx7498b6b4b6da57f8880332aea80555aa6b115bd6', 'icx')
+        });
+
+        it('should return true for correct IOST addresses', () => {
+            valid('binanceiost', 'iost')
+        });
+
+        it('should return true for incorrect NXT addresses', () => {
+            valid('NXT-799W-TN9C-GL3Q-D3PXU', 'nxt')
+            valid('NXT-TMVC-69YC-SJB4-8YCH7', 'nxt')
+        });
+        
+        it('should return true for correct STEEM addresses', () => {
+            valid('disconnect', 'steem');
+        });
+
+        it('should return true for correct Syscoin addresses', () => {
+            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys')
+            valid('SSSBZDMVxuZyEMW4s6ar79Cf9UKqy6ZCwf', 'sys')
+            valid('SUQ4gsnsTUeYJgTLsQ3siryr9HfHp95p12', 'sys')
+            valid('SdzKyvhD2Y3xJvGVSfx96NXszq6x9BZX34', 'sys')
+            valid('SbmNaK9hVn9BUoPoPtTmXogfGfZd5Mophm', 'sys')
+            valid('SQUDdLog219Hpcz6Zss4uXg6xU1pAcnbLF', 'sys')
+            valid('STxiBMedbmA28ip1QMooZaTBHxyiwVSCSr', 'sys')
+            valid('SV4yxaugDJB6WXT5hNJwN1Pz6M8TjrMmJ6', 'sys')
+        });
+
+        it('should return true for correct Zilliqa addresses', () => {
+            valid('zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7', 'zil')
+        });
+
+        it('should return true for correct Chia addresses', () => {
+            valid('xch16rdrw2lktf729jtz0kc0hjuzr65akgx9d56j74f0xfsemp08njuq2a4j5e', 'xch')
+            valid('xch1ed7yctrag8s5su35qs6pxjzfzwng9hnt3txd5gvkkr0rg9serq4sp9g6n5', 'xch')
+            valid('xch1w0mjfntrxz79uacsfarm4jukqegewcgzyduw8k9fcc70lnls24ms8gax6y', 'xch')
+            // testnet
+            valid('txch16rdrw2lktf729jtz0kc0hjuzr65akgx9d56j74f0xfsemp08njuq86jy42', 'xch')
+        });
+
+        it('should return true for correct Harmony addresses', function () {
+            // ETH format
+            valid('0x2855FE586702Cf1233e3f4B3e946c5F5B9634ce2', 'one');
+            valid('0x664FE9758008B398Dd5366BeCf07cF344ae5CC52', 'one');
+            // ONE format
+            valid('one1gu0kda66ly3c5taz8w3rsc44j4csn7epatrzvl', 'one');
+            valid('one1ve87javqpzee3h2nv6lv7p70x39wtnzjg4vx80', 'one');
+        });
+
+        it('should return true for correct digitalbits addresses', function () {
+            valid('GAHTKNX226D5LRBOLKIHGIRZ5CDLEV6LT2Z3GBNWU6ASW7DLSI7HC6CG', 'digitalbits');
+            valid('GBJRD43O3CHV4T5ILK7ITB722E42PSAANL33F4NI47PVF5TNXI4FUXSS', 'xdb');
+            valid('GBVI4U5B6R6W25KQG5OONKSFSCF4PESMFUDVIN5KAZAVXP2WC3ZWONWT', 'xdb');
+            valid('GA7X22PK5M3EWRKKODPPGCLLGVUQK32IIMD2F3XDSXUTEGORJKCLMP2H', 'xdb', 'testnet');
+            valid('GC2W627ONUU23SSO3H4FKAAESEGRAVZMVI2YIG7LAYSHYVOLWEHT6QYS', 'xdb', 'testnet');
         });
 
     });
@@ -1541,6 +1632,59 @@ describe('invalid results', function () {
         invalid('CxDDSH8gS7jecsxaRL8Txf8H5kqesLXAEAEgp76Yz632J9M', 'dot');
     });
 
+    it('should return false for incorrect binance smart chain address', function () {
+        // this is a bep-2 binance address (bnb)
+        invalid('bnb1xlvns0n2mxh77mzaspn2hgav4rr4m8eerfju38', 'bsc');
+    });
+
+    it('should return false for incorrect Cosmos addresses', () => {
+        invalid('cosmo15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom')
+        invalid('cosmos25v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74', 'atom')
+        invalid('cosmos15v50ymp6n5dn73erkQtmq0u8adpl8d3ujv2e74', 'atom')
+    });
+
+    it('should return false for incorrect HashGraph addresses', () => {
+        invalid('1.0.10819', 'hbar')
+    });
+
+   it('should return false for incorrect ICON addresses', () => {
+       invalid('gxde8ba8fd110625a0c47ecf29de308b8f5bd20ed6', 'icx')
+       invalid('hxde8ba8fd110625a0c47ecf29de308b8f5bd20eD6', 'icx')
+   });
+    
+   it('should return true for correct IOST addresses', () => {
+       invalid('rekt', 'iost')
+   });
+
+   it('should return false for incorrect NXT addresses', () => {
+       invalid('NXT-799W-TN9C-GL3Q', 'nxt')
+       invalid('NEXT-799W-TN9C-GL3Q', 'nxt')
+   });
+
+   it('should return false for incorrect STEEM addresses', () => {
+       invalid('meet--crypto8', 'steem');
+       invalid('me.etcrypto8', 'steem');
+       invalid('met.8etcrypto8', 'steem');
+       invalid('me', 'steem');
+       invalid('.', 'steem');
+   });
+
+   it('should return false for incorrect Zilliqa addresses', () => {
+       invalid('0xda816e2122a8a39b0926bfa84edd3d42477e9efE', 'zil')
+   });
+
+   it('should return false for incorrect Chia addresses', () => {
+       invalid('zil1pk6fe395e9lfkglv0m70daezm5en0t62hty7f7', 'xch')
+       invalid('bnb1ed7yctrag8s5su35qs6pxjzfzwng9hnt3txd5gvkkr0rg9serq4sp9g6n5', 'xch')
+       invalid('thisisnotvalid0923492349239492349003jasdf90asd9adf92022123hnk3', 'xch')
+       invalid('txch16rdrw2lktf729jtz0kc0hjuzr65akgx9d56j74f0xfsemp08njuq2a4j5e', 'xch')
+   });
+
+   it('should return false for incorrect Harmony addresses', () => {
+       invalid('0x000000000000000000000000000000000000000', 'one');
+       invalid('tone1gu0kda66ly3c5taz8w3rsc44j4csn7epatrzvl', 'one');
+       invalid('xone1fdv7u7rll9epgcqv9xxh9lhwq427nsqlr5wca5', 'one');
+   });
 
 });
 
