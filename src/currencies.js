@@ -605,11 +605,11 @@ var CURRENCIES = [{
         symbol: 'avax',
         validator: ETHValidator,
     },
-    {
-        name: 'Cosmos',
-        symbol: 'atom',
-        validator: ATOMValidator,
-    },
+   {
+      name: 'Cosmos',
+      symbol: 'atom',
+      validator: ATOMValidator
+    }
 ];
 
 
