@@ -604,6 +604,11 @@ var CURRENCIES = [{
         symbol: 'avax',
         validator: ETHValidator,
     },
+    {
+        name: 'Flare',
+        symbol: 'flr',
+        validator: ETHValidator,
+    },
 ];
 
 

@@ -737,6 +737,16 @@ describe('WAValidator.validate()', function () {
             valid('nano_1q79ahdr36uqn38p5tp5sqwkn73rnpj1k8obtuetdbjcx37d5gahhd1u9cuh', 'nano');
         });
 
+        it('should return true for correct Ethereum addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'flare');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'flare');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'FLR');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'FLR');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'FLR');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'FLR');
+            valid('0xde709f2102306220921060314715629080e2fb77', 'FLR');
+        })
+
         it('should return true for correct siacoin addresses', function () {
             valid(
                 'a9b01c85163638682b170d82de02b8bb99ba86092e9ab1b0d25111284fe618e93456915820f1',
