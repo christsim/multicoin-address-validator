@@ -77,6 +77,7 @@ npm install multicoin-address-validator
 * Expanse/exp `'Expanse'` or `'exp'`
 * FirmaChain/fct `'FirmaChain'` or `'fct'`
 * FreiCoin/frc `'FreiCoin'` or `'frc'`
+* Flare/flr `'FLare'` or `'flr'`
 * GameCredits/game `'GameCredits'` or `'game'`
 * GarliCoin/grlc `'GarliCoin'` or `'grlc'`
 * Gnosis/gno `'Gnosis'` or `'gno'`
