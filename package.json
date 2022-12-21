@@ -45,6 +45,7 @@
         "EthereumClassic","etc",
         "EtherZero","etz",
         "Expanse","exp",
+        "Flare","flr",
         "FirmaChain","fct",
         "FreiCoin","frc",
         "GameCredits","game",
@@ -127,7 +128,7 @@
         "ZClassic","zcl",
         "ZenCash","zen"
     ],
-    "version": "0.5.11",
+    "version": "0.5.12",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",
