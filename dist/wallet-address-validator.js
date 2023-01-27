@@ -8485,12 +8485,12 @@ module.exports = {
 };
 
 },{"./crypto/bech32":45}],42:[function(require,module,exports){
-(function (Buffer){(function (){
-var base58 = require('./crypto/base58');
-var segwit = require('./crypto/segwit_addr');
-var cryptoUtils = require('./crypto/utils');
+var base58 = require("./crypto/base58");
+var segwit = require("./crypto/segwit_addr");
+var cryptoUtils = require("./crypto/utils");
+const Buffer = require("buffer").Buffer;
 
-var DEFAULT_NETWORK_TYPE = 'prod';
+var DEFAULT_NETWORK_TYPE = "prod";
 
 function getDecoded(address) {
     try {
@@ -8505,14 +8505,14 @@ function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
         // blake then keccak hash chain
-        case 'blake256keccak256':
+        case "blake256keccak256":
             var blake = cryptoUtils.blake2b256(payload);
-            return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
-        case 'blake256':
+            return cryptoUtils.keccak256Checksum(Buffer.from(blake, "hex"));
+        case "blake256":
             return cryptoUtils.blake256Checksum(payload);
-        case 'keccak256':
+        case "keccak256":
             return cryptoUtils.keccak256Checksum(payload);
-        case 'sha256':
+        case "sha256":
         default:
             return cryptoUtils.sha256Checksum(payload);
     }
@@ -8522,7 +8522,7 @@ function getAddressType(address, currency) {
     currency = currency || {};
     // should be 25 bytes per btc address spec and 26 decred
     var expectedLength = currency.expectedLength || 25;
-    var hashFunction = currency.hashFunction || 'sha256';
+    var hashFunction = currency.hashFunction || "sha256";
     var decoded = getDecoded(address);
 
     if (decoded) {
@@ -8532,8 +8532,8 @@ function getAddressType(address, currency) {
             return null;
         }
 
-        if(currency.regex) {
-            if(!currency.regex.test(address)) {
+        if (currency.regex) {
+            if (!currency.regex.test(address)) {
                 return false;
             }
         }
@@ -8542,23 +8542,27 @@ function getAddressType(address, currency) {
             body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
             goodChecksum = getChecksum(hashFunction, body);
 
-        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+        return checksum === goodChecksum
+            ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24))
+            : null;
     }
 
     return null;
 }
 
 function isValidP2PKHandP2SHAddress(address, currency, opts) {
-    const { networkType = DEFAULT_NETWORK_TYPE} = opts;
+    const { networkType = DEFAULT_NETWORK_TYPE } = opts;
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
 
     if (addressType) {
-        if (networkType === 'prod' || networkType === 'testnet') {
-            correctAddressTypes = currency.addressTypes[networkType]
+        if (networkType === "prod" || networkType === "testnet") {
+            correctAddressTypes = currency.addressTypes[networkType];
         } else if (currency.addressTypes) {
-            correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+            correctAddressTypes = currency.addressTypes.prod.concat(
+                currency.addressTypes.testnet
+            );
         } else {
             return false;
         }
@@ -8571,11 +8575,13 @@ function isValidP2PKHandP2SHAddress(address, currency, opts) {
 
 module.exports = {
     isValidAddress: function (address, currency, opts = {}) {
-        return isValidP2PKHandP2SHAddress(address, currency, opts) || segwit.isValidAddress(address, currency, opts);
-    }
+        return (
+            isValidP2PKHandP2SHAddress(address, currency, opts) ||
+            segwit.isValidAddress(address, currency, opts)
+        );
+    },
 };
 
-}).call(this)}).call(this,require("buffer").Buffer)
 },{"./crypto/base58":44,"./crypto/segwit_addr":50,"./crypto/utils":52,"buffer":4}],43:[function(require,module,exports){
 var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
@@ -11742,28 +11748,30 @@ module.exports = methods;
 
 }).call(this)}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{"_process":35}],52:[function(require,module,exports){
-(function (Buffer){(function (){
-var jsSHA = require('jssha');
-var sha512256 = require('js-sha512').sha512_256
-var Blake256 = require('./blake256');
-var keccak256 = require('./sha3')['keccak256'];
-var Blake2B = require('./blake2b');
-var base58 = require('./base58');
-var base32 = require('./base32');
-var BigNum = require('browserify-bignum');
+var jsSHA = require("jssha");
+var sha512256 = require("js-sha512").sha512_256;
+var Blake256 = require("./blake256");
+var keccak256 = require("./sha3")["keccak256"];
+var Blake2B = require("./blake2b");
+var base58 = require("./base58");
+var base32 = require("./base32");
+var BigNum = require("browserify-bignum");
+const Buffer = require("buffer").Buffer;
 
 function numberToHex(number, length) {
     var hex = number.toString(16);
     if (hex.length % 2 === 1) {
-        hex = '0' + hex;
+        hex = "0" + hex;
     }
-    return hex.padStart(length, '0');
+    return hex.padStart(length, "0");
 }
 
 function isHexChar(c) {
-    if ((c >= 'A' && c <= 'F') ||
-        (c >= 'a' && c <= 'f') ||
-        (c >= '0' && c <= '9')) {
+    if (
+        (c >= "A" && c <= "F") ||
+        (c >= "a" && c <= "f") ||
+        (c >= "0" && c <= "9")
+    ) {
         return 1;
     }
     return 0;
@@ -11772,14 +11780,12 @@ function isHexChar(c) {
 /* Convert a hex char to value */
 function hexChar2byte(c) {
     var d = 0;
-    if (c >= 'A' && c <= 'F') {
-        d = c.charCodeAt(0) - 'A'.charCodeAt(0) + 10;
-    }
-    else if (c >= 'a' && c <= 'f') {
-        d = c.charCodeAt(0) - 'a'.charCodeAt(0) + 10;
-    }
-    else if (c >= '0' && c <= '9') {
-        d = c.charCodeAt(0) - '0'.charCodeAt(0);
+    if (c >= "A" && c <= "F") {
+        d = c.charCodeAt(0) - "A".charCodeAt(0) + 10;
+    } else if (c >= "a" && c <= "f") {
+        d = c.charCodeAt(0) - "a".charCodeAt(0) + 10;
+    } else if (c >= "0" && c <= "9") {
+        d = c.charCodeAt(0) - "0".charCodeAt(0);
     }
     return d;
 }
@@ -11795,7 +11801,7 @@ function byte2hexStr(byte) {
 
 function byteArray2hexStr(byteArray) {
     var str = "";
-    for (var i = 0; i < (byteArray.length - 1); i++) {
+    for (var i = 0; i < byteArray.length - 1; i++) {
         str += byte2hexStr(byteArray[i]);
     }
     str += byte2hexStr(byteArray[i]);
@@ -11809,13 +11815,13 @@ function hexStr2byteArray(str) {
     var j = 0;
     var k = 0;
 
-     for (i = 0; i < str.length; i++) {
+    for (i = 0; i < str.length; i++) {
         var c = str.charAt(i);
         if (isHexChar(c)) {
             d <<= 4;
             d += hexChar2byte(c);
             j++;
-            if (0 === (j % 2)) {
+            if (0 === j % 2) {
                 byteArray[k++] = d;
                 d = 0;
             }
@@ -11827,36 +11833,38 @@ function hexStr2byteArray(str) {
 module.exports = {
     numberToHex: numberToHex,
     toHex: function (arrayOfBytes) {
-        var hex = '';
+        var hex = "";
         for (var i = 0; i < arrayOfBytes.length; i++) {
             hex += numberToHex(arrayOfBytes[i]);
         }
         return hex;
     },
-    sha256: function (payload, format = 'HEX') {
-        var sha = new jsSHA('SHA-256', format);
+    sha256: function (payload, format = "HEX") {
+        var sha = new jsSHA("SHA-256", format);
         sha.update(payload);
         return sha.getHash(format);
     },
-    sha256x2: function (buffer, format = 'HEX') {
+    sha256x2: function (buffer, format = "HEX") {
         return this.sha256(this.sha256(buffer, format), format);
     },
     sha256Checksum: function (payload) {
         return this.sha256(this.sha256(payload)).substr(0, 8);
     },
-    sha512_256: function (payload, format = 'HEX') {
-        const hash = sha512256.create()
-        hash.update(Buffer.from(payload, format))
+    sha512_256: function (payload, format = "HEX") {
+        const hash = sha512256.create();
+        hash.update(Buffer.from(payload, format));
         return hash.hex().toUpperCase();
     },
     blake256: function (hexString) {
-        return new Blake256().update(hexString, 'hex').digest('hex');
+        return new Blake256().update(hexString, "hex").digest("hex");
     },
     blake256Checksum: function (payload) {
         return this.blake256(this.blake256(payload)).substr(0, 8);
     },
     blake2b: function (hexString, outlen) {
-        return new Blake2B(outlen).update(Buffer.from(hexString, 'hex')).digest('hex');
+        return new Blake2B(outlen)
+            .update(Buffer.from(hexString, "hex"))
+            .digest("hex");
     },
     keccak256: function (hexString) {
         return keccak256(hexString);
@@ -11865,18 +11873,19 @@ module.exports = {
         return keccak256(payload).toString().substr(0, 8);
     },
     blake2b256: function (hexString) {
-        return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
+        return new Blake2B(32)
+            .update(Buffer.from(hexString, "hex"), 32)
+            .digest("hex");
     },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,
     hexStr2byteArray: hexStr2byteArray,
-    bigNumberToBuffer: function(bignumber, size){
-        return new BigNum(bignumber).toBuffer({ size, endian: 'big' });
+    bigNumberToBuffer: function (bignumber, size) {
+        return new BigNum(bignumber).toBuffer({ size, endian: "big" });
     },
-    base32: base32
-}
+    base32: base32,
+};
 
-}).call(this)}).call(this,require("buffer").Buffer)
 },{"./base32":43,"./base58":44,"./blake256":47,"./blake2b":48,"./sha3":51,"browserify-bignum":3,"buffer":4,"js-sha512":32,"jssha":33}],53:[function(require,module,exports){
 var XRPValidator = require('./ripple_validator');
 var ETHValidator = require('./ethereum_validator');
@@ -12630,27 +12639,29 @@ module.exports = {
 };
 
 },{"./crypto/utils":52}],57:[function(require,module,exports){
-(function (Buffer){(function (){
-var cryptoUtils = require('./crypto/utils');
+var cryptoUtils = require("./crypto/utils");
+const Buffer = require("buffer").Buffer;
 
-var regexp = new RegExp('^[0-9]{1,20}L$');
+var regexp = new RegExp("^[0-9]{1,20}L$");
 
 module.exports = {
-    isValidAddress: function(address) {
+    isValidAddress: function (address) {
         if (!regexp.test(address)) {
             return false;
         }
-        return this.verifyAddress(address)
+        return this.verifyAddress(address);
     },
 
-    verifyAddress: function(address) {
+    verifyAddress: function (address) {
         var BUFFER_SIZE = 8;
         var bigNumber = address.substring(0, address.length - 1);
         var addressBuffer = cryptoUtils.bigNumberToBuffer(bigNumber);
-        return Buffer.from(addressBuffer).slice(0, BUFFER_SIZE).equals(addressBuffer);
-    }
+        return Buffer.from(addressBuffer)
+            .slice(0, BUFFER_SIZE)
+            .equals(addressBuffer);
+    },
 };
-}).call(this)}).call(this,require("buffer").Buffer)
+
 },{"./crypto/utils":52,"buffer":4}],58:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
@@ -12747,32 +12758,33 @@ module.exports = {
 };
 
 },{"./crypto/utils":52,"base-x":1}],60:[function(require,module,exports){
-(function (Buffer){(function (){
-var cryptoUtils = require('./crypto/utils');
+var cryptoUtils = require("./crypto/utils");
+const Buffer = require("buffer").Buffer;
 
- /**
-* Check if an address is valid
-*
-* @param {string} _address - An address
-*
-* @return {boolean} - True if address is valid, false otherwise
-*/
-var isValidAddress = function(_address) {
-    var address = _address.toString().toUpperCase().replace(/-/g, '');
+/**
+ * Check if an address is valid
+ *
+ * @param {string} _address - An address
+ *
+ * @return {boolean} - True if address is valid, false otherwise
+ */
+var isValidAddress = function (_address) {
+    var address = _address.toString().toUpperCase().replace(/-/g, "");
     if (!address || address.length !== 40) {
         return false;
     }
     var decoded = cryptoUtils.toHex(cryptoUtils.base32.b32decode(address));
-    var stepThreeChecksum = cryptoUtils.keccak256Checksum(Buffer.from(decoded.slice(0, 42), 'hex'));
+    var stepThreeChecksum = cryptoUtils.keccak256Checksum(
+        Buffer.from(decoded.slice(0, 42), "hex")
+    );
 
     return stepThreeChecksum === decoded.slice(42);
 };
 
 module.exports = {
     isValidAddress: isValidAddress,
-}
+};
 
-}).call(this)}).call(this,require("buffer").Buffer)
 },{"./crypto/utils":52,"buffer":4}],61:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
@@ -12874,8 +12886,8 @@ module.exports = {
 };
 
 },{"./crypto/utils":52,"base-x":1,"crc":30}],64:[function(require,module,exports){
-const base58 = require('./crypto/base58');
-const cryptoUtils = require('./crypto/utils');
+const base58 = require("./crypto/base58");
+const cryptoUtils = require("./crypto/utils");
 
 const prefix = new Uint8Array([6, 161, 159]);
 
@@ -12886,20 +12898,21 @@ function decodeRaw(buffer) {
         cryptoUtils.sha256x2(cryptoUtils.byteArray2hexStr(payload))
     );
 
-    if (checksum[0] ^ newChecksum[0] |
-        checksum[1] ^ newChecksum[1] |
-        checksum[2] ^ newChecksum[2] |
-        checksum[3] ^ newChecksum[3])
+    if (
+        (checksum[0] ^ newChecksum[0]) |
+        (checksum[1] ^ newChecksum[1]) |
+        (checksum[2] ^ newChecksum[2]) |
+        (checksum[3] ^ newChecksum[3])
+    )
         return;
     return payload;
 }
 
-const isValidAddress = function(address) {
+const isValidAddress = function (address) {
     try {
         let buffer = base58.decode(address);
         let payload = decodeRaw(buffer);
-        if (!payload)
-            return false;
+        if (!payload) return false;
         payload.slice(prefix.length);
         return true;
     } catch (e) {
@@ -12908,7 +12921,7 @@ const isValidAddress = function(address) {
 };
 
 module.exports = {
-    isValidAddress
+    isValidAddress,
 };
 
 },{"./crypto/base58":44,"./crypto/utils":52}],65:[function(require,module,exports){
