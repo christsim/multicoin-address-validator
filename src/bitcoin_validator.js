@@ -1,8 +1,9 @@
-var base58 = require('./crypto/base58');
-var segwit = require('./crypto/segwit_addr');
-var cryptoUtils = require('./crypto/utils');
+var base58 = require("./crypto/base58");
+var segwit = require("./crypto/segwit_addr");
+var cryptoUtils = require("./crypto/utils");
+const Buffer = require("buffer").Buffer;
 
-var DEFAULT_NETWORK_TYPE = 'prod';
+var DEFAULT_NETWORK_TYPE = "prod";
 
 function getDecoded(address) {
     try {
@@ -17,14 +18,14 @@ function getChecksum(hashFunction, payload) {
     // Each currency may implement different hashing algorithm
     switch (hashFunction) {
         // blake then keccak hash chain
-        case 'blake256keccak256':
+        case "blake256keccak256":
             var blake = cryptoUtils.blake2b256(payload);
-            return cryptoUtils.keccak256Checksum(Buffer.from(blake, 'hex'));
-        case 'blake256':
+            return cryptoUtils.keccak256Checksum(Buffer.from(blake, "hex"));
+        case "blake256":
             return cryptoUtils.blake256Checksum(payload);
-        case 'keccak256':
+        case "keccak256":
             return cryptoUtils.keccak256Checksum(payload);
-        case 'sha256':
+        case "sha256":
         default:
             return cryptoUtils.sha256Checksum(payload);
     }
@@ -34,7 +35,7 @@ function getAddressType(address, currency) {
     currency = currency || {};
     // should be 25 bytes per btc address spec and 26 decred
     var expectedLength = currency.expectedLength || 25;
-    var hashFunction = currency.hashFunction || 'sha256';
+    var hashFunction = currency.hashFunction || "sha256";
     var decoded = getDecoded(address);
 
     if (decoded) {
@@ -44,8 +45,8 @@ function getAddressType(address, currency) {
             return null;
         }
 
-        if(currency.regex) {
-            if(!currency.regex.test(address)) {
+        if (currency.regex) {
+            if (!currency.regex.test(address)) {
                 return false;
             }
         }
@@ -54,23 +55,27 @@ function getAddressType(address, currency) {
             body = cryptoUtils.toHex(decoded.slice(0, length - 4)),
             goodChecksum = getChecksum(hashFunction, body);
 
-        return checksum === goodChecksum ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24)) : null;
+        return checksum === goodChecksum
+            ? cryptoUtils.toHex(decoded.slice(0, expectedLength - 24))
+            : null;
     }
 
     return null;
 }
 
 function isValidP2PKHandP2SHAddress(address, currency, opts) {
-    const { networkType = DEFAULT_NETWORK_TYPE} = opts;
+    const { networkType = DEFAULT_NETWORK_TYPE } = opts;
 
     var correctAddressTypes;
     var addressType = getAddressType(address, currency);
 
     if (addressType) {
-        if (networkType === 'prod' || networkType === 'testnet') {
-            correctAddressTypes = currency.addressTypes[networkType]
+        if (networkType === "prod" || networkType === "testnet") {
+            correctAddressTypes = currency.addressTypes[networkType];
         } else if (currency.addressTypes) {
-            correctAddressTypes = currency.addressTypes.prod.concat(currency.addressTypes.testnet);
+            correctAddressTypes = currency.addressTypes.prod.concat(
+                currency.addressTypes.testnet
+            );
         } else {
             return false;
         }
@@ -83,6 +88,9 @@ function isValidP2PKHandP2SHAddress(address, currency, opts) {
 
 module.exports = {
     isValidAddress: function (address, currency, opts = {}) {
-        return isValidP2PKHandP2SHAddress(address, currency, opts) || segwit.isValidAddress(address, currency, opts);
-    }
+        return (
+            isValidP2PKHandP2SHAddress(address, currency, opts) ||
+            segwit.isValidAddress(address, currency, opts)
+        );
+    },
 };

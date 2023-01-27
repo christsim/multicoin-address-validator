@@ -1,5 +1,5 @@
-const base58 = require('./crypto/base58');
-const cryptoUtils = require('./crypto/utils');
+const base58 = require("./crypto/base58");
+const cryptoUtils = require("./crypto/utils");
 
 const prefix = new Uint8Array([6, 161, 159]);
 
@@ -10,20 +10,21 @@ function decodeRaw(buffer) {
         cryptoUtils.sha256x2(cryptoUtils.byteArray2hexStr(payload))
     );
 
-    if (checksum[0] ^ newChecksum[0] |
-        checksum[1] ^ newChecksum[1] |
-        checksum[2] ^ newChecksum[2] |
-        checksum[3] ^ newChecksum[3])
+    if (
+        (checksum[0] ^ newChecksum[0]) |
+        (checksum[1] ^ newChecksum[1]) |
+        (checksum[2] ^ newChecksum[2]) |
+        (checksum[3] ^ newChecksum[3])
+    )
         return;
     return payload;
 }
 
-const isValidAddress = function(address) {
+const isValidAddress = function (address) {
     try {
         let buffer = base58.decode(address);
         let payload = decodeRaw(buffer);
-        if (!payload)
-            return false;
+        if (!payload) return false;
         payload.slice(prefix.length);
         return true;
     } catch (e) {
@@ -32,5 +33,5 @@ const isValidAddress = function(address) {
 };
 
 module.exports = {
-    isValidAddress
+    isValidAddress,
 };
