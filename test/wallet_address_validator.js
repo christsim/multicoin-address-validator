@@ -625,8 +625,9 @@ describe('WAValidator.validate()', function () {
         it('should return true for correct eos addresses', function () {
             valid('bittrexacct1', 'eos');
             valid('binancecleos', 'eos');
-            valid('123456789012', 'eos');
-            valid('12345678.012', 'eos');
+            valid('abcdefz12345', 'eos');
+            valid('abcdefz.123', 'eos');
+            valid('abcdefz.123', 'eos');
         });
 
         it('should return true for correct vet addresses', function () {
@@ -1201,6 +1202,10 @@ describe('WAValidator.validate()', function () {
             invalid('1234567890123', 'eos');
             invalid('12345678901', 'eos');
             invalid('12345678901@', 'eos');
+            invalid('Abcdefg12345', 'eos');
+            invalid('Zbcdefg12345', 'eos');
+            invalid('abcdefg0234', 'eos');
+            invalid('abcdefg1236', 'eos');
         });
 
         it('should return false for incorrect solana addresses', function () {
