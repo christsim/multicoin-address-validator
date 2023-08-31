@@ -1131,7 +1131,7 @@ describe('WAValidator.validate()', function () {
             invalid('ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372')
         })
 
-        it('should return true for incorrect tron addresses', function () {
+        it('should return false for incorrect tron addresses', function () {
             commonTests('trx');
             invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'trx');
             invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx');
