@@ -7,6 +7,9 @@ function decodeBase58Address(base58Sting) {
     if (base58Sting.length <= 4) {
         return false;
     }
+    if (base58Sting.length != 34) {
+        return false;
+    }
 
     try {
         var address = cryptoUtils.base58(base58Sting);
@@ -14,9 +17,6 @@ function decodeBase58Address(base58Sting) {
         return false
     }
 
-    /*if (base58Sting.length <= 4) {
-        return false;
-    }*/
     var len = address.length;
     var offset = len - 4;
     var checkSum = address.slice(offset);
