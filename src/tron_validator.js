@@ -4,9 +4,6 @@ function decodeBase58Address(base58Sting) {
     if (typeof (base58Sting) !== 'string') {
         return false;
     }
-    if (base58Sting.length <= 4) {
-        return false;
-    }
     if (base58Sting.length != 34) {
         return false;
     }
@@ -15,6 +12,10 @@ function decodeBase58Address(base58Sting) {
         var address = cryptoUtils.base58(base58Sting);
     } catch (e) {
         return false
+    }
+
+    if (address.length != 25) {
+        return false;
     }
 
     var len = address.length;
