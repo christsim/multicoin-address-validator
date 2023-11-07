@@ -449,14 +449,6 @@ describe('WAValidator.validate()', function () {
 
         });
 
-        it('should return true for correct monacoin addresses', function () {
-            valid('MMN1Q1aRVUzanmg9DJjcRYzQSJQoBeQPui', 'mona');
-            valid('PFMzNYnBm5X4c9qJkJPkfgdCyd9fuuy2vT', 'mona');
-            valid('PCtN7VUYHW8w4g59BaphrfPs8g7pNgAzxn', 'mona');
-            valid('MXCcYFGRmsd4d3CcQugFiqG8uarj5tVu76', 'mona');
-            valid('MNK1pGsBf9WdoE54fZM9VFhkeYHW6VUf2u', 'mona');
-        });
-
         it('should return true for correct pivx addresses', function () {
             valid('DJXFW9oJJBUX7QKrG6GKvmTs63MYKzwtpZ', 'pivx');
             valid('DEaYb8EHQgyKvX6VXDS3DZQautJrHBmK3T', 'pivx');
@@ -578,15 +570,6 @@ describe('WAValidator.validate()', function () {
             valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
         });
 
-        it('should return true for correct lsk addresses', function () {
-            valid('469226551L', 'lsk');
-            valid('15823701926930889868L', 'lsk');
-            valid('1657699692452120239L', 'lsk');
-            valid('555666666999992L', 'lsk');
-            valid('6853061742992593192L', 'lsk');
-            valid('530464791801L', 'lsk');
-        });
-
         it('should return true for correct bsv addresses', function () {
             valid('qzwryn9fxnpqkf7zt878tp2g9cg8kpl65qh2ml0w0r', 'bsv');
             valid('qp65yngy5uds4wxtrkynptal4f76qzmrh52pa3mpaf', 'bsv');
@@ -684,14 +667,6 @@ describe('WAValidator.validate()', function () {
             valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'game');
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'game');
 
-        });
-
-        it('should return true for correct monacoin addresses', function () {
-            valid('MMN1Q1aRVUzanmg9DJjcRYzQSJQoBeQPui', 'mona');
-            valid('PFMzNYnBm5X4c9qJkJPkfgdCyd9fuuy2vT', 'mona');
-            valid('PCtN7VUYHW8w4g59BaphrfPs8g7pNgAzxn', 'mona');
-            valid('MXCcYFGRmsd4d3CcQugFiqG8uarj5tVu76', 'mona');
-            valid('MNK1pGsBf9WdoE54fZM9VFhkeYHW6VUf2u', 'mona');
         });
 
         it('should return true for correct pivx addresses', function () {
@@ -807,15 +782,6 @@ describe('WAValidator.validate()', function () {
         it('should return true for correct nem addresses', function () {
             valid('NBZMQO7ZPBYNBDUR7F75MAKA2S3DHDCIFG775N3D', 'xem');
             valid('TDWTRGT6GVWCV7GRWFNI45S53PGOJBKNUF3GE6PB', 'xem', 'testnet');
-        });
-
-        it('should return true for correct lsk addresses', function () {
-            valid('469226551L', 'lsk');
-            valid('15823701926930889868L', 'lsk');
-            valid('1657699692452120239L', 'lsk');
-            valid('555666666999992L', 'lsk');
-            valid('6853061742992593192L', 'lsk');
-            valid('530464791801L', 'lsk');
         });
 
         it('should return true for correct bsv addresses', function () {
@@ -948,10 +914,6 @@ describe('WAValidator.validate()', function () {
             // old game addresses
             invalid('GU5BBtW9gxSKvAknvFi9yUaXKUNW9zUN2p', 'game');
             invalid('GYxQMVzP6YpzX59QNRYqmJeHNtUMYSZPri', 'game');
-        });
-
-        it('should return false for incorrect monacoin addresses', function () {
-            commonTests('mona');
         });
 
         it('should return false for incorrect solarcoin addresses', function () {
@@ -1147,15 +1109,6 @@ describe('WAValidator.validate()', function () {
             invalid('3Myrq5QDgRq3nBVRSSv9UYRP36xTtpJND5y', 'nem', 'testnet');
             invalid('3My3KZgFQ3CrVHgz6vGRt8787sH4oAA1qp8', 'nem', 'testnet');
         });
-        //15823701926930889868L
-        it('should return false for incorrect lsk addresses', function () {
-            commonTests('lsk');
-            invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'lsk');
-            invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'lsk');
-
-            invalid('158237019269308898689L', 'lsk');
-            invalid('158237A192B930C898689L', 'lsk');
-        });
 
         it('should return false for incorrect bsv addresses', function () {
             commonTests('bsv');
@@ -1295,10 +1248,6 @@ describe('invalid results', function () {
 
     it('should return false for incorrect decred addresses', function () {
         commonTests('decred');
-    });
-
-    it('should return false for incorrect monacoin addresses', function () {
-        commonTests('mona');
     });
 
     it('should return false for incorrect solarcoin addresses', function () {
@@ -1470,6 +1419,7 @@ describe('invalid results', function () {
         )
     })
 
+
     it('should return false for incorrect lbry addresses', function () {
         commonTests('lbc')
         invalid('ffe1308c044ade30392a0cdc1fd5a4dbe94f9616a95faf888ed36123d9e711557aa497530372')
@@ -1488,15 +1438,6 @@ describe('invalid results', function () {
 
         invalid('3Myrq5QDgRq3nBVRSSv9UYRP36xTtpJND5y', 'nem', 'testnet');
         invalid('3My3KZgFQ3CrVHgz6vGRt8787sH4oAA1qp8', 'nem', 'testnet');
-    });
-    //15823701926930889868L
-    it('should return false for incorrect lsk addresses', function () {
-        commonTests('lsk');
-        invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'lsk');
-        invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'lsk');
-
-        invalid('158237019269308898689L', 'lsk');
-        invalid('158237A192B930C898689L', 'lsk');
     });
 
     it('should return false for incorrect bsv addresses', function () {

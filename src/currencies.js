@@ -7,7 +7,6 @@ var NANOValidator = require('./nano_validator');
 var SCValidator = require('./siacoin_validator');
 var TRXValidator = require('./tron_validator');
 var NEMValidator = require('./nem_validator');
-var LSKValidator = require('./lisk_validator');
 var BCHValidator = require('./bch_validator');
 var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
@@ -184,11 +183,6 @@ var CURRENCIES = [{
         name: 'SolarCoin',
         symbol: 'slr',
         addressTypes: { prod: ['12', '05'], testnet: [] },
-        validator: BTCValidator
-    }, {
-        name: 'MonaCoin',
-        symbol: 'mona',
-        addressTypes: { prod: ['32', '37'], testnet: [] },
         validator: BTCValidator
     }, {
         name: 'DigiByte',
@@ -416,10 +410,6 @@ var CURRENCIES = [{
         name: 'Nem',
         symbol: 'xem',
         validator: NEMValidator
-    }, {
-        name: 'Lisk',
-        symbol: 'lsk',
-        validator: LSKValidator
     }, {
         name: 'Stellar',
         symbol: 'xlm',
