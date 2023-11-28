@@ -6,6 +6,7 @@ var Blake2B = require('./blake2b');
 var base58 = require('./base58');
 var base32 = require('./base32');
 var BigNum = require('browserify-bignum');
+var groestl = require('groestl-hash-js');
 
 function numberToHex(number, length) {
     var hex = number.toString(16);
@@ -121,6 +122,10 @@ module.exports = {
     },
     blake2b256: function (hexString) {
         return new Blake2B(32).update(Buffer.from(hexString, 'hex'), 32).digest('hex');
+    },
+    groestl512x2: function (hexString) {
+        let result = groestl.groestl_2(Buffer.from(hexString, 'hex'), 1, 0).substr(0, 8);
+        return result;
     },
     base58: base58.decode,
     byteArray2hexStr: byteArray2hexStr,

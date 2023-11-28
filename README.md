@@ -83,6 +83,7 @@ npm install multicoin-address-validator
 * Gnosis/gno `'Gnosis'` or `'gno'`
 * Golem/glm `'Golem'` or `'glm'`
 * Golem (GNT)/gnt `'Golem (GNT)'` or `'gnt'`
+* Groestlcoin/grs `'Groestlcoin'` or `'grs'`
 * HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
 * HyperSpace/xsc `'HyperSpace'` or `'xsc'`
