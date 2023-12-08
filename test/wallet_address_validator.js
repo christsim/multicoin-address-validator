@@ -290,7 +290,7 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'CLO');
         });
 
-        it('should return true for correct Ethereum addresses', function () {
+        it('should return true for correct Ethereum POW addresses', function () {
             valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'ethereumPow');
             valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'ethereumPow');
             valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'ETHW');
@@ -303,6 +303,51 @@ describe('WAValidator.validate()', function () {
             valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'ETHW');
             valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'ETHW');
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'ETHW');
+        });
+
+        it('should return true for correct CELO addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'celo');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'celo');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'CELO');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'CELO');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'CELO');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'CELO');
+            valid('0xde709f2102306220921060314715629080e2fb77', 'CELO');
+            valid('0x27b1fdb04752bbc536007a920d24acb045561c26', 'CELO');
+            valid('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', 'CELO');
+            valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'CELO');
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'CELO');
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'CELO');
+        });
+
+        it('should return true for correct OP addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'op');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'op');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'OP');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'OP');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'OP');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'OP');
+            valid('0xde709f2102306220921060314715629080e2fb77', 'OP');
+            valid('0x27b1fdb04752bbc536007a920d24acb045561c26', 'OP');
+            valid('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', 'OP');
+            valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'OP');
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'OP');
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'OP');
+        });
+
+        it('should return true for correct YFI addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'yfi');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'yfi');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'YFI');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'YFI');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'YFI');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'YFI');
+            valid('0xde709f2102306220921060314715629080e2fb77', 'YFI');
+            valid('0x27b1fdb04752bbc536007a920d24acb045561c26', 'YFI');
+            valid('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', 'YFI');
+            valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'YFI');
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'YFI');
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'YFI');
         });
 
         it('should return true for correct binance coin addresses', function () {

@@ -26,6 +26,7 @@
         "BTU Protocol","btu",
         "Callisto","clo",
         "Cardano","ada",
+        "Celo","celo",
         "Chainlink","link",
         "Civic","cvc",
         "Compound","comp",
@@ -126,7 +127,7 @@
         "ZClassic","zcl",
         "ZenCash","zen"
     ],
-    "version": "0.5.13",
+    "version": "0.5.14",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",
