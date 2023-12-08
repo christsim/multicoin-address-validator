@@ -12540,15 +12540,15 @@ var CURRENCIES = [{
 };
 
 ////spit out details for readme.md
-CURRENCIES
-    .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
-    .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`* ${c.name}/${c.symbol} \`'${c.name}'\` or \`'${c.symbol}'\` `));
 
-//spit out keywords for package.json
-CURRENCIES
-    .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
-    .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
-
+////spit out keywords for package.json
+// CURRENCIES
+//     .sort((a, b) => a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1)
+//     .forEach(c => console.log(`"${c.name}","${c.symbol}",`));
+//
 
 
 },{"./ada_validator":37,"./algo_validator":38,"./base58_validator":39,"./bch_validator":40,"./bip173_validator":41,"./bitcoin_validator":42,"./dot_validator":54,"./eos_validator":55,"./ethereum_validator":56,"./monero_validator":57,"./nano_validator":58,"./nem_validator":59,"./ripple_validator":60,"./siacoin_validator":61,"./stellar_validator":62,"./tezos_validator":63,"./tron_validator":64,"./usdt_validator":65}],54:[function(require,module,exports){
