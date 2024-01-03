@@ -36,17 +36,20 @@ npm install multicoin-address-validator
 * Aave Coin/aave `'Aave Coin'` or `'aave'` 
 * Algorand/algo `'Algorand'` or `'algo'` 
 * Apecoin/ape `'Apecoin'` or `'ape'` 
+* API3/api3 `'API3'` or `'api3'` 
 * Aragon/ant `'Aragon'` or `'ant'` 
 * Arbitrum/arb `'Arbitrum'` or `'arb'` 
 * Augur/rep `'Augur'` or `'rep'` 
 * AugurV2/repv2 `'AugurV2'` or `'repv2'` 
 * AuroraCoin/aur `'AuroraCoin'` or `'aur'` 
 * Avalanche/avax `'Avalanche'` or `'avax'` 
+* Axie Infinity/axs `'Axie Infinity'` or `'axs'` 
 * Bancor/bnt `'Bancor'` or `'bnt'` 
 * Band Protocol/band `'Band Protocol'` or `'band'` 
 * Bankex/bkx `'Bankex'` or `'bkx'` 
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'` 
 * BeaverCoin/bvc `'BeaverCoin'` or `'bvc'` 
+* Biconomy/bico `'Biconomy'` or `'bico'` 
 * Binance/bnb `'Binance'` or `'bnb'` 
 * BioCoin/bio `'BioCoin'` or `'bio'` 
 * Bitcoin/btc `'Bitcoin'` or `'btc'` 
@@ -56,11 +59,14 @@ npm install multicoin-address-validator
 * BitcoinPrivate/btcp `'BitcoinPrivate'` or `'btcp'` 
 * BitcoinZ/btcz `'BitcoinZ'` or `'btcz'` 
 * BlockTrade/btt `'BlockTrade'` or `'btt'` 
+* Blur/blur `'Blur'` or `'blur'` 
+* Bonk/bonk `'Bonk'` or `'bonk'` 
 * BTU Protocol/btu `'BTU Protocol'` or `'btu'` 
 * Callisto/clo `'Callisto'` or `'clo'` 
 * Cardano/ada `'Cardano'` or `'ada'` 
 * Celo/celo `'Celo'` or `'celo'` 
 * Chainlink/link `'Chainlink'` or `'link'` 
+* Chiliz/chz `'Chiliz'` or `'chz'` 
 * Civic/cvc `'Civic'` or `'cvc'` 
 * Compound/comp `'Compound'` or `'comp'` 
 * Cred/lba `'Cred'` or `'lba'` 
@@ -76,10 +82,12 @@ npm install multicoin-address-validator
 * Enjin Coin/enj `'Enjin Coin'` or `'enj'` 
 * EOS/eos `'EOS'` or `'eos'` 
 * Ethereum/eth `'Ethereum'` or `'eth'` 
+* Ethereum Name Service/ens `'Ethereum Name Service'` or `'ens'` 
 * EthereumClassic/etc `'EthereumClassic'` or `'etc'` 
 * EthereumPow/ethw `'EthereumPow'` or `'ethw'` 
 * EtherZero/etz `'EtherZero'` or `'etz'` 
 * Expanse/exp `'Expanse'` or `'exp'` 
+* Fetch.ai/fet `'Fetch.ai'` or `'fet'` 
 * FirmaChain/fct `'FirmaChain'` or `'fct'` 
 * Flare/flr `'Flare'` or `'flr'` 
 * FreiCoin/frc `'FreiCoin'` or `'frc'` 
@@ -93,13 +101,19 @@ npm install multicoin-address-validator
 * Hush/hush `'Hush'` or `'hush'` 
 * HyperSpace/xsc `'HyperSpace'` or `'xsc'` 
 * iExec RLC/rlc `'iExec RLC'` or `'rlc'` 
+* Illuvium/ilv `'Illuvium'` or `'ilv'` 
+* Immutable/imx `'Immutable'` or `'imx'` 
+* Injective/inj `'Injective'` or `'inj'` 
 * Komodo/kmd `'Komodo'` or `'kmd'` 
 * LBRY Credits/lbc `'LBRY Credits'` or `'lbc'` 
 * Lido DAO Token/ldo `'Lido DAO Token'` or `'ldo'` 
 * LiteCoin/ltc `'LiteCoin'` or `'ltc'` 
 * loki/loki `'loki'` or `'loki'` 
 * Loom Network/loom `'Loom Network'` or `'loom'` 
+* Magic/magic `'Magic'` or `'magic'` 
 * Maker/mkr `'Maker'` or `'mkr'` 
+* Marlin/pond `'Marlin'` or `'pond'` 
+* Mask Network/mask `'Mask Network'` or `'mask'` 
 * Matchpool/gup `'Matchpool'` or `'gup'` 
 * Matic/matic `'Matic'` or `'matic'` 
 * MegaCoin/mec `'MegaCoin'` or `'mec'` 
@@ -116,8 +130,11 @@ npm install multicoin-address-validator
 * Ocean Protocol/ocean `'Ocean Protocol'` or `'ocean'` 
 * Odyssey/ocn `'Odyssey'` or `'ocn'` 
 * OmiseGO/omg `'OmiseGO'` or `'omg'` 
+* Onyx Protocol/xcn `'Onyx Protocol'` or `'xcn'` 
 * Optimism/op `'Optimism'` or `'op'` 
+* Origin Protocol/ogn `'Origin Protocol'` or `'ogn'` 
 * Paxos/pax `'Paxos'` or `'pax'` 
+* PayPal USD/pyusd `'PayPal USD'` or `'pyusd'` 
 * PeerCoin/ppc `'PeerCoin'` or `'ppc'` 
 * PIVX/pivx `'PIVX'` or `'pivx'` 
 * Polkadot/dot `'Polkadot'` or `'dot'` 
@@ -133,6 +150,7 @@ npm install multicoin-address-validator
 * Salt/salt `'Salt'` or `'salt'` 
 * Serve/serv `'Serve'` or `'serv'` 
 * Siacoin/sc `'Siacoin'` or `'sc'` 
+* Skale/skl `'Skale'` or `'skl'` 
 * SnowGem/sng `'SnowGem'` or `'sng'` 
 * Solana/sol `'Solana'` or `'sol'` 
 * SolarCoin/slr `'SolarCoin'` or `'slr'` 
@@ -143,28 +161,33 @@ npm install multicoin-address-validator
 * Storj/storj `'Storj'` or `'storj'` 
 * Storm/storm `'Storm'` or `'storm'` 
 * StormX/stmx `'StormX'` or `'stmx'` 
+* SuperVerse/super `'SuperVerse'` or `'super'` 
 * Swarm City/swt `'Swarm City'` or `'swt'` 
 * Synthetix Network/snx `'Synthetix Network'` or `'snx'` 
 * Tap/xtp `'Tap'` or `'xtp'` 
+* Tellor/trb `'Tellor'` or `'trb'` 
 * TEMCO/temco `'TEMCO'` or `'temco'` 
 * TenX/pay `'TenX'` or `'pay'` 
 * Tether/usdt `'Tether'` or `'usdt'` 
 * Tezos/xtz `'Tezos'` or `'xtz'` 
 * The Graph/grt `'The Graph'` or `'grt'` 
+* The Sandbox/sand `'The Sandbox'` or `'sand'` 
 * Tron/trx `'Tron'` or `'trx'` 
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'` 
+* Unifi Protocol DAO/unfi `'Unifi Protocol DAO'` or `'unfi'` 
 * Uniswap Coin/uni `'Uniswap Coin'` or `'uni'` 
 * USD Coin/usdc `'USD Coin'` or `'usdc'` 
 * VeChain/vet `'VeChain'` or `'vet'` 
 * VertCoin/vtc `'VertCoin'` or `'vtc'` 
 * Viberate/vib `'Viberate'` or `'vib'` 
 * VoteCoin/vot `'VoteCoin'` or `'vot'` 
+* Vulcan Forged PYR/pyr `'Vulcan Forged PYR'` or `'pyr'` 
 * Waves/waves `'Waves'` or `'waves'` 
 * Wings/wings `'Wings'` or `'wings'` 
 * Yearn.finance/yfi `'Yearn.finance'` or `'yfi'` 
 * ZCash/zec `'ZCash'` or `'zec'` 
 * ZClassic/zcl `'ZClassic'` or `'zcl'` 
-* ZenCash/zen `'ZenCash'` or `'zen'` 
+* ZenCash/zen `'ZenCash'` or `'zen'`
 
 
 

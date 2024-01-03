@@ -589,6 +589,13 @@ var CURRENCIES = [{
         minLength: 43
     },
     {
+        name: 'Bonk',
+        symbol: 'bonk',
+        validator: Base58Validator,
+        maxLength: 44,
+        minLength: 43
+    },
+    {
         name: 'Binance',
         symbol: 'bnb',
         validator: ETHValidator,
@@ -646,6 +653,116 @@ var CURRENCIES = [{
     {
         name: 'The Graph',
         symbol: 'grt',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Magic',
+        symbol: 'magic',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Biconomy',
+        symbol: 'bico',
+        validator: ETHValidator,
+    },
+    {
+        name: 'API3',
+        symbol: 'api3',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Axie Infinity',
+        symbol: 'axs',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Blur',
+        symbol: 'blur',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Chiliz',
+        symbol: 'chz',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Ethereum Name Service',
+        symbol: 'ens',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Fetch.ai',
+        symbol: 'fet',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Illuvium',
+        symbol: 'ilv',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Injective',
+        symbol: 'inj',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Immutable',
+        symbol: 'imx',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Mask Network',
+        symbol: 'mask',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Origin Protocol',
+        symbol: 'ogn',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Onyx Protocol',
+        symbol: 'xcn',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Unifi Protocol DAO',
+        symbol: 'unfi',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Tellor',
+        symbol: 'trb',
+        validator: ETHValidator,
+    },
+    {
+        name: 'SuperVerse',
+        symbol: 'super',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Skale',
+        symbol: 'skl',
+        validator: ETHValidator,
+    },
+    {
+        name: 'The Sandbox',
+        symbol: 'sand',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Vulcan Forged PYR',
+        symbol: 'pyr',
+        validator: ETHValidator,
+    },
+    {
+        name: 'Marlin',
+        symbol: 'pond',
+        validator: ETHValidator,
+    },
+    {
+        name: 'PayPal USD',
+        symbol: 'pyusd',
         validator: ETHValidator,
     },
 ];
