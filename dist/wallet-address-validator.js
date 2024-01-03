@@ -4169,93 +4169,7 @@ function numberIsNaN (obj) {
   return obj !== obj // eslint-disable-line no-self-compare
 }
 
-},{"base64-js":2,"ieee754":5}],5:[function(require,module,exports){
-exports.read = function (buffer, offset, isLE, mLen, nBytes) {
-  var e, m
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var nBits = -7
-  var i = isLE ? (nBytes - 1) : 0
-  var d = isLE ? -1 : 1
-  var s = buffer[offset + i]
-
-  i += d
-
-  e = s & ((1 << (-nBits)) - 1)
-  s >>= (-nBits)
-  nBits += eLen
-  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  m = e & ((1 << (-nBits)) - 1)
-  e >>= (-nBits)
-  nBits += mLen
-  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
-
-  if (e === 0) {
-    e = 1 - eBias
-  } else if (e === eMax) {
-    return m ? NaN : ((s ? -1 : 1) * Infinity)
-  } else {
-    m = m + Math.pow(2, mLen)
-    e = e - eBias
-  }
-  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
-}
-
-exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
-  var e, m, c
-  var eLen = (nBytes * 8) - mLen - 1
-  var eMax = (1 << eLen) - 1
-  var eBias = eMax >> 1
-  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
-  var i = isLE ? 0 : (nBytes - 1)
-  var d = isLE ? 1 : -1
-  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
-
-  value = Math.abs(value)
-
-  if (isNaN(value) || value === Infinity) {
-    m = isNaN(value) ? 1 : 0
-    e = eMax
-  } else {
-    e = Math.floor(Math.log(value) / Math.LN2)
-    if (value * (c = Math.pow(2, -e)) < 1) {
-      e--
-      c *= 2
-    }
-    if (e + eBias >= 1) {
-      value += rt / c
-    } else {
-      value += rt * Math.pow(2, 1 - eBias)
-    }
-    if (value * c >= 2) {
-      e++
-      c /= 2
-    }
-
-    if (e + eBias >= eMax) {
-      m = 0
-      e = eMax
-    } else if (e + eBias >= 1) {
-      m = ((value * c) - 1) * Math.pow(2, mLen)
-      e = e + eBias
-    } else {
-      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
-      e = 0
-    }
-  }
-
-  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
-
-  e = (e << mLen) | m
-  eLen += mLen
-  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
-
-  buffer[offset + i - d] |= s * 128
-}
-
-},{}],6:[function(require,module,exports){
+},{"base64-js":2,"ieee754":31}],5:[function(require,module,exports){
 /*
  * The MIT License (MIT)
  *
@@ -4663,62 +4577,62 @@ else if (!global.CBOR)
 
 })(this);
 
-},{}],7:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc1').default;
 
-},{"./es6/crc1":18}],8:[function(require,module,exports){
+},{"./es6/crc1":17}],7:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16').default;
 
-},{"./es6/crc16":19}],9:[function(require,module,exports){
+},{"./es6/crc16":18}],8:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16ccitt').default;
 
-},{"./es6/crc16ccitt":20}],10:[function(require,module,exports){
+},{"./es6/crc16ccitt":19}],9:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16kermit').default;
 
-},{"./es6/crc16kermit":21}],11:[function(require,module,exports){
+},{"./es6/crc16kermit":20}],10:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16modbus').default;
 
-},{"./es6/crc16modbus":22}],12:[function(require,module,exports){
+},{"./es6/crc16modbus":21}],11:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc16xmodem').default;
 
-},{"./es6/crc16xmodem":23}],13:[function(require,module,exports){
+},{"./es6/crc16xmodem":22}],12:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc24').default;
 
-},{"./es6/crc24":24}],14:[function(require,module,exports){
+},{"./es6/crc24":23}],13:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc32').default;
 
-},{"./es6/crc32":25}],15:[function(require,module,exports){
+},{"./es6/crc32":24}],14:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc8').default;
 
-},{"./es6/crc8":26}],16:[function(require,module,exports){
+},{"./es6/crc8":25}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crc81wire').default;
 
-},{"./es6/crc81wire":27}],17:[function(require,module,exports){
+},{"./es6/crc81wire":26}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = require('./es6/crcjam').default;
 
-},{"./es6/crcjam":28}],18:[function(require,module,exports){
+},{"./es6/crcjam":27}],17:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4754,7 +4668,7 @@ var crc1 = (0, _define_crc2.default)('crc1', function (buf, previous) {
 
 exports.default = crc1;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],19:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],18:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4794,7 +4708,7 @@ var crc16 = (0, _define_crc2.default)('crc-16', function (buf, previous) {
 
 exports.default = crc16;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],20:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],19:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4834,7 +4748,7 @@ var crc16ccitt = (0, _define_crc2.default)('ccitt', function (buf, previous) {
 
 exports.default = crc16ccitt;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],21:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],20:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4874,7 +4788,7 @@ var crc16kermit = (0, _define_crc2.default)('kermit', function (buf, previous) {
 
 exports.default = crc16kermit;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],22:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],21:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4914,7 +4828,7 @@ var crc16modbus = (0, _define_crc2.default)('crc-16-modbus', function (buf, prev
 
 exports.default = crc16modbus;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],23:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],22:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4957,7 +4871,7 @@ var crc16xmodem = (0, _define_crc2.default)('xmodem', function (buf, previous) {
 
 exports.default = crc16xmodem;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],24:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],23:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4997,7 +4911,7 @@ var crc24 = (0, _define_crc2.default)('crc-24', function (buf, previous) {
 
 exports.default = crc24;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],25:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],24:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5037,7 +4951,7 @@ var crc32 = (0, _define_crc2.default)('crc-32', function (buf, previous) {
 
 exports.default = crc32;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],26:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],25:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5077,7 +4991,7 @@ var crc8 = (0, _define_crc2.default)('crc-8', function (buf, previous) {
 
 exports.default = crc8;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],27:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],26:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5117,7 +5031,7 @@ var crc81wire = (0, _define_crc2.default)('dallas-1-wire', function (buf, previo
 
 exports.default = crc81wire;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],28:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],27:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5159,7 +5073,7 @@ var crcjam = (0, _define_crc2.default)('jam', function (buf) {
 
 exports.default = crcjam;
 
-},{"./create_buffer":29,"./define_crc":30,"buffer":4}],29:[function(require,module,exports){
+},{"./create_buffer":28,"./define_crc":29,"buffer":4}],28:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5175,7 +5089,7 @@ function (val) {
 
 exports.default = createBuffer;
 
-},{"buffer":4}],30:[function(require,module,exports){
+},{"buffer":4}],29:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -5193,7 +5107,7 @@ exports.default = function (model, calc) {
   return fn;
 };
 
-},{}],31:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -5210,7 +5124,93 @@ module.exports = {
   crcjam: require('./crcjam')
 };
 
-},{"./crc1":7,"./crc16":8,"./crc16_ccitt":9,"./crc16_kermit":10,"./crc16_modbus":11,"./crc16_xmodem":12,"./crc24":13,"./crc32":14,"./crc8":15,"./crc8_1wire":16,"./crcjam":17}],32:[function(require,module,exports){
+},{"./crc1":6,"./crc16":7,"./crc16_ccitt":8,"./crc16_kermit":9,"./crc16_modbus":10,"./crc16_xmodem":11,"./crc24":12,"./crc32":13,"./crc8":14,"./crc8_1wire":15,"./crcjam":16}],31:[function(require,module,exports){
+exports.read = function (buffer, offset, isLE, mLen, nBytes) {
+  var e, m
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var nBits = -7
+  var i = isLE ? (nBytes - 1) : 0
+  var d = isLE ? -1 : 1
+  var s = buffer[offset + i]
+
+  i += d
+
+  e = s & ((1 << (-nBits)) - 1)
+  s >>= (-nBits)
+  nBits += eLen
+  for (; nBits > 0; e = (e * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  m = e & ((1 << (-nBits)) - 1)
+  e >>= (-nBits)
+  nBits += mLen
+  for (; nBits > 0; m = (m * 256) + buffer[offset + i], i += d, nBits -= 8) {}
+
+  if (e === 0) {
+    e = 1 - eBias
+  } else if (e === eMax) {
+    return m ? NaN : ((s ? -1 : 1) * Infinity)
+  } else {
+    m = m + Math.pow(2, mLen)
+    e = e - eBias
+  }
+  return (s ? -1 : 1) * m * Math.pow(2, e - mLen)
+}
+
+exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
+  var e, m, c
+  var eLen = (nBytes * 8) - mLen - 1
+  var eMax = (1 << eLen) - 1
+  var eBias = eMax >> 1
+  var rt = (mLen === 23 ? Math.pow(2, -24) - Math.pow(2, -77) : 0)
+  var i = isLE ? 0 : (nBytes - 1)
+  var d = isLE ? 1 : -1
+  var s = value < 0 || (value === 0 && 1 / value < 0) ? 1 : 0
+
+  value = Math.abs(value)
+
+  if (isNaN(value) || value === Infinity) {
+    m = isNaN(value) ? 1 : 0
+    e = eMax
+  } else {
+    e = Math.floor(Math.log(value) / Math.LN2)
+    if (value * (c = Math.pow(2, -e)) < 1) {
+      e--
+      c *= 2
+    }
+    if (e + eBias >= 1) {
+      value += rt / c
+    } else {
+      value += rt * Math.pow(2, 1 - eBias)
+    }
+    if (value * c >= 2) {
+      e++
+      c /= 2
+    }
+
+    if (e + eBias >= eMax) {
+      m = 0
+      e = eMax
+    } else if (e + eBias >= 1) {
+      m = ((value * c) - 1) * Math.pow(2, mLen)
+      e = e + eBias
+    } else {
+      m = value * Math.pow(2, eBias - 1) * Math.pow(2, mLen)
+      e = 0
+    }
+  }
+
+  for (; mLen >= 8; buffer[offset + i] = m & 0xff, i += d, m /= 256, mLen -= 8) {}
+
+  e = (e << mLen) | m
+  eLen += mLen
+  for (; eLen > 0; buffer[offset + i] = e & 0xff, i += d, e /= 256, eLen -= 8) {}
+
+  buffer[offset + i - d] |= s * 128
+}
+
+},{}],32:[function(require,module,exports){
 (function (process,global){(function (){
 /*
  * [js-sha512]{@link https://github.com/emn178/js-sha512}
@@ -8335,7 +8335,7 @@ module.exports = {
     }
 };
 
-},{"./bip173_validator":41,"./crypto/base58":44,"cbor-js":6,"crc":31}],38:[function(require,module,exports){
+},{"./bip173_validator":41,"./crypto/base58":44,"cbor-js":5,"crc":30}],38:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 const ALGORAND_CHECKSUM_BYTE_LENGTH = 4;
@@ -13003,7 +13003,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":52,"base-x":1,"crc":31}],63:[function(require,module,exports){
+},{"./crypto/utils":52,"base-x":1,"crc":30}],63:[function(require,module,exports){
 const base58 = require('./crypto/base58');
 const cryptoUtils = require('./crypto/utils');
 
