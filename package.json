@@ -189,7 +189,7 @@
         "js-sha512": "^0.8.0",
         "jssha": "^2.4.2",
         "lodash.isequal": "^4.5.0",
-        "minify": "^6.0.1"
+        "minify": "^11.0.1"
     },
     "devDependencies": {
         "browserify": "^17.0.0",
