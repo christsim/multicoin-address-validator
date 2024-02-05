@@ -518,13 +518,20 @@ describe('WAValidator.validate()', function () {
             valid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tether');
             valid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt', { chainType: 'omni' });
             valid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tether', { chainType: 'erc20' });
+            valid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tether', { chainType: 'ethereum' });
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'tether', { chainType: 'tron' });
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'usdt', { chainType: 'TRON', networkType: 'prod' });
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'tether', { chainType: 'tron', networkType: 'prod' });
         });
 
         it('should return false for incorrect tether addresses', function () {
             invalid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6Jp', 'tether');
             invalid('0xF6f6ebAf5D78F4c93Baf856d3005B7395CCC272eT', 'usdt');
             invalid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt', { chainType: 'erc20' });
+            invalid('3MbYQMMmSkC3AgWkj9FMo5LsPTW1zBTwXL', 'usdt', { chainType: 'ethereum' });
             invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tether', { chainType: 'omni' });
+            invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'tether', { chainType: 'TRON' });
+            invalid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'tether', { chainType: 'tron' , networkType: 'testnet' });
         });
 
         it('should return true for correct expanse addresses', function () {
@@ -607,7 +614,7 @@ describe('WAValidator.validate()', function () {
 
         it('should return true for correct trx addresses', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
-            valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx', 'testnet');
         });
 
         it('should return true for correct nem addresses', function () {
@@ -821,7 +828,7 @@ describe('WAValidator.validate()', function () {
 
         it('should return true for correct trx addresses', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx');
-            valid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx', 'testnet');
+            valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'trx', 'testnet');
         });
 
         it('should return true for correct nem addresses', function () {
@@ -1154,6 +1161,7 @@ describe('WAValidator.validate()', function () {
             commonTests('trx');
             invalid('xrb_1111111112111111111111111111111111111111111111111111hifc8npp', 'trx');
             invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'trx');
+            invalid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'trx');
         });
 
         it('should return false for incorrect nem addresses', function () {

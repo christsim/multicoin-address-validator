@@ -12069,7 +12069,7 @@ var CURRENCIES = [{
     }, {
         name: 'Tether',
         symbol: 'usdt',
-        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        addressTypes: { prod: ['00', '05', '65'], testnet: ['6f', 'c4', '65'] },
         validator: USDTValidator
     }, {
         name: 'Ripple',
@@ -12284,7 +12284,7 @@ var CURRENCIES = [{
     }, {
         name: 'Tron',
         symbol: 'trx',
-        addressTypes: { prod: [0x41], testnet: [0xa0] },
+        addressTypes: { prod: ['65'], testnet: ['65'] },
         validator: TRXValidator
     }, {
         name: 'Nem',
@@ -13044,23 +13044,20 @@ module.exports = {
 },{"./crypto/base58":44,"./crypto/utils":52}],64:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
-function decodeBase58Address(base58Sting) {
-    if (typeof (base58Sting) !== 'string') {
+function decodeBase58Address(base58String) {
+    if (typeof (base58String) !== 'string') {
         return false;
     }
-    if (base58Sting.length <= 4) {
+    if (base58String.length !== 34) {
         return false;
     }
 
     try {
-        var address = cryptoUtils.base58(base58Sting);
+        var address = cryptoUtils.base58(base58String);
     } catch (e) {
         return false
     }
 
-    /*if (base58Sting.length <= 4) {
-        return false;
-    }*/
     var len = address.length;
     var offset = len - 4;
     var checkSum = address.slice(offset);
@@ -13077,12 +13074,12 @@ function decodeBase58Address(base58Sting) {
     return false;
 }
 
-function getEnv(currency, networkType) {
-    var evn = networkType || 'prod';
+function getEnv(networkType) {
+    var env = networkType || 'prod';
 
-    if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
+    if (env !== 'prod' && env !== 'testnet') env = 'prod';
 
-    return currency.addressTypes[evn][0]
+    return env;
 }
 
 module.exports = {
@@ -13090,7 +13087,7 @@ module.exports = {
      * tron address validation
      */
     isValidAddress: function (mainAddress, currency, opts) {
-        var networkType = opts ? opts.networkType : '';
+    var networkType = opts ? opts.networkType : '';
         var address = decodeBase58Address(mainAddress);
 
         if (!address) {
@@ -13101,34 +13098,41 @@ module.exports = {
             return false;
         }
 
-        return getEnv(currency, networkType) === address[0];
+        var env = getEnv(currency, networkType);
+        
+        return currency.addressTypes[env].includes(address[0].toString());
     }
 };
 
 },{"./crypto/utils":52}],65:[function(require,module,exports){
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
+var TronValidator = require('./tron_validator');
 
-function checkBothValidators(address, currency, networkType) {
-    var result = BTCValidator.isValidAddress(address, currency, networkType);
-    return result ? result :
-        ETHValidator.isValidAddress(address, currency, networkType);
+function checkAllValidators(address, currency, networkType) {
+    return BTCValidator.isValidAddress(address, currency, networkType) ||
+      ETHValidator.isValidAddress(address, currency, networkType) ||
+      TronValidator.isValidAddress(address, currency, networkType);
 }
 
 module.exports = {
     isValidAddress: function (address, currency, opts) {
         if (opts) {
-            if (opts.chainType === 'erc20') {
-                return ETHValidator.isValidAddress(address, currency, opts.networkType);
-            } else if (opts.chainType === 'omni') {
-                return BTCValidator.isValidAddress(address, currency, opts.networkType);
+            switch(opts.chainType) {
+                case 'erc20':
+                case 'ethereum':
+                    return ETHValidator.isValidAddress(address, currency, opts.networkType);
+                case 'omni':
+                    return BTCValidator.isValidAddress(address, currency, opts.networkType);
+                case 'tron':
+                    return TronValidator.isValidAddress(address, currency, opts.networkType);
             }
         }
-        return checkBothValidators(address, currency, opts);
+        return checkAllValidators(address, currency, opts);
     }
 };
 
-},{"./bitcoin_validator":42,"./ethereum_validator":56}],66:[function(require,module,exports){
+},{"./bitcoin_validator":42,"./ethereum_validator":56,"./tron_validator":64}],66:[function(require,module,exports){
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
