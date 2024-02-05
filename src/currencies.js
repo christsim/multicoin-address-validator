@@ -193,7 +193,7 @@ var CURRENCIES = [{
     }, {
         name: 'Tether',
         symbol: 'usdt',
-        addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4'] },
+        addressTypes: { prod: ['00', '05', '65'], testnet: ['6f', 'c4', '65'] },
         validator: USDTValidator
     }, {
         name: 'Ripple',
@@ -408,7 +408,7 @@ var CURRENCIES = [{
     }, {
         name: 'Tron',
         symbol: 'trx',
-        addressTypes: { prod: [0x41], testnet: [0xa0] },
+        addressTypes: { prod: ['65'], testnet: ['65'] },
         validator: TRXValidator
     }, {
         name: 'Nem',

@@ -1,22 +1,19 @@
 var cryptoUtils = require('./crypto/utils');
 
-function decodeBase58Address(base58Sting) {
-    if (typeof (base58Sting) !== 'string') {
+function decodeBase58Address(base58String) {
+    if (typeof (base58String) !== 'string') {
         return false;
     }
-    if (base58Sting.length <= 4) {
+    if (base58String.length !== 34) {
         return false;
     }
 
     try {
-        var address = cryptoUtils.base58(base58Sting);
+        var address = cryptoUtils.base58(base58String);
     } catch (e) {
         return false
     }
 
-    /*if (base58Sting.length <= 4) {
-        return false;
-    }*/
     var len = address.length;
     var offset = len - 4;
     var checkSum = address.slice(offset);
@@ -33,12 +30,12 @@ function decodeBase58Address(base58Sting) {
     return false;
 }
 
-function getEnv(currency, networkType) {
-    var evn = networkType || 'prod';
+function getEnv(networkType) {
+    var env = networkType || 'prod';
 
-    if (evn !== 'prod' && evn !== 'testnet') evn = 'prod';
+    if (env !== 'prod' && env !== 'testnet') env = 'prod';
 
-    return currency.addressTypes[evn][0]
+    return env;
 }
 
 module.exports = {
@@ -46,7 +43,7 @@ module.exports = {
      * tron address validation
      */
     isValidAddress: function (mainAddress, currency, opts) {
-        var networkType = opts ? opts.networkType : '';
+    var networkType = opts ? opts.networkType : '';
         var address = decodeBase58Address(mainAddress);
 
         if (!address) {
@@ -57,6 +54,8 @@ module.exports = {
             return false;
         }
 
-        return getEnv(currency, networkType) === address[0];
+        var env = getEnv(currency, networkType);
+        
+        return currency.addressTypes[env].includes(address[0].toString());
     }
 };
