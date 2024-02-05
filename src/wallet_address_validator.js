@@ -1,3 +1,7 @@
+if (!global.Buffer) {
+    global.Buffer = require('buffer').Buffer;
+}
+
 var currencies = require('./currencies');
 
 var DEFAULT_CURRENCY_NAME = 'bitcoin';
