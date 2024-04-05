@@ -110,6 +110,11 @@ var CURRENCIES = [{
         addressTypes: { prod: ['26', '17'], testnet: ['6f', 'c4'] },
         validator: BTCValidator
     }, {
+        name: 'Koinos',
+        symbol: 'koin',
+        addressTypes: { prod: ['00'], testnet: ['00'] },
+        validator: BTCValidator
+    }, {
         name: 'Komodo',
         symbol: 'kmd',
         addressTypes: { prod: ['3c', '55'], testnet: ['0', '5'] },
