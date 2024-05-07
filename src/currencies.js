@@ -12,6 +12,7 @@ var XLMValidator = require('./stellar_validator');
 var EOSValidator = require('./eos_validator');
 var XTZValidator = require('./tezos_validator');
 var USDTValidator = require('./usdt_validator');
+var USDCValidator = require('./usdc_validator');
 var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
@@ -544,7 +545,7 @@ var CURRENCIES = [{
     {
         name: 'USD Coin',
         symbol: 'usdc',
-        validator: ETHValidator
+        validator: USDCValidator
     },
     {
         name: 'CUSD',
