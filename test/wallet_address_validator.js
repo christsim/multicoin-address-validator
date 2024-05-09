@@ -335,6 +335,10 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'OP');
         });
 
+        it('should return true for correct MANA addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'mana');
+        });
+
         it('should return true for correct YFI addresses', function () {
             valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'yfi');
             valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'yfi');
@@ -538,6 +542,7 @@ describe('WAValidator.validate()', function () {
             invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'tether', { chainType: 'omni' });
             invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'tether', { chainType: 'TRON' });
             invalid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'tether', { chainType: 'tron' , networkType: 'testnet' });
+            invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'usdt', { chainType: 'TRON', networkType: 'prod' });
         });
 
         it('should return true for correct expanse addresses', function () {

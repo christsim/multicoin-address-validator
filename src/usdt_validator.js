@@ -12,7 +12,8 @@ function checkAllValidators(address, currency, networkType) {
 module.exports = {
     isValidAddress: function (address, currency, opts) {
         if (opts) {
-            switch(opts.chainType) {
+            const chainType = opts.chainType ? opts.chainType.toLowerCase() : '';
+            switch(chainType) {
                 case 'erc20':
                 case 'ethereum':
                     return ETHValidator.isValidAddress(address, currency, opts.networkType);
