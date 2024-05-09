@@ -524,6 +524,12 @@ describe('WAValidator.validate()', function () {
             valid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg3r', 'tether', { chainType: 'tron', networkType: 'prod' });
         });
 
+        it('should verify SPL addresses', function () {
+            valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'usdc', { chainType: 'solana', networkType: 'prod' });
+            valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'usdt', { chainType: 'solana', networkType: 'prod' });
+            invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'usdt', { chainType: 'solana', networkType: 'prod' });
+        });
+
         it('should return false for incorrect tether addresses', function () {
             invalid('1KdXaqcBeoMAFVAPwTmYvDbEq6RnvNPF6Jp', 'tether');
             invalid('0xF6f6ebAf5D78F4c93Baf856d3005B7395CCC272eT', 'usdt');
@@ -886,14 +892,18 @@ describe('WAValidator.validate()', function () {
 
     describe('invalid results', function () {
         function commonTests(currency) {
+            commonTestsWithoutBase58Addresses(currency)
+            invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency); //reject invalid address
+            invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency, 'testnet'); //reject invalid address
+        }
+
+        function commonTestsWithoutBase58Addresses(currency) {
             invalid('', currency); //reject blank
             invalid('%%@', currency); //reject invalid base58 string
-            invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency); //reject invalid address
             invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency);  //reject transaction id's
             //testnet
             invalid('', currency, 'testnet'); //reject blank
             invalid('%%@', currency, 'testnet'); //reject invalid base58 string
-            invalid('1A1zP1ePQGefi2DMPTifTL5SLmv7DivfNa', currency, 'testnet'); //reject invalid address
             invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency, 'testnet');  //reject transaction id's
         }
 
@@ -971,7 +981,7 @@ describe('WAValidator.validate()', function () {
         it('should return false for incorrect erc20 addresses', function () {
 
             commonTests('game');
-            commonTests('usdc');
+            commonTestsWithoutBase58Addresses('usdc');
 
             // old game addresses
             invalid('GU5BBtW9gxSKvAknvFi9yUaXKUNW9zUN2p', 'game');

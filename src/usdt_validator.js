@@ -1,6 +1,7 @@
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
 var TronValidator = require('./tron_validator');
+var Base58Validator = require('./base58_validator');
 
 function checkAllValidators(address, currency, networkType) {
     return BTCValidator.isValidAddress(address, currency, networkType) ||
@@ -19,6 +20,8 @@ module.exports = {
                     return BTCValidator.isValidAddress(address, currency, opts.networkType);
                 case 'tron':
                     return TronValidator.isValidAddress(address, currency, opts.networkType);
+                case 'solana':
+                    return Base58Validator.isValidAddress(address, currency, opts.networkType);
             }
         }
         return checkAllValidators(address, currency, opts);
