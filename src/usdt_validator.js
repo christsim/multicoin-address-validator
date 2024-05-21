@@ -6,7 +6,8 @@ var Base58Validator = require('./base58_validator');
 function checkAllValidators(address, currency, networkType) {
     return BTCValidator.isValidAddress(address, currency, networkType) ||
       ETHValidator.isValidAddress(address, currency, networkType) ||
-      TronValidator.isValidAddress(address, currency, networkType);
+        TronValidator.isValidAddress(address, currency, networkType) ||
+        Base58Validator.isValidAddress(address, currency, networkType);
 }
 
 module.exports = {
