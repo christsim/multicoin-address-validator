@@ -10314,8 +10314,11 @@ function decode (bechString, enc) {
     exports.JSBigInt = BigInteger; // exports.BigInteger changed to exports.JSBigInt
     })(typeof exports !== 'undefined' ? exports : this);
 },{}],60:[function(require,module,exports){
-(function (Buffer){(function (){
+(function (global,Buffer){(function (){
 'use strict';
+if (!global.Buffer) {
+  global.Buffer = require('buffer').Buffer;
+}
 
 /**
  * Credits to https://github.com/cryptocoinjs/blake-hash
@@ -10504,7 +10507,7 @@ Blake256.prototype.digest = function (encoding) {
 
 module.exports = Blake256;
 
-}).call(this)}).call(this,require("buffer").Buffer)
+}).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {},require("buffer").Buffer)
 },{"buffer":4}],61:[function(require,module,exports){
 'use strict';
 
@@ -13156,8 +13159,15 @@ module.exports = {
 var ETHValidator = require('./ethereum_validator');
 var Base58Validator = require('./base58_validator');
 
+const solanaValidator = (address, currency, networkType) => Base58Validator.isValidAddress(address, {
+    ...currency,
+    maxLength: 44,
+    minLength: 43
+}, networkType);
+
 function checkAllValidators(address, currency, networkType) {
-    return ETHValidator.isValidAddress(address, currency, networkType) || Base58Validator.isValidAddress(address, currency, networkType);
+    return ETHValidator.isValidAddress(address, currency, networkType) ||
+        solanaValidator(address, currency, networkType);
 }
 
 module.exports = {
@@ -13168,7 +13178,7 @@ module.exports = {
                 case 'ethereum':
                     return ETHValidator.isValidAddress(address, currency, opts.networkType);
                 case 'solana':
-                    return Base58Validator.isValidAddress(address, currency, opts.networkType);
+                    return solanaValidator(address, currency, opts.networkType);
             }
         }
         return checkAllValidators(address, currency, opts);
@@ -13181,17 +13191,24 @@ var ETHValidator = require('./ethereum_validator');
 var TronValidator = require('./tron_validator');
 var Base58Validator = require('./base58_validator');
 
+const solanaValidator = (address, currency, networkType) => Base58Validator.isValidAddress(address, {
+    ...currency,
+    maxLength: 44,
+    minLength: 43
+}, networkType);
+
 function checkAllValidators(address, currency, networkType) {
     return BTCValidator.isValidAddress(address, currency, networkType) ||
-      ETHValidator.isValidAddress(address, currency, networkType) ||
-      TronValidator.isValidAddress(address, currency, networkType);
+        ETHValidator.isValidAddress(address, currency, networkType) ||
+        TronValidator.isValidAddress(address, currency, networkType) ||
+        solanaValidator(address, currency, networkType);
 }
 
 module.exports = {
     isValidAddress: function (address, currency, opts) {
         if (opts) {
             const chainType = opts.chainType ? opts.chainType.toLowerCase() : '';
-            switch(chainType) {
+            switch (chainType) {
                 case 'erc20':
                 case 'ethereum':
                     return ETHValidator.isValidAddress(address, currency, opts.networkType);
@@ -13200,7 +13217,7 @@ module.exports = {
                 case 'tron':
                     return TronValidator.isValidAddress(address, currency, opts.networkType);
                 case 'solana':
-                    return Base58Validator.isValidAddress(address, currency, opts.networkType);
+                    return solanaValidator(address, currency, opts.networkType);
             }
         }
         return checkAllValidators(address, currency, opts);
