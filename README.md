@@ -104,6 +104,7 @@ npm install multicoin-address-validator
 * Illuvium/ilv `'Illuvium'` or `'ilv'` 
 * Immutable/imx `'Immutable'` or `'imx'` 
 * Injective/inj `'Injective'` or `'inj'` 
+* Koinos/koin `'Koinos'` or `'koin'` 
 * Komodo/kmd `'Komodo'` or `'kmd'` 
 * LBRY Credits/lbc `'LBRY Credits'` or `'lbc'` 
 * Lido DAO Token/ldo `'Lido DAO Token'` or `'ldo'` 

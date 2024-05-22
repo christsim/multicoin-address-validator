@@ -449,6 +449,12 @@ describe('WAValidator.validate()', function () {
             valid('ztmWMDLWjbruCJxKmmfAZiT6QAQdiv5F291', 'zencash', 'testnet');
         });
 
+        it('should return true for correct koin addresses', function () {
+            valid('1Dq1YYNrC3yLEDax527yVhX8Y66xCoJ684', 'koinos');
+            valid('1PRMZdT8me6eugZBpHihXYZKiHJMFUvpDh', 'KOIN');
+            valid('1McpB177XmfVzyQSFfi8XKV5LCDrY4GUM8', 'koinos', 'testnet');
+        });
+
         it('should return true for correct komodo addresses', function () {
             valid('R9R5HirAzqDcWrWGiJEL115dpV3QB3hobH', 'komodo');
             valid('RAvj2KKVUohTu3hVdNJ4U6hQi7TNawpacH', 'KMD');
@@ -1110,6 +1116,15 @@ describe('WAValidator.validate()', function () {
             invalid('ztYWMDLWjbruCJxKmmfAZiT6QAQdiv5F291', 'zencash', 'testnet');
         });
 
+        it('should return false for incorrect koinos addresses', function () {
+            commonTests('koinos');
+            // koinos only supports p2pkh. No p2sh or segwit
+            invalid('3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn', 'koinos');
+            invalid('3NJZLcZEEYBpxYEUGewU4knsQRn1WM5Fkt', 'KOIN');
+            invalid('BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4', 'koinos');
+            invalid('t2YNzUUx8mWBCRYPRezvA363EYXyEpHokyi', 'koinos', 'testnet');
+        });
+
         it('should return false for incorrect komodo addresses', function () {
             commonTests('komodo');
             invalid('R9Y5HirAzqDcWrWGiJEL115dpV3QB3hobH', 'komodo');
@@ -1443,6 +1458,15 @@ describe('invalid results', function () {
         invalid('znYiGGfYRepxkBjXYvA2kFrXiC351i9ta4z', 'zencash');
         invalid('zsYEdGnZCQ9G86LZFtbynMn1hYTVhn6eYCL', 'ZEN');
         invalid('ztYWMDLWjbruCJxKmmfAZiT6QAQdiv5F291', 'zencash', 'testnet');
+    });
+
+    it('should return false for incorrect koinos addresses', function () {
+        commonTests('koinos');
+        // koinos only supports p2pkh. No p2sh or segwit
+        invalid('3FyVFsEyyBPzHjD3qUEgX7Jsn4tcHNZFkn', 'koinos');
+        invalid('3NJZLcZEEYBpxYEUGewU4knsQRn1WM5Fkt', 'KOIN');
+        invalid('BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4', 'koinos');
+        invalid('t2YNzUUx8mWBCRYPRezvA363EYXyEpHokyi', 'koinos', 'testnet');
     });
 
     it('should return false for incorrect komodo addresses', function () {
