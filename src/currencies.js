@@ -603,7 +603,7 @@ var CURRENCIES = [{
     },
     {
         name: 'BinanceSmartChain',
-        symbol: 'bnb',
+        symbol: 'bsc',
         validator: ETHValidator,
     },
     {
