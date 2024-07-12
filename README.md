@@ -1,3 +1,7 @@
+# Deprecated:
+
+Moved to trezor-suite repo https://github.com/trezor/trezor-suite/pull/9337
+
 # trezor-address-validator
 Simple wallet address validator for validating Bitcoin and other altcoins addresses in **Node.js and browser**.
 
