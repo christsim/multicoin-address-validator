@@ -12704,6 +12704,24 @@ var CURRENCIES = [{
     },
     getAll: function () {
         return CURRENCIES;
+    },
+
+    // map the chain type to validator
+    chainTypeToValidator: {
+        bitcoin: {
+            validator: BTCValidator,
+            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
+        },
+        ethereum: { validator: ETHValidator },
+        erc20: { validator: ETHValidator },
+        omni: {
+            validator: BTCValidator,
+            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
+        },
+        solana: { validator: Base58Validator, maxLength: 44, minLength: 43 },
+        tron: { validator: TRXValidator, addressTypes: { prod: ['65'], testnet: ['65'] } },
     }
 };
 
@@ -13239,7 +13257,13 @@ module.exports = {
     validate: function (address, currencyNameOrSymbol, opts) {
         var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
-        if (currency && currency.validator) {
+        if (opts && opts.chainType) { // Currency is unknown, validate using the chainType
+            var normalizedChainType = opts.chainType.toLowerCase();
+            var chainTypeConfig = currencies.chainTypeToValidator[normalizedChainType];
+            if (chainTypeConfig) {
+                return chainTypeConfig.validator.isValidAddress(address, { ...opts, ...chainTypeConfig });
+            }
+        } else if (currency && currency.validator) {
             if (opts && typeof opts === 'string') {
                 return currency.validator.isValidAddress(address, currency, { networkType: opts });
             }

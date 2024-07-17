@@ -11,7 +11,13 @@ module.exports = {
     validate: function (address, currencyNameOrSymbol, opts) {
         var currency = currencies.getByNameOrSymbol(currencyNameOrSymbol || DEFAULT_CURRENCY_NAME);
 
-        if (currency && currency.validator) {
+        if (opts && opts.chainType) { // Currency is unknown, validate using the chainType
+            var normalizedChainType = opts.chainType.toLowerCase();
+            var chainTypeConfig = currencies.chainTypeToValidator[normalizedChainType];
+            if (chainTypeConfig) {
+                return chainTypeConfig.validator.isValidAddress(address, { ...opts, ...chainTypeConfig });
+            }
+        } else if (currency && currency.validator) {
             if (opts && typeof opts === 'string') {
                 return currency.validator.isValidAddress(address, currency, { networkType: opts });
             }

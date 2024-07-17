@@ -783,6 +783,24 @@ var CURRENCIES = [{
     },
     getAll: function () {
         return CURRENCIES;
+    },
+
+    // map the chain type to validator
+    chainTypeToValidator: {
+        bitcoin: {
+            validator: BTCValidator,
+            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
+        },
+        ethereum: { validator: ETHValidator },
+        erc20: { validator: ETHValidator },
+        omni: {
+            validator: BTCValidator,
+            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
+            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
+        },
+        solana: { validator: Base58Validator, maxLength: 44, minLength: 43 },
+        tron: { validator: TRXValidator, addressTypes: { prod: ['65'], testnet: ['65'] } },
     }
 };
 

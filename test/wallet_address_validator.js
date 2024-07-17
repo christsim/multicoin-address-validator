@@ -5,13 +5,13 @@ var chai = isNode ? require('chai') : window.chai,
 
 var WAValidator = isNode ? require('../src/wallet_address_validator') : window.WAValidator
 
-function valid(address, currency, networkType) {
-    var valid = WAValidator.validate(address, currency, networkType);
+function valid(address, currency, opts) {
+    var valid = WAValidator.validate(address, currency, opts);
     expect({ address, currency, valid }).to.deep.equal({ address, currency, valid: true });
 }
 
-function invalid(address, currency, networkType) {
-    var valid = WAValidator.validate(address, currency, networkType);
+function invalid(address, currency, opts) {
+    var valid = WAValidator.validate(address, currency, opts);
     expect({ address, currency, valid }).to.deep.equal({ address, currency, valid: false });
 }
 
@@ -498,6 +498,18 @@ describe('WAValidator.validate()', function () {
 
         });
 
+        it('should return true for correct erc20 addresses for unknown tokens, when chainType is provided', function () {
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'eurc', { chainType: 'ethereum' });
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'eurc', { chainType: 'ethereum' });
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'eurc', { chainType: 'Ethereum' });
+        });
+
+        it('should return true for correct trc20 addresses for unknown tokens, when chainType is provided', function () {
+            valid('TFEkshkSXo8yMe8vcA6P77XmiLfstNWHyT', 'unknown trc20', { chainType: 'tron', networkType: 'prod' });
+            valid('TUBBzKNM9gr687ucwj8fvVS2Sf2e4WseVa', 'unknown trc20', { chainType: 'tron', networkType: 'testnet' });
+            valid('TFEkshkSXo8yMe8vcA6P77XmiLfstNWHyT', 'unknown trc20', { chainType: 'tron' });
+        });
+
         it('should return true for correct pivx addresses', function () {
             valid('DJXFW9oJJBUX7QKrG6GKvmTs63MYKzwtpZ', 'pivx');
             valid('DEaYb8EHQgyKvX6VXDS3DZQautJrHBmK3T', 'pivx');
@@ -532,6 +544,13 @@ describe('WAValidator.validate()', function () {
             valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'usdc', { chainType: 'solana', networkType: 'prod' });
             valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'usdt', { chainType: 'solana', networkType: 'prod' });
             invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'usdt', { chainType: 'solana', networkType: 'prod' });
+        });
+
+
+        it('should verify SPL addresses for unknown tokens', function () {
+            valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'mobile', { chainType: 'solana', networkType: 'prod' });
+            valid('69UwBV4LPg7hHUS5JXiXyfgVnESmDKe8KJppsLj8pRU', 'neon', { chainType: 'solana', networkType: 'prod' });
+            invalid('0x9ec7d40d627ec59981446a6e5acb33d51afcaf8a', 'shdw', { chainType: 'solana', networkType: 'prod' });
         });
 
         it('should return false for incorrect tether addresses', function () {
@@ -1242,6 +1261,25 @@ describe('WAValidator.validate()', function () {
             invalid('addr1skemppmfevyk0lshu2w8j34707s3t3t58a04xcx5ccevrcmvpmxg2qt4pk0', 'sol', 'testnet');
         });
 
+        it('should return false for incorrect solana addresses for unknown tokens, even if chainType is provided', function () {
+            invalid('833XQoXTx05iya53Tr6iqEs9GbRuvVfwyLCP2vpdzhq', 'mobile', { chainType: 'solana' });
+            invalid('833XorXTTx5iya5B3Tr6iqEs9GbRuvVfwyLCP2vpdz', 'mobile', { chainType: 'solana' });
+            invalid('bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej', 'mobile', { chainType: 'solana' });
+            invalid('Ae2tdPwUPEZKmwoy3AU3cXb5Chnasj6mvVNxV1H11997q3VW5ihbSfQwGpm', 'mobile', { chainType: 'solana' });
+            invalid('addr1skemppmfevyk0lshu2w8j34707s3t3t58a04xcx5ccevrcmvpmxg2qt4pk0', 'mobile', { chainType: 'solana', networkType: 'testnet' });
+        });
+
+        it('should return false for incorrect erc20 addresses for unknown tokens, even if chainType is provided', function () {
+            invalid('833XorXTTx5iya5B3Tr6iqEs9GbRuvVfwyLCP2vpdz', 'eurc', { chainType: 'ethereum' });
+            invalid('0xDDDDDDD', 'eurc', { chainType: 'ethereum' });
+            invalid('1234567890123', 'eurc', { chainType: 'Ethereum' });
+        });
+
+        it('should return false for incorrect trc20 addresses for unknown tokens, even if chainType is provided', function () {
+            invalid('TNDzfERDpxLDS2w1q6yaFC7pzqaSQ3Bg31', 'unknown trc20', { chainType: 'TRON' });
+            invalid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'unknown trc20', { chainType: 'tron' , networkType: 'testnet' });
+            invalid('27bLJCYjbH6MT8DBF9xcrK6yZnm43vx7MNQ', 'unknown trc20', { chainType: 'tron' , networkType: 'prod' });
+        });
 
     });
 
