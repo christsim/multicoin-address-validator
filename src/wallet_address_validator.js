@@ -17,7 +17,9 @@ module.exports = {
             if (chainTypeConfig) {
                 return chainTypeConfig.validator.isValidAddress(address, { ...opts, ...chainTypeConfig });
             }
-        } else if (currency && currency.validator) {
+        }
+
+        if (currency && currency.validator) {
             if (opts && typeof opts === 'string') {
                 return currency.validator.isValidAddress(address, currency, { networkType: opts });
             }
