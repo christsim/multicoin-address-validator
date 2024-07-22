@@ -12708,6 +12708,7 @@ var CURRENCIES = [{
 
     // map the chain type to validator
     chainTypeToValidator: {
+        avalanche: { validator: ETHValidator },
         bitcoin: {
             validator: BTCValidator,
             addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
@@ -13192,6 +13193,7 @@ module.exports = {
     isValidAddress: function (address, currency, opts) {
         if (opts) {
             switch(opts.chainType) {
+                case 'avalanche':
                 case 'erc20':
                 case 'ethereum':
                     return ETHValidator.isValidAddress(address, currency, opts.networkType);

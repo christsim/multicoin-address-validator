@@ -946,6 +946,15 @@ describe('WAValidator.validate()', function () {
             invalid('bd839e4f6fadb293ba580df5dea7814399989983', currency, 'testnet');  //reject transaction id's
         }
 
+        it('should return false for incorrect avalanche addresses', function () {
+            commonTests('avalanche');
+
+            // solana address
+            invalid('5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs', 'usdc', {
+                chainType: 'avalanche'
+            })
+        });
+
         it('should return false for incorrect bitcoin addresses', function () {
             commonTests('bitcoin');
         });
