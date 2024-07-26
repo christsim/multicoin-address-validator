@@ -30,20 +30,11 @@ function decodeBase58Address(base58String) {
     return false;
 }
 
-function getEnv(networkType) {
-    var env = networkType || 'prod';
-
-    if (env !== 'prod' && env !== 'testnet') env = 'prod';
-
-    return env;
-}
-
 module.exports = {
     /**
      * tron address validation
      */
     isValidAddress: function (mainAddress, currency, opts) {
-    var networkType = opts ? opts.networkType : '';
         var address = decodeBase58Address(mainAddress);
 
         if (!address) {
@@ -54,8 +45,9 @@ module.exports = {
             return false;
         }
 
-        var env = getEnv(currency, networkType);
-        
-        return currency.addressTypes[env].includes(address[0].toString());
+        const TRON_ADDRESS_VERSION_BYTE = 0x41;
+
+        // Check if the address starts with the correct byte 0x41, ( decimal 65 )
+        return address[0] === TRON_ADDRESS_VERSION_BYTE;
     }
 };

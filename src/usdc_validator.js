@@ -16,6 +16,8 @@ module.exports = {
     isValidAddress: function (address, currency, opts) {
         if (opts) {
             switch(opts.chainType) {
+                case 'arbitrum':
+                case 'avalanche':
                 case 'erc20':
                 case 'ethereum':
                     return ETHValidator.isValidAddress(address, currency, opts.networkType);

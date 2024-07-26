@@ -409,7 +409,6 @@ var CURRENCIES = [{
     }, {
         name: 'Tron',
         symbol: 'trx',
-        addressTypes: { prod: ['65'], testnet: ['65'] },
         validator: TRXValidator
     }, {
         name: 'Nem',
@@ -612,6 +611,11 @@ var CURRENCIES = [{
         validator: ETHValidator,
     },
     {
+        name: 'Arbitrum',
+        symbol: 'arb',
+        validator: ETHValidator,
+    },
+    {
         name: 'Flare',
         symbol: 'flr',
         validator: ETHValidator,
@@ -773,6 +777,19 @@ var CURRENCIES = [{
     },
 ];
 
+const chainTypeToValidator = {};
+CURRENCIES.forEach(currency => {
+    const { name, validator, addressTypes, bech32Hrp, maxLength, minLength } = currency;
+
+    chainTypeToValidator[name.toLowerCase()] = {
+        validator,
+        addressTypes,
+        bech32Hrp,
+        maxLength,
+        minLength
+    };
+});
+
 
     module.exports = {
     getByNameOrSymbol: function (currencyNameOrSymbol) {
@@ -785,23 +802,7 @@ var CURRENCIES = [{
         return CURRENCIES;
     },
 
-    // map the chain type to validator
-    chainTypeToValidator: {
-        bitcoin: {
-            validator: BTCValidator,
-            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
-            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
-        },
-        ethereum: { validator: ETHValidator },
-        erc20: { validator: ETHValidator },
-        omni: {
-            validator: BTCValidator,
-            addressTypes: { prod: ['00', '05'], testnet: ['6f', 'c4', '3c', '26'] },
-            bech32Hrp: { prod: ['bc'], testnet: ['tb'] },
-        },
-        solana: { validator: Base58Validator, maxLength: 44, minLength: 43 },
-        tron: { validator: TRXValidator, addressTypes: { prod: ['65'], testnet: ['65'] } },
-    }
+    chainTypeToValidator
 };
 
 ////spit out details for readme.md
