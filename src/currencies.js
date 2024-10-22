@@ -17,6 +17,7 @@ var AlgoValidator = require('./algo_validator');
 var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
+var AptosValidator = require('./aptos_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -228,6 +229,10 @@ var CURRENCIES = [{
         hashFunction: 'blake256keccak256',
         regex: /^[a-zA-Z0-9]{35}$/,
         validator: BTCValidator
+    }, {
+        name: 'Aptos',
+        symbol: 'apt',
+        validator: AptosValidator,
     }, {
         name: 'Ethereum',
         symbol: 'eth',

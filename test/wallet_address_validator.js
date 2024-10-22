@@ -310,6 +310,13 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'CLO');
         });
 
+        it('should return true for correct Aptos addresses', function () {
+            valid('0xaabf25b0c115130a4ad88bfa08627c5a103b7851e90869c23fadaf0512dd5133', 'aptos');
+            valid('0xdce6ab89a1d26c99491a70fd4a2536d065925114deee916a1ae7d35007f4dedf', 'aptos');
+            valid('0xd05448f15a03f25b2816c4538b72bd54752ba7522d4831a4c9ea5a613becb47a', 'APT');
+            valid('0x39f521d22f611a4dec2f790fef2e4f8d1f96550509e85beccf8acec52c1a7219', 'APT');
+        });
+
         it('should return true for correct Arbitrum addresses', function () {
             valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'arb');
             valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'arb');
@@ -1536,6 +1543,14 @@ describe('invalid results', function () {
         invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'ethereumclassic');
         invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'etherzero');
         invalid('0x02fcd51aAbB814FfFe17908fbc888A8975D839A5', 'callisto');
+    });
+
+    it('should return false for incorrect Aptos addresses', function () {
+        invalid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'aptos');
+        invalid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'aptos');
+        invalid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'APT');
+        invalid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'APT');
+        invalid('1669599662', 'APT');
     });
 
     it('should return false for incorrect ripple addresses', function () {
