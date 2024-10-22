@@ -1741,7 +1741,34 @@ describe('invalid results', function () {
         invalid('CxDDSH8gS7jecsxaRL8Txf8H5kqesLXAEAEgp76Yz632J9M', 'dot');
     });
 
+    describe('Validation of chainTypeToValidator and CURRENCIES equality', function () {
+        it('should ensure chainTypeToValidator and CURRENCIES are deeply equal', function () {
+            // Get CURRENCIES array from the library
+            const CURRENCIES = WAValidator.getCurrencies();
 
+            // Convert CURRENCIES array to a mapping for comparison
+            const currencyMap = {};
+            CURRENCIES.forEach(currency => {
+                const { name, validator, addressTypes, bech32Hrp,
+                    maxLength, minLength, regexp, expectedLength, hashFunction, iAddressTypes } = currency;
+
+                currencyMap[name.toLowerCase()] = {
+                    validator,
+                    addressTypes,
+                    bech32Hrp,
+                    maxLength,
+                    minLength,
+                    regexp,
+                    expectedLength,
+                    hashFunction,
+                    iAddressTypes
+                };
+            });
+
+            // Compare the generated currencyMap with chainTypeToValidator
+            expect(WAValidator.getChainTypeToValidators()).to.deep.equal(currencyMap);
+        });
+    });
 });
 
 

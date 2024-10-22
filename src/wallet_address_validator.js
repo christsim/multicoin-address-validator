@@ -33,5 +33,8 @@ module.exports = {
     },
     findCurrency: function(symbol) {
         return currencies.getByNameOrSymbol(symbol) || null ;
+    },
+    getChainTypeToValidators: function () {
+        return currencies.chainTypeToValidator
     }
 };

@@ -779,19 +779,24 @@ var CURRENCIES = [{
 
 const chainTypeToValidator = {};
 CURRENCIES.forEach(currency => {
-    const { name, validator, addressTypes, bech32Hrp, maxLength, minLength } = currency;
+    const { name, validator, addressTypes, iAddressTypes, bech32Hrp,
+        maxLength, minLength, regexp, expectedLength, hashFunction } = currency;
 
     chainTypeToValidator[name.toLowerCase()] = {
         validator,
         addressTypes,
         bech32Hrp,
         maxLength,
-        minLength
+        minLength,
+        iAddressTypes,
+        regexp,
+        expectedLength,
+        hashFunction
     };
 });
 
 
-    module.exports = {
+module.exports = {
     getByNameOrSymbol: function (currencyNameOrSymbol) {
         var nameOrSymbol = currencyNameOrSymbol.toLowerCase();
         return CURRENCIES.find(function (currency) {
