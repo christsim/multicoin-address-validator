@@ -18,6 +18,7 @@ var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
 var AptosValidator = require('./aptos_validator')
+var HbarValidator = require('./hbar_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -779,6 +780,11 @@ var CURRENCIES = [{
         name: 'PayPal USD',
         symbol: 'pyusd',
         validator: ETHValidator,
+    },
+    {
+        name: 'Hedera',
+        symbol: 'hbar',
+        validator: HbarValidator,
     },
 ];
 

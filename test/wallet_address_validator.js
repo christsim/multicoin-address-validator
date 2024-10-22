@@ -859,6 +859,17 @@ describe('WAValidator.validate()', function () {
             valid('3My3KZgFQ3CrVHgz6vGRt8687sH4oAA1qp8', 'waves', 'testnet');
         });
 
+        it('should return true for correct hbar addresses', function () {
+            valid('0.0.12345', 'hbar');
+            valid('0.0.987654321', 'hbar');
+            valid('0.1.54321', 'hbar');
+            valid('1.0.123', 'hbar');
+            valid('2.3.45678', 'hedera');
+            valid('0.2.789', 'hedera');
+            valid('0.0.1', 'hedera');
+            valid('10.5.987', 'hedera');
+        });
+
         it('should return true for correct nano addresses', function () {
             valid('xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3', 'nano');
             valid('xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo', 'nano');
@@ -1391,6 +1402,15 @@ describe('WAValidator.validate()', function () {
             invalid('1234567890123', 'eos');
             invalid('12345678901', 'eos');
             invalid('12345678901@', 'eos');
+        });
+
+        it('should return false for incorrect eos addresses', function () {
+            commonTests('hedera');
+            commonTests('hbar');
+            invalid('0.0.12345-abcxyz', 'hbar');  //checksum address not supported
+            invalid('0.0.12345-abcxyz', 'hedera');  //checksum address not supported
+            invalid('0.1.54321-z9lpq', 'hbar');
+            invalid('hbar123', 'hbar');
         });
 
         it('should return false for incorrect solana addresses', function () {

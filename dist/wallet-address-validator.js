@@ -11952,6 +11952,7 @@ var DotValidator = require('./dot_validator');
 var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
 var AptosValidator = require('./aptos_validator')
+var HbarValidator = require('./hbar_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -12714,6 +12715,11 @@ var CURRENCIES = [{
         symbol: 'pyusd',
         validator: ETHValidator,
     },
+    {
+        name: 'Hedera',
+        symbol: 'hbar',
+        validator: HbarValidator,
+    },
 ];
 
 const chainTypeToValidator = {};
@@ -12761,7 +12767,7 @@ module.exports = {
 //
 
 
-},{"./ada_validator":50,"./algo_validator":51,"./aptos_validator":52,"./base58_validator":53,"./bch_validator":54,"./bip173_validator":55,"./bitcoin_validator":56,"./dot_validator":68,"./eos_validator":69,"./ethereum_validator":70,"./monero_validator":71,"./nano_validator":72,"./nem_validator":73,"./ripple_validator":74,"./siacoin_validator":75,"./stellar_validator":76,"./tezos_validator":77,"./tron_validator":78,"./usdc_validator":79,"./usdt_validator":80}],68:[function(require,module,exports){
+},{"./ada_validator":50,"./algo_validator":51,"./aptos_validator":52,"./base58_validator":53,"./bch_validator":54,"./bip173_validator":55,"./bitcoin_validator":56,"./dot_validator":68,"./eos_validator":69,"./ethereum_validator":70,"./hbar_validator":71,"./monero_validator":72,"./nano_validator":73,"./nem_validator":74,"./ripple_validator":75,"./siacoin_validator":76,"./stellar_validator":77,"./tezos_validator":78,"./tron_validator":79,"./usdc_validator":80,"./usdt_validator":81}],68:[function(require,module,exports){
 const cryptoUtils = require('./crypto/utils');
 
 // from https://github.com/paritytech/substrate/wiki/External-Address-Format-(SS58)
@@ -12875,6 +12881,35 @@ module.exports = {
 };
 
 },{"./crypto/utils":66}],71:[function(require,module,exports){
+var cryptoUtils = require('./crypto/utils');
+
+var isValidAddress = function(address) {
+    // Regex to match the format "shard.realm.account" (e.g., "0.0.12345")
+    const regex = /^\d+\.\d+\.\d+$/;
+
+    if (!regex.test(address)) {
+        return false;
+    }
+
+    // Split the address into shard, realm, and account parts
+    const [shard, realm, account] = address.split('.').map(Number);
+
+    // Validate each part is a non-negative integer
+    return (
+        Number.isInteger(shard) &&
+        shard >= 0 &&
+        Number.isInteger(realm) &&
+        realm >= 0 &&
+        Number.isInteger(account) &&
+        account >= 0
+    );
+};
+
+module.exports = {
+    isValidAddress: isValidAddress,
+}
+
+},{"./crypto/utils":66}],72:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var cnBase58 = require('./crypto/cnBase58')
 
@@ -12940,7 +12975,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/cnBase58":63,"./crypto/utils":66}],72:[function(require,module,exports){
+},{"./crypto/cnBase58":63,"./crypto/utils":66}],73:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -12969,7 +13004,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":66,"base-x":1}],73:[function(require,module,exports){
+},{"./crypto/utils":66,"base-x":1}],74:[function(require,module,exports){
 (function (Buffer){(function (){
 var cryptoUtils = require('./crypto/utils');
 
@@ -12996,7 +13031,7 @@ module.exports = {
 }
 
 }).call(this)}).call(this,require("buffer").Buffer)
-},{"./crypto/utils":66,"buffer":4}],74:[function(require,module,exports){
+},{"./crypto/utils":66,"buffer":4}],75:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 var baseX = require('base-x');
 
@@ -13026,7 +13061,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":66,"base-x":1}],75:[function(require,module,exports){
+},{"./crypto/utils":66,"base-x":1}],76:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils')
 var isEqual = require('lodash.isequal')
 
@@ -13056,7 +13091,7 @@ module.exports = {
   }
 }
 
-},{"./crypto/utils":66,"lodash.isequal":48}],76:[function(require,module,exports){
+},{"./crypto/utils":66,"lodash.isequal":48}],77:[function(require,module,exports){
 var baseX = require('base-x');
 var crc = require('crc');
 var cryptoUtils = require('./crypto/utils');
@@ -13096,7 +13131,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":66,"base-x":1,"crc":19}],77:[function(require,module,exports){
+},{"./crypto/utils":66,"base-x":1,"crc":19}],78:[function(require,module,exports){
 const base58 = require('./crypto/base58');
 const cryptoUtils = require('./crypto/utils');
 
@@ -13134,7 +13169,7 @@ module.exports = {
     isValidAddress
 };
 
-},{"./crypto/base58":58,"./crypto/utils":66}],78:[function(require,module,exports){
+},{"./crypto/base58":58,"./crypto/utils":66}],79:[function(require,module,exports){
 var cryptoUtils = require('./crypto/utils');
 
 function decodeBase58Address(base58String) {
@@ -13189,7 +13224,7 @@ module.exports = {
     }
 };
 
-},{"./crypto/utils":66}],79:[function(require,module,exports){
+},{"./crypto/utils":66}],80:[function(require,module,exports){
 var ETHValidator = require('./ethereum_validator');
 var Base58Validator = require('./base58_validator');
 
@@ -13221,7 +13256,7 @@ module.exports = {
     }
 };
 
-},{"./base58_validator":53,"./ethereum_validator":70}],80:[function(require,module,exports){
+},{"./base58_validator":53,"./ethereum_validator":70}],81:[function(require,module,exports){
 var BTCValidator = require('./bitcoin_validator');
 var ETHValidator = require('./ethereum_validator');
 var TronValidator = require('./tron_validator');
@@ -13260,7 +13295,7 @@ module.exports = {
     }
 };
 
-},{"./base58_validator":53,"./bitcoin_validator":56,"./ethereum_validator":70,"./tron_validator":78}],81:[function(require,module,exports){
+},{"./base58_validator":53,"./bitcoin_validator":56,"./ethereum_validator":70,"./tron_validator":79}],82:[function(require,module,exports){
 (function (global){(function (){
 if (!global.Buffer) {
     global.Buffer = require('buffer').Buffer;
@@ -13304,5 +13339,5 @@ module.exports = {
 };
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./currencies":67,"buffer":4}]},{},[81])(81)
+},{"./currencies":67,"buffer":4}]},{},[82])(82)
 });
