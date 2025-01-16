@@ -129,6 +129,7 @@
         "Solana","sol",
         "SolarCoin","slr",
         "SOLVE","solve",
+        "Sonic","s",
         "Spendcoin","spnd",
         "Status","snt",
         "Stellar","xlm",
@@ -163,7 +164,7 @@
         "ZClassic","zcl",
         "ZenCash","zen"
     ],
-    "version": "0.5.22",
+    "version": "0.5.23",
     "author": "Chris <chris.tsim@gmail.com>",
     "homepage": "https://github.com/christsim/multicoin-address-validator",
     "license": "MIT",

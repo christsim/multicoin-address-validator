@@ -12691,6 +12691,11 @@ var CURRENCIES = [{
         validator: ETHValidator,
     },
     {
+        name: 'Sonic',
+        symbol: 's',
+        validator: ETHValidator,
+    },
+    {
         name: 'Skale',
         symbol: 'skl',
         validator: ETHValidator,

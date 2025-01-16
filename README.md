@@ -101,6 +101,7 @@ npm install multicoin-address-validator
 * Golem/glm `'Golem'` or `'glm'`
 * Golem (GNT)/gnt `'Golem (GNT)'` or `'gnt'`
 * Hashflow/hft `'Hashflow'` or `'hft'`
+* Hedera/hbar `'Hedera'` or `'hbar'`
 * HedgeTrade/hedg `'HedgeTrade'` or `'hedg'`
 * Hush/hush `'Hush'` or `'hush'`
 * HyperSpace/xsc `'HyperSpace'` or `'xsc'`
@@ -159,6 +160,7 @@ npm install multicoin-address-validator
 * Solana/sol `'Solana'` or `'sol'`
 * SolarCoin/slr `'SolarCoin'` or `'slr'`
 * SOLVE/solve `'SOLVE'` or `'solve'`
+* Sonic/s `'Sonic'` or `'s'`
 * Spendcoin/spnd `'Spendcoin'` or `'spnd'`
 * Status/snt `'Status'` or `'snt'`
 * Stellar/xlm `'Stellar'` or `'xlm'`
