@@ -128,6 +128,7 @@ npm install multicoin-address-validator
 * Multi-collateral DAI/dai `'Multi-collateral DAI'` or `'dai'`
 * NameCoin/nmc `'NameCoin'` or `'nmc'`
 * Nano/nano `'Nano'` or `'nano'`
+* NEAR Protocol/near `'NEAR Protocol'` or `'near'`
 * Nem/xem `'Nem'` or `'xem'`
 * Neo/neo `'Neo'` or `'neo'`
 * NeoGas/gas `'NeoGas'` or `'gas'`
