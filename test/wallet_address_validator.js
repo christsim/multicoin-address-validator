@@ -1024,6 +1024,22 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'BONK');
         });
 
+        it('should return false for incorrect near addresses', function () {
+            invalid('', 'near');
+            invalid('a', 'near'); // Too short
+            invalid('system', 'near'); // System account
+            invalid('not ok', 'near'); // Whitespace not allowed
+            invalid('100-', 'near'); // Suffix separator
+            invalid('bo__wen', 'near'); // Two separators in a row
+            invalid('_illia', 'near'); // Prefix separator
+            invalid('.near', 'near'); // Prefix dot separator
+            invalid('near.', 'near'); // Suffix dot separator
+            invalid('a..near', 'near'); // Two dot separators in a row
+            invalid('$$$', 'near'); // Non-alphanumeric characters not allowed
+            invalid('WAT', 'near'); // Non-lowercase characters not allowed
+            invalid('me@google.com', 'near'); // @ is not allowed
+            invalid('abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz', 'near'); // Too long
+        });
     });
 
     describe('invalid results', function () {
@@ -1467,7 +1483,20 @@ describe('WAValidator.validate()', function () {
 
     });
 
-});
+    describe('near validation', function () {
+        it('should return true for correct near addresses', function () {
+            valid('alice.near', 'near');
+            valid('bob.near', 'near');
+            valid('app.alice.near', 'near');
+            valid('near', 'near');
+            valid('test.near', 'near');
+            valid('a-b.near', 'near');
+            valid('a_b.near', 'near');
+            valid('bowen', 'near');
+            valid('ek-2', 'near');
+            valid('98793cd91a3f870fb126f66285808c7e094afcfc4eda8a970f6648cdf0dbd6de', 'near'); // NEAR-implicit account
+            valid('0x87b435f1fcb4519306f9b755e274107cc78ac4e3', 'near'); // ETH-implicit account
+        });
 
 describe('invalid results', function () {
     function commonTests(currency) {
@@ -1625,6 +1654,23 @@ describe('invalid results', function () {
         invalid('t1Y9yhDa5XEjgfnTgZoKddeSiEN1aoLkQxq', 'votecoin');
         invalid('t3Yz22vK5z2LcKEdg16Yv4FFneEL1zg9ojd', 'VOT');
         invalid('t2YNzUUx8mWBCRYPRezvA363EYXyEpHokyi', 'votecoin', 'testnet');
+    });
+
+    it('should return false for incorrect near addresses', function () {
+        invalid('', 'near');
+        invalid('a', 'near');
+        invalid('system', 'near');
+        invalid('not ok', 'near');
+        invalid('100-', 'near');
+        invalid('bo__wen', 'near');
+        invalid('_illia', 'near');
+        invalid('.near', 'near');
+        invalid('near.', 'near');
+        invalid('a..near', 'near');
+        invalid('$$$', 'near');
+        invalid('WAT', 'near');
+        invalid('me@google.com', 'near');
+        invalid('abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz.abcdefghijklmnopqrstuvwxyz', 'near');
     });
 
     it('should return false for incorrect bitcoinz addresses', function () {
@@ -1829,5 +1875,5 @@ describe('invalid results', function () {
         });
     });
 });
-
-
+});
+});
