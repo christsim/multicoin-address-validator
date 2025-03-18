@@ -4,7 +4,7 @@ var BTCValidator = require('./bitcoin_validator');
 
 function validateAddress(address, currency, opts) {
     var networkType = opts ? opts.networkType : ''
-    var prefix = 'bitcoincash';
+    var prefix = networkType === 'testnet' ? 'bchtest' : 'bitcoincash';
     var regexp = new RegExp(currency.regexp);
     var raw_address;
 
@@ -12,7 +12,7 @@ function validateAddress(address, currency, opts) {
     if (res.length === 1) {
         raw_address = address
     } else {
-        if (res[0] !== 'bitcoincash') {
+        if (res[0] !== prefix) {
             return false;
         }
         raw_address = res[1];
@@ -27,9 +27,6 @@ function validateAddress(address, currency, opts) {
     }
 
     var decoded = cryptoUtils.base32.b32decode(raw_address);
-    if (networkType === 'testnet') {
-        prefix = 'bchtest';
-    }
 
     try {
         if (bech32.verifyChecksum(prefix, decoded, bech32.encodings.BECH32)) {
