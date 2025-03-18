@@ -52,6 +52,7 @@ npm install multicoin-address-validator
 * Bankex/bkx `'Bankex'` or `'bkx'`
 * Basic Attention Token/bat `'Basic Attention Token'` or `'bat'`
 * BeaverCoin/bvc `'BeaverCoin'` or `'bvc'`
+* Berachain/bera `'Berachain'` or `'bera'`
 * Biconomy/bico `'Biconomy'` or `'bico'`
 * Binance/bnb `'Binance'` or `'bnb'`
 * BinanceSmartChain/bnb `'BinanceSmartChain'` or `'bnb'`
@@ -167,6 +168,7 @@ npm install multicoin-address-validator
 * Storj/storj `'Storj'` or `'storj'`
 * Storm/storm `'Storm'` or `'storm'`
 * StormX/stmx `'StormX'` or `'stmx'`
+* Story/ip `'Story'` or `'ip'`
 * SuperVerse/super `'SuperVerse'` or `'super'`
 * Swarm City/swt `'Swarm City'` or `'swt'`
 * Synthetix Network/snx `'Synthetix Network'` or `'snx'`

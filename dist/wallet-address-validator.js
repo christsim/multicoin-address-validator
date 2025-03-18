@@ -12724,6 +12724,14 @@ var CURRENCIES = [{
         name: 'Hedera',
         symbol: 'hbar',
         validator: HbarValidator,
+    }, {
+        name: 'Berachain',
+        symbol: 'bera',
+        validator: ETHValidator,
+    }, {
+        name: 'Story',
+        symbol: 'ip',
+        validator: ETHValidator,
     },
 ];
 

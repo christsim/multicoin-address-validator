@@ -47,6 +47,36 @@ describe('WAValidator.validate()', function () {
             valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'USDC', { chainType: 'sonic' });
         });
 
+        it('should return true for correct story addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'ip');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'ip');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'IP');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'IP');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'IP');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'IP');
+
+            valid('0x27b1fdb04752bbc536007a920d24acb045561c26', 'usdc', { chainType: 'story' });
+            valid('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', 'usdc', { chainType: 'story' });
+            valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'usdc', { chainType: 'story' });
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'USDC', { chainType: 'story' });
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'USDC', { chainType: 'story' });
+        });
+
+        it('should return true for correct bera addresses', function () {
+            valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'bera');
+            valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'bera');
+            valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'BERA');
+            valid('0xc6d9d2cd449a754c494264e1809c50e34d64562b', 'BERA');
+            valid('0x52908400098527886E0F7030069857D2E4169EE7', 'BERA');
+            valid('0x8617E340B3D01FA5F11F306F4090FD50E238070D', 'BERA');
+
+            valid('0x27b1fdb04752bbc536007a920d24acb045561c26', 'usdc', { chainType: 'berachain' });
+            valid('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', 'usdc', { chainType: 'berachain' });
+            valid('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', 'usdc', { chainType: 'berachain' });
+            valid('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB', 'USDC', { chainType: 'berachain' });
+            valid('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb', 'USDC', { chainType: 'berachain' });
+        });
+
         it('should return true for correct bitcoin addresses', function () {
             valid('12KYrjTdVGjFMtaxERSk3gphreJ5US8aUP', 'bitcoin');
             valid('12QeMLzSrB8XH8FvEzPMVoRxVAzTr5XM2y', 'bitcoin');
@@ -1054,6 +1084,28 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect sonic addresses', function () {
             commonTests('sonic');
+
+            // solana address
+            invalid('5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs', 'usdc', {
+                chainType: 'sonic'
+            })
+        });
+
+
+        it('should return false for incorrect bera addresses', function () {
+            commonTests('bera');
+            commonTests('berachain');
+
+            // solana address
+            invalid('5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs', 'usdc', {
+                chainType: 'berachain'
+            })
+        });
+
+
+        it('should return false for incorrect story addresses', function () {
+            commonTests('ip');
+            commonTests('story');
 
             // solana address
             invalid('5ndLnEYqSFiA5yUFHo6LVZ1eWc6Rhh11K5CfJNkoHEPs', 'usdc', {
