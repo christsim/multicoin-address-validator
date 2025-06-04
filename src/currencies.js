@@ -42,7 +42,7 @@ var CURRENCIES = [{
     }, {
         name: 'LiteCoin',
         symbol: 'ltc',
-        addressTypes: { prod: ['30', '05', '32'], testnet: ['6f', 'c4', '3a'] },
+        addressTypes: { prod: ['30', '32'], testnet: ['6f', 'c4', '3a'] },
         bech32Hrp: { prod: ['ltc'], testnet: ['tltc'] },
         validator: BTCValidator
     }, {

@@ -160,8 +160,9 @@ describe('WAValidator.validate()', function () {
             valid('mzBc4XEFSdzCDcTxAgf6EZXgsZWpztRhef', 'litecoin', 'testnet');
 
             // p2sh addresses
-            valid('3NJZLcZEEYBpxYEUGewU4knsQRn1WM5Fkt', 'litecoin');
             valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'litecoin', 'testnet');
+            valid('MQMcJhpWHYVeQArcZR3sBgyPZxxRtnH441', 'litecoin');
+            valid('2N5jUhwzndtTUXspDGJkAvP7WCCRLQkgMfX', 'litecoin', 'testnet');
             valid('QW2SvwjaJU8LD6GSmtm1PHnBG2xPuxwZFy', 'litecoin', 'testnet');
             valid('QjpzxpbLp5pCGsCczMbfh1uhC3P89QZavY', 'litecoin', 'testnet');
 
@@ -169,6 +170,11 @@ describe('WAValidator.validate()', function () {
             valid('ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', 'litecoin');
             valid('ltc1qg42tkwuuxefutzxezdkdel39gfstuap288mfea', 'litecoin', { networkType: 'prod' });
             valid('tltc1qu78xur5xnq6fjy83amy0qcjfau8m367defyhms', 'litecoin', { networkType: 'testnet' });
+
+            // P2PKH addresses
+            valid('mipcBbFg9gMiCh81Kj8tqqdgoZub1ZJRfn', 'litecoin', { networkType: 'testnet' });
+
+
         });
 
         it('should return true for correct peercoin addresses', function () {
@@ -1172,6 +1178,7 @@ describe('WAValidator.validate()', function () {
 
         it('should return false for incorrect litecoin addresses', function () {
             commonTests('litecoin');
+            invalid('3FLj1iFqS359KvBXeaStPgqX7hgyifVKbN', 'ltc'); // 3-addresses was deprecated to avoid confusion with Bitcoin P2SH addresses
         });
 
         it('should return false for incorrect peercoin addresses', function () {
