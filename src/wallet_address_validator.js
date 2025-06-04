@@ -17,24 +17,24 @@ module.exports = {
             if (chainTypeConfig) {
                 return chainTypeConfig.validator.isValidAddress(address, { ...opts, ...chainTypeConfig }, opts);
             }
-        }
+}
 
-        if (currency && currency.validator) {
-            if (opts && typeof opts === 'string') {
-                return currency.validator.isValidAddress(address, currency, { networkType: opts });
-            }
-            return currency.validator.isValidAddress(address, currency, opts);
-        }
-
-        throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
-    },
-    getCurrencies: function () {
-        return currencies.getAll();
-    },
-    findCurrency: function(symbol) {
-        return currencies.getByNameOrSymbol(symbol) || null ;
-    },
-    getChainTypeToValidators: function () {
-        return currencies.chainTypeToValidator
+if (currency && currency.validator) {
+    if (opts && typeof opts === 'string') {
+        return currency.validator.isValidAddress(address, currency, { networkType: opts });
     }
+    return currency.validator.isValidAddress(address, currency, opts);
+}
+
+throw new Error('Missing validator for currency: ' + currencyNameOrSymbol);
+},
+getCurrencies: function () {
+    return currencies.getAll();
+},
+findCurrency: function(symbol) {
+    return currencies.getByNameOrSymbol(symbol) || null ;
+},
+getChainTypeToValidators: function () {
+    return currencies.chainTypeToValidator
+}
 };
