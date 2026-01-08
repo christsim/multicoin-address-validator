@@ -1061,6 +1061,18 @@ describe('WAValidator.validate()', function () {
             valid('G4qGCGF4vWGPzYi2pxc2Djvgv3j8NiWaHQMgTVebCX6W', 'BONK');
         });
 
+        it('should return true for correct injective addresses', function () {
+             // Native bech32 addresses
+             valid('inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm49', 'inj');
+             valid('inj1dzqd00lfd4y4qy2pxa0dsdwzfnmsu27hgttswz', 'INJ');
+             valid('inj1cml96vmptgw99syqrrz8az79xer2pcgp0a885r', 'injective');
+
+             // EVM addresses (INJ is EVM-compatible)
+             valid('0xE37c0D48d68da5c5b14E5c1a9f1CFE802776D9FF', 'inj');
+             valid('0xa00354276d2fC74ee91e37D085d35748613f4748', 'INJ');
+             valid('0xAff4d6793F584a473348EbA058deb8caad77a288', 'injective');
+        });
+
     });
 
     describe('invalid results', function () {
@@ -1382,6 +1394,13 @@ describe('WAValidator.validate()', function () {
             invalid('addr2qxy3w62dupy9pzmpdfzxz4k240w5vawyagl5m9djqquyymrtm3grn7gpnjh7rwh2dy62hk8639lt6kzn32yxq960usnq9pexvt', 'cardano', 'prod');
             invalid('addr1skemppmfevyk0lshu2w8j34707s3t3t58a04xcx5ccevrcmvpmxg2qt4pk0', 'cardano', 'testnet');
 
+        });
+
+        it('should return false for incorrect injective addresses', function () {
+            invalid('inj1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqe2hm4', 'inj'); // wrong length/checksum
+            invalid('cosmos1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqnrql8a', 'inj'); // wrong prefix
+            invalid('0xinvalid', 'inj');
+            invalid('inj2qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqcqt4fz', 'inj'); // wrong prefix variant
         });
 
         it('should return false for incorrect monero addresses', function () {
