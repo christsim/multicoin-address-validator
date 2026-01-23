@@ -1,3 +1,7 @@
+## NB:  I am not actively working on this project, instead look at https://github.com/christsim/multichain-address-validator which focuses on validating addresses per chain instead of per coin.
+
+
+
 # wallet-address-validator
 Simple wallet address validator for validating Bitcoin and other altcoins addresses in **Node.js and browser**.
 
