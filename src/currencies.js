@@ -19,6 +19,7 @@ var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
 var AptosValidator = require('./aptos_validator')
 var HbarValidator = require('./hbar_validator')
+var INJValidator = require('./inj_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -719,7 +720,8 @@ var CURRENCIES = [{
     {
         name: 'Injective',
         symbol: 'inj',
-        validator: ETHValidator,
+        bech32Hrp: { prod: ['inj'], testnet: ['inj'] },
+        validator: INJValidator,
     },
     {
         name: 'Immutable',
