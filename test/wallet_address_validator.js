@@ -149,6 +149,7 @@ describe('WAValidator.validate()', function () {
             valid('2MxKEf2su6FGAUfCEAHreGFQvEYrfYNHvL7', 'bitcoincash', 'testnet');
 
             valid('bitcoincash:qq4v32mtagxac29my6gwj6fd4tmqg8rysu23dax807', 'bch');
+            valid('bchtest:qrkj74zm8fx03z9lcn2h3z8s9y9fm4zujca7xakccw', 'bch', 'testnet');
 
         });
 
