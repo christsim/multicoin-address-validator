@@ -922,6 +922,28 @@ describe('WAValidator.validate()', function () {
             valid('10.5.987', 'hedera');
         });
 
+        it('should return true for correct ton addresses', function () {
+            // examples from TEP-2 (masterchain) and the TON documentation (basechain)
+            valid('Ef_lZ1T4NCb2mwkme9h2rJfESCE0W34ma9lWp7-_uY3zXDvq', 'ton');
+            valid('Uf_lZ1T4NCb2mwkme9h2rJfESCE0W34ma9lWp7-_uY3zXGYv', 'ton');
+            valid('-1:e56754f83426f69b09267bd876ac97c44821345b7e266bd956a7bfbfb98df35c', 'ton');
+            valid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrHF', 'ton');
+            valid('UQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPuwA', 'TON');
+            valid('0:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3e', 'ton');
+            valid('0:CA6E321C7CCE9ECEDF0A8CA2492EC8592494AA5FB5CE0387DFF96EF6AF982A3E', 'ton');
+            // standard base64 instead of base64url
+            valid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff+W72r5gqPrHF', 'ton');
+            // USDT jetton master
+            valid('EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs', 'ton');
+            // tokens on TON
+            valid('UQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPuwA', 'usdt', { chainType: 'ton' });
+            // testnet-only addresses (bounceable and non-bounceable)
+            valid('kQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPgpP', 'ton', 'testnet');
+            valid('0QDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPleK', 'ton', 'testnet');
+            valid('0QDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPleK', 'ton', 'both');
+            valid('UQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPuwA', 'ton', 'both');
+        });
+
         it('should return true for correct nano addresses', function () {
             valid('xrb_3t6k35gi95xu6tergt6p69ck76ogmitsa8mnijtpxm9fkcm736xtoncuohr3', 'nano');
             valid('xrb_13ezf4od79h1tgj9aiu4djzcmmguendtjfuhwfukhuucboua8cpoihmh8byo', 'nano');
@@ -1495,6 +1517,20 @@ describe('WAValidator.validate()', function () {
             invalid('0.0.12345-abcxyz', 'hedera');  //checksum address not supported
             invalid('0.1.54321-z9lpq', 'hbar');
             invalid('hbar123', 'hbar');
+        });
+
+        it('should return false for incorrect ton addresses', function () {
+            commonTests('ton');
+            invalid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrHG', 'ton'); // bad checksum
+            invalid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrH', 'ton'); // too short
+            invalid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrHFA', 'ton'); // too long
+            invalid('EgDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPgWL', 'ton'); // unknown tag, valid checksum
+            invalid('EQHKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPjwZ', 'ton'); // workchain 1, valid checksum
+            invalid('kQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPgpP', 'ton'); // testnet-only address on mainnet
+            invalid('EQDKbjIcfM6ezt8KjKJJLshZJJSqX7XOA4ff-W72r5gqPrHF', 'ton', 'testnet');
+            invalid('1:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3e', 'ton');
+            invalid('0:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3', 'ton');
+            invalid('0:ca6e321c7cce9ecedf0a8ca2492ec8592494aa5fb5ce0387dff96ef6af982a3g', 'ton');
         });
 
         it('should return false for incorrect solana addresses', function () {

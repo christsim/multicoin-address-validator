@@ -19,6 +19,7 @@ var BIP173Validator = require('./bip173_validator')
 var Base58Validator = require('./base58_validator')
 var AptosValidator = require('./aptos_validator')
 var HbarValidator = require('./hbar_validator')
+var TONValidator = require('./ton_validator')
 
 // defines P2PKH and P2SH address types for standard (prod) and testnet networks
 var CURRENCIES = [{
@@ -790,6 +791,10 @@ var CURRENCIES = [{
         name: 'Hedera',
         symbol: 'hbar',
         validator: HbarValidator,
+    }, {
+        name: 'TON',
+        symbol: 'ton',
+        validator: TONValidator,
     }, {
         name: 'Berachain',
         symbol: 'bera',

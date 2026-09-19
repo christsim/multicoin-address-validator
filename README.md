@@ -184,6 +184,7 @@ npm install multicoin-address-validator
 * Tezos/xtz `'Tezos'` or `'xtz'`
 * The Graph/grt `'The Graph'` or `'grt'`
 * The Sandbox/sand `'The Sandbox'` or `'sand'`
+* TON/ton `'TON'` or `'ton'`
 * Tron/trx `'Tron'` or `'trx'`
 * TrueUSD/tusd `'TrueUSD'` or `'tusd'`
 * Unifi Protocol DAO/unfi `'Unifi Protocol DAO'` or `'unfi'`
