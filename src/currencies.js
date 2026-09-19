@@ -270,7 +270,7 @@ var CURRENCIES = [{
     }, {
         name: 'Monero',
         symbol: 'xmr',
-        addressTypes: { prod: ['18', '42'], testnet: ['53', '63'], stagenet: ['24'] },
+        addressTypes: { prod: ['18', '42'], testnet: ['53', '63'], stagenet: ['24', '36'] },
         iAddressTypes: { prod: ['19'], testnet: ['54'], stagenet: ['25'] },
         validator: XMRValidator
     }, {
