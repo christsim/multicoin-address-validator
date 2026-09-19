@@ -498,6 +498,20 @@ describe('WAValidator.validate()', function () {
             valid('r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV', 'XRP');
             valid('rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh', 'XRP');
             valid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhmN', 'XRP');
+
+            // X-addresses (XLS-5d), examples from the specification: no tag, then tags 0, 1, 2 and 4294967295
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV5fdx1mHp98tDMoQXb', 'XRP');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8AqEL4xcZj5whKbmc', 'XRP');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8xvjGQTYPiAx6gwDC', 'ripple');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE7', 'XRP');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV18pX8yuPT7y4xaEHi', 'XRP');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE7', 'XRP', 'both');
+            valid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE7', 'UNKNOWN TOKEN', { chainType: 'ripple' });
+
+            // testnet X-addresses
+            valid('TVE26TYGhfLC7tQDno7G8dGtxSkYQn49b3qD26PK7FcGSKE', 'XRP', 'testnet');
+            valid('TVE26TYGhfLC7tQDno7G8dGtxSkYQnTryP9tG9TW8GeMBmd', 'XRP', 'testnet');
+            valid('TVE26TYGhfLC7tQDno7G8dGtxSkYQnXoy6kSDh6rZzApc69', 'XRP', 'both');
         });
 
         it('should return true for correct dash addresses', function () {
@@ -1291,6 +1305,19 @@ describe('WAValidator.validate()', function () {
             invalid('rDTXLQ7ZKZVKz33zJbHjgVShjsBnqMBhMN', 'XRP');
             invalid('6xAff4d6793F584a473348EbA058deb8ca', 'ripple');
             invalid('DJ53hTyLBdZp2wMi5BsCS3rtEL1ioYUkva', 'ripple');
+
+            // X-addresses: bad checksum, truncated, wrong network
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE8', 'XRP');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE', 'XRP');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8zpDURx7DzBCkrQE7', 'XRP', 'testnet');
+            invalid('TVE26TYGhfLC7tQDno7G8dGtxSkYQnTryP9tG9TW8GeMBmd', 'XRP');
+            // X-addresses with a valid checksum but rules from XLS-5d broken:
+            // unknown prefix, tag bytes without the tag flag, upper tag bytes set, 64-bit and unknown flags
+            invalid('XWefhSGM3bMt39McvTCeFnQWzLj5KNSFvsn2KDQ36ZgDutv', 'XRP', 'both');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV53jSo8mAyvfybtDtz', 'XRP');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV8xvjGQT5aXxkMuXLH', 'XRP');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtV1o3rjp93oom1hDqo1', 'XRP');
+            invalid('XVLhHMPHU98es4dbozjVtdWzVrDjtVxdKJBdFjDkbmFWDxa', 'XRP');
         });
 
         it('should return false for incorrect dash addresses', function () {
